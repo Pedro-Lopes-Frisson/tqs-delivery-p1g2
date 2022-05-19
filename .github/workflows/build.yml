@@ -1,4 +1,4 @@
-name: Spring Boot Build
+name: Spring Boot Project Build
 on:
   push:
     branches: [main, dev]
