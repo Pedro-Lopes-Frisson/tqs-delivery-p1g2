@@ -40,7 +40,7 @@ function LoginPage() {
                 placeholder="Password"
             />
           </div>
-          <div className="row"  id="button">
+          <div className="row" id="button">
             <button
                 className="login__btn"
                 /* onClick={() => signInWithEmailAndPassword(email, password)} */
