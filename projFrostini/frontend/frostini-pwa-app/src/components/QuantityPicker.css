@@ -1,0 +1,13 @@
+.quantity-picker-btn {
+  border-radius: 15px;
+  width: 35px;
+  height: 35px;
+  background-color: #f8c8b9;
+  border: none;
+}
+
+.quantity-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
