@@ -57,9 +57,9 @@ function LoginPage() {
                 </button>
             </div>
           </div>
-          <div id="resetPassword">
-            <Link to=""/* to="/reset" */>Forgot Password</Link>
-          </div>
+          {/* <div id="resetPassword">
+            <Link to="/reset">Forgot Password</Link>
+          </div> */}
           <div id="newAccount">
             Don't have an account? <Link to="/register">Register</Link> now.
           </div>
