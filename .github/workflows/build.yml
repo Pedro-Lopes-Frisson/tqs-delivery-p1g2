@@ -32,5 +32,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ls ${{ github.workspace }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sophjane_tqs-delivery-p1g2 --file projectDelivera/backend/delivera/pom.xml
+        run: ls ${{ github.workspace }} | mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sophjane_tqs-delivery-p1g2 --file projectDelivera/backend/delivera/pom.xml
