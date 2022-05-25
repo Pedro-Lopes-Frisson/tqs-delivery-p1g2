@@ -3,8 +3,19 @@
   margin: auto;
 }
 
-.order-page h1 {
+.order-page .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-page .header h1 {
   margin-bottom: 48px;
+}
+
+.order-page .header .my-order-btn {
+  border-radius: 15px;
+  background: #9cb737;
 }
 
 .order-page .products {

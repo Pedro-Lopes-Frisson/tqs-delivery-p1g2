@@ -11,8 +11,6 @@ import PurchasePage from "./pages/PurchasePage";
 import Layout from "./pages/Layout";
 
 function App() {
-  // const [cart, setCart] = useState([]);
-
   return (
     <Layout>
       <Routes>
@@ -22,6 +20,7 @@ function App() {
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/menu/:filter" element={<OrderPage />} />
         <Route path="/purchase" element={<PurchasePage />} />
+        {/* <Route path="/purchase" element={<PurchasePage />} /> */}
       </Routes>
     </Layout>
   );

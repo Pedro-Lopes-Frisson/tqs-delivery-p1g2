@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./QuantityPicker.css";
 
-const QuantityPicker = ({ quantity, onChange }) => {
+const QuantityPicker = ({ quantity = 0, onChange }) => {
   const [state, setState] = useState(quantity);
 
   return (
