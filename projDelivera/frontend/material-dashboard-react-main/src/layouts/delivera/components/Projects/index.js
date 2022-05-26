@@ -64,7 +64,7 @@ function Projects() {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Products
+            Riders
           </MDTypography>
         </MDBox>
         <MDBox color="text" px={2}>
