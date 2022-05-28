@@ -104,6 +104,11 @@ function DeliveraStatistics() {
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
+              <ComplexStatisticsCard icon="leaderboard" title="Active riders" count="800" />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
