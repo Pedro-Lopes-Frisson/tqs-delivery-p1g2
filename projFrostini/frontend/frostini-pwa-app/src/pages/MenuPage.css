@@ -1,0 +1,39 @@
+.menu-page {
+  max-width: 400px;
+  margin: auto;
+}
+
+.menu-page h1 {
+  margin-bottom: 48px;
+}
+
+.menu-page .options {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 42px;
+}
+
+.menu-page .options .card {
+  display: flex;
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+.menu-page .options .card .card-box {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-page .options .card .card-box .card-content {
+}
+
+.menu-page .options .card .card-media {
+  width: 200px;
+  flex: 0;
+  height: 200px;
+}
