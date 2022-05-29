@@ -3,14 +3,21 @@
   margin: auto;
 }
 
-.order-page .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.order-page h1 {
+  margin-bottom: 30px;
 }
 
-.order-page .header h1 {
-  margin-bottom: 48px;
+.order-page .header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 30px 0px 40px 0px;
+}
+
+.order-page .header .search-bar {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: row;
 }
 
 .order-page .header .my-order-btn {
