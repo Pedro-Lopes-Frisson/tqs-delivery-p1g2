@@ -3,6 +3,7 @@ import QuantityPicker from "../components/QuantityPicker";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../hooks/use-local-storage";
+import { Chip } from "@mui/material";
 
 const data = [
   {
@@ -12,7 +13,7 @@ const data = [
       "Coconut Milk, Cashew Milk, Vanilla, Sea Salt, Almonds, Cacao Nibs,Chia Seeds, Dairy-free Chocolate Chips, Raw Cane Sugar",
     price: "$4,5",
     img: "https://cdn.shopify.com/s/files/1/0375/0867/7769/products/AlmondBrittleFudge02_c6058f23-8c91-41b5-b1a7-8b93705b5a67_1024x1024@2x.jpg?v=1631857159",
-    tags: [],
+    tags: ["GF", "NF"],
   },
   {
     id: "2",
@@ -74,7 +75,14 @@ function OrderPage() {
             <div key={id} className="product">
               <img src={img} />
               <div className="product-info">
-                <p className="product-title">{title}</p>
+                <div className="product-title-tags">
+                  <p className="product-title">{title}</p>
+                  <div className="tags">
+                    {tags.map((tag, i) => (
+                      <Chip label={tag} className="tags-chip" />
+                    ))}
+                  </div>
+                </div>
                 <p className="product-description">{description}</p>
                 <div className="product-actions">
                   <span className="product-price">{price}</span>

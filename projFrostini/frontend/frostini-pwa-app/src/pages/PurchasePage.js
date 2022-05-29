@@ -7,18 +7,31 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button, Chip, TextField } from "@mui/material";
+import {
+  Button,
+  Chip,
+  TextField,
+  RadioGroup,
+  Radio,
+  FormControl,
+  FormControlLabel,
+} from "@mui/material";
 
-function createData(icecream, quantity, price, tags) {
-  return { icecream, quantity, price, tags };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 2, 6.0, ["GF", "NF"]),
-  createData("Black Forest", 1, 2.3, []),
+const json = [
+  { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
+  { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
 ];
 
+// function getTotal() {
+//   var total = 0;
+
+//   json.map((row) => (total += row.price));
+
+//   return total;
+// }
+
 function PurchasePage() {
+  const [newAddress, setNewAddress] = React.useState(false);
   // const [order, setOrder] = useLocalStorage("order", []);
 
   return (
@@ -35,7 +48,7 @@ function PurchasePage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {json.map((row) => (
               <TableRow
                 key={row.name}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -47,8 +60,8 @@ function PurchasePage() {
                 <TableCell align="right">{row.price} €</TableCell>
                 <TableCell align="right">
                   <div className="tags">
-                    {row.tags.map((data, key) => (
-                      <Chip label={data} className="tags-chip" />
+                    {row.tags.map((tag, key) => (
+                      <Chip label={tag} className="tags-chip" />
                     ))}
                   </div>
                 </TableCell>
@@ -58,7 +71,38 @@ function PurchasePage() {
         </Table>
       </TableContainer>
       <div className="total-price">
-        <Chip label="Total: 8.3 €" className="total-price-chip" />
+        {/* TODO: get sum of product prices */}
+        <Chip label="Total: x €" className="total-price-chip" />
+      </div>
+      <div className="address-details">
+        <h3>Address Details</h3>
+        <FormControl>
+          <RadioGroup
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="default-address"
+            name="radio-buttons-group"
+          >
+            <FormControlLabel
+              value="default-address"
+              control={<Radio />}
+              label="Default Address"
+              onClick={() => setNewAddress(false)}
+            />
+            <div className="alternative-address">
+              <FormControlLabel
+                value="another-address"
+                control={<Radio />}
+                onClick={() => setNewAddress(true)}
+                label="Another Address"
+              />
+              <div>
+                {newAddress ? (
+                  <TextField id="outlined-basic" variant="outlined" />
+                ) : null}
+              </div>
+            </div>
+          </RadioGroup>
+        </FormControl>
       </div>
       <div className="payment-details">
         <h3>Payment Details</h3>

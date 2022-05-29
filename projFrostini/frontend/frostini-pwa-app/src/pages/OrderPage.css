@@ -64,3 +64,14 @@
 
 .order-page .products .product .product-actions .product-price {
 }
+
+.product-title-tags {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.product-title-tags .tags {
+  display: flex;
+  gap: 10px;
+}

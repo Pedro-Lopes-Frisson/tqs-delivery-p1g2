@@ -17,8 +17,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/menu" element={<MenuPage />} />
-        <Route path="/menu/:filter" element={<OrderPage />} />
+        <Route path="/menu" element={<OrderPage />} />
+        {/* <Route path="/menu/:filter" element={<OrderPage />} /> */}
         <Route path="/purchase" element={<PurchasePage />} />
         {/* <Route path="/purchase" element={<PurchasePage />} /> */}
       </Routes>
