@@ -1,0 +1,15 @@
+.orders-history-page h1 {
+  margin-bottom: 30px;
+}
+
+.orders-history-page .orders .order .order-date {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0px 15px 15px;
+}
+
+.orders-history-page .orders .order .order-address {
+  display: flex;
+  gap: 10px;
+  margin: 0px 0px 15px 15px;
+}
