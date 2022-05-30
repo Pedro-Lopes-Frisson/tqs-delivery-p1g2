@@ -1,4 +1,4 @@
-package ua.tqs.delivera;
+package ua.tqs.delivera.ServiceTests;
 
 import java.util.Optional;
 

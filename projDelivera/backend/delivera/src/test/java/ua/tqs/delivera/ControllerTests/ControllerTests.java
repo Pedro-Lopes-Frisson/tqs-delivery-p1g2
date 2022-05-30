@@ -1,4 +1,4 @@
-package ua.tqs.delivera;
+package ua.tqs.delivera.ControllerTests;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
