@@ -37,7 +37,7 @@ class DeliveraControllerTests {
 	void setUp(){
 		location = new Location(40.85, 25.9999);
 		location.setId(1L);
-        rider = new Rider("Manuel Antunes", "migant", true, location, 0, 0);
+        rider = new Rider("ma@gmail.com","Manuel Antunes", "migant", true, location, 0, 0);
 		rider.setRiderId(1L);
 	}
 
@@ -51,7 +51,8 @@ class DeliveraControllerTests {
 			.content(ua.tqs.delivera.JSONUtil.toJson(rider)))
 			.andExpect(MockMvcResultMatchers.status().isCreated())
 			.andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is(rider.getName())))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.riderId", Matchers.is(rider.getRiderId().intValue())));
+			.andExpect(MockMvcResultMatchers.jsonPath("$.riderId", Matchers.is(rider.getRiderId().intValue())))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.email", Matchers.is(rider.getEmail())));
 		verify(riderService, times(1)).saveRider(Mockito.any());
 	}
     

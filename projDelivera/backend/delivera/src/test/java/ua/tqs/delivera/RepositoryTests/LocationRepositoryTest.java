@@ -9,28 +9,26 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-
-import ua.tqs.delivera.models.Location;
-import ua.tqs.delivera.models.Rider;
-import ua.tqs.delivera.repositories.RiderRepository;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import ua.tqs.delivera.models.Location;
+import ua.tqs.delivera.repositories.LocationRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DataJpaTest
 @Testcontainers
+//To use the same datasource as the regular application
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class RiderRepositoryTest {
+public class LocationRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
     @Autowired
-    private RiderRepository riderRepo;
+    private LocationRepository locationRepo;
 
-    private Rider rider;
     private Location location;
 
     @Container
@@ -49,31 +47,28 @@ class RiderRepositoryTest {
     @BeforeEach
     void setup(){
         location = new Location(40.85, 25.9999);
-        rider = new Rider("ma@gmail.com", "Manuel Antunes", "migant", true, location, 0, 0);
     }
 
     @Order(1)
     @Test
-    void whenSaveRider_thenReturnRider(){
-        entityManager.persistAndFlush(location);
-        Rider rider_saved = entityManager.persistAndFlush(rider);
-        assertThat(rider_saved).isEqualTo(rider);
+    void whenSaveValidLocation_thenReturnLocation(){
+        Location location_saved = entityManager.persistAndFlush(location);
+        assertThat(location_saved).isEqualTo(location);
     }
 
     @Order(2)
     @Test
     void whenFindRiderByExistingId_thenReturnRider(){
         entityManager.persistAndFlush(location);
-        entityManager.persistAndFlush(rider);
 
-        Rider foundRider = riderRepo.findById(rider.getRiderId()).get();
-        assertThat(foundRider).isEqualTo(rider);
+        Location foundLocation = locationRepo.findById(location.getId()).get();
+        assertThat(foundLocation).isEqualTo(location);
     }
 
     @Order(3)
     @Test
     void whenInvalidId_thenReturnNull(){
-        Rider rider_saved = riderRepo.findById(-1L).orElse(null);
-        assertThat(rider_saved).isNull();
+        Location location_saved = locationRepo.findById(-1L).orElse(null);
+        assertThat(location_saved).isNull();
     }
 }

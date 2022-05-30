@@ -21,6 +21,8 @@ public class Location {
     private double latitude;
     @Column
     private double longitude;
+
+    public Location(){}
     
     public Location(double latitude, double longitude){
         this.latitude=latitude;

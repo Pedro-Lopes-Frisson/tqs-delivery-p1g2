@@ -33,7 +33,7 @@ public class RiderServiceTest {
     @BeforeEach
     public void setUp(){
         location = new Location(40.85, 25.9999);
-        rider = new Rider("Manuel Antunes", "migant", true, location, 0, 0);
+        rider = new Rider("ma@gmail.com","Manuel Antunes", "migant", true, location, 0, 0);
 
         Mockito.when(riderRepo.save(rider)).thenReturn(rider);
     }

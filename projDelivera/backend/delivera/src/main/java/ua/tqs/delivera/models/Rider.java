@@ -23,6 +23,9 @@ public class Rider{
     private String name;
 
     @Column
+    private String email;
+
+    @Column
     private String password;
 
     @Column
@@ -40,7 +43,8 @@ public class Rider{
 
     public Rider(){}
 
-    public Rider(String name, String password, boolean available, Location currentLocation, int numberOfReviews, int sumOfReviews){
+    public Rider(String email, String name, String password, boolean available, Location currentLocation, int numberOfReviews, int sumOfReviews){
+        this.email = email;
         this.name = name;
         this.password = password;
         this.available = available;
@@ -51,6 +55,10 @@ public class Rider{
 
     public Long getRiderId(){
         return this.riderId;
+    }
+
+    public String getEmail(){
+        return this.email;
     }
 
     public String getName(){
