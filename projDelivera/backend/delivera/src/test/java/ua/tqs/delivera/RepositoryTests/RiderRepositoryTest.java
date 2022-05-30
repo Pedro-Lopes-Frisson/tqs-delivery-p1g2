@@ -1,4 +1,4 @@
-package ua.tqs.delivera;
+package ua.tqs.delivera.RepositoryTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
