@@ -46,10 +46,16 @@ function PurchasePage() {
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           <TableHead className="order-table-header">
             <TableRow>
-              <TableCell>Icecream</TableCell>
-              <TableCell align="right">Quantity</TableCell>
-              <TableCell align="right">Price</TableCell>
-              <TableCell align="right">Tags</TableCell>
+              <TableCell className="header-cell">Icecream</TableCell>
+              <TableCell className="header-cell" align="right">
+                Quantity
+              </TableCell>
+              <TableCell className="header-cell" align="right">
+                Price
+              </TableCell>
+              <TableCell className="header-cell" align="right">
+                Tags
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

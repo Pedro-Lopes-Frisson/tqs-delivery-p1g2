@@ -27,6 +27,8 @@
   height: 45px;
   border-radius: 10px;
   background-color: #f8c8b9;
+  color: white;
+  font-weight: 900;
 }
 
 .purchase-page .address-details {
@@ -66,4 +68,10 @@
   margin-top: 30px;
   background-color: #9cb737;
   border-radius: 15px;
+  height: 50px;
+}
+
+.header-cell.MuiTableCell-root {
+  color: white;
+  font-weight: 900;
 }

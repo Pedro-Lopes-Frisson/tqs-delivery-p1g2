@@ -2,14 +2,48 @@
   margin-bottom: 30px;
 }
 
-.orders-history-page .orders .order .order-date {
+.orders-history-page .orders {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.orders-history-page .orders .order .order-card {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  width: 700px;
+}
+.orders-history-page .orders .order .order-card .order-info .order-date {
   display: flex;
   gap: 10px;
   margin: 20px 0px 15px 15px;
 }
 
-.orders-history-page .orders .order .order-address {
+.orders-history-page .orders .order .order-card .order-info .order-address {
   display: flex;
   gap: 10px;
   margin: 0px 0px 15px 15px;
+}
+
+.orders-history-page .orders .order .order-card .order-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.orders-history-page .orders .order .order-card .order-details .deliver-check {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.orders-history-page
+  .orders
+  .order
+  .order-card
+  .order-details
+  .deliver-check
+  p {
+  color: #9cb737;
 }
