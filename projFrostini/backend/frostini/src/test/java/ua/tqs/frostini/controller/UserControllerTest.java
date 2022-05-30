@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.tqs.frostini.datamodels.UserDTO;
 import ua.tqs.frostini.exceptions.DuplicatedUserException;
 import ua.tqs.frostini.models.User;
-import ua.tqs.frostini.services.UserService;
+import ua.tqs.frostini.service.UserService;
 
 import java.io.IOException;
 import java.util.stream.Stream;
@@ -45,8 +45,9 @@ public class UserControllerTest {
   @Test
   public void testEndpointForCorrectPathWithValidRequestBodyReturn_ThenReturnOkStatus() throws DuplicatedUserException {
     User u = createAndSaveUser( 1l );
-    when( userService.register( any() ) ).thenReturn( u );
-    RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( u )
+    UserDTO uDto = createAndSaveUserDTO( 1l );
+    when( userService.register( any() ) ).thenReturn( u);
+    RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( uDto )
                       .when().post( "api/v1/user" ).then()
                       .contentType( ContentType.JSON )
                       .status( HttpStatus.OK );
@@ -57,9 +58,10 @@ public class UserControllerTest {
   @Test
   public void createNewUser_ShouldReturnTheUserThatHasBeenCreated() throws DuplicatedUserException {
     User u = createAndSaveUser( 1l );
+    UserDTO uDto = createAndSaveUserDTO( 1l );
     when( userService.register( any() ) ).thenReturn( u );
     
-    RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( u ).when().post( "api/v1/user" )
+    RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( uDto ).when().post( "api/v1/user" )
                       .then()
                       .contentType( ContentType.JSON )
                       .status( HttpStatus.OK ).log()
@@ -71,7 +73,6 @@ public class UserControllerTest {
   }
   
   
-  
   @Test
   public void createConflictingUser_ShouldReturnHttpStatusConflictAndItShouldNotUpdateThePreviousUser()
     throws DuplicatedUserException {
@@ -79,7 +80,7 @@ public class UserControllerTest {
     UserDTO userDto = createAndSaveUserDTO( 1l );
     doThrow( new DuplicatedUserException( "User already exists!" ) ).when( userService ).register( userDto );
     
-    RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( u ).when().post( "api/v1/user" )
+    RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( userDto ).when().post( "api/v1/user" )
                       .then()
                       .status( HttpStatus.CONFLICT );
     
@@ -90,7 +91,7 @@ public class UserControllerTest {
   @MethodSource("invalidAccounts")
   void whenInvalidRegisterRequestBody_thenReturnStatus400( String name, String pwd, String email )
     throws DuplicatedUserException {
-    User u = new User();
+    UserDTO u = new UserDTO();
     u.setEmail( email );
     u.setName( name );
     u.setPwd( pwd );
@@ -121,10 +122,10 @@ public class UserControllerTest {
   
   /* -- helper -- */
   private User createAndSaveUser( long i ) {
-    return new User( i, "Pedro", "safepassword", "pdfl" + i + "@ua.pt", null, null );
+    return new User( i, "Pedro", "safepassword", "pdfl" + i + "@ua.pt", false, null, null );
   }
   
   private UserDTO createAndSaveUserDTO( long l ) {
-    return new UserDTO( "Pedro", "safepassword", "pdfl" + l + "@ua.pt");
+    return new UserDTO( "Pedro", "safepassword", "pdfl" + l + "@ua.pt" );
   }
 }

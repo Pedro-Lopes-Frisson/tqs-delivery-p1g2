@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "address")
+@Table(name = "frostini_address")
 @Getter
 @Setter
 @AllArgsConstructor

@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "frostini_user")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,15 +28,15 @@ public class User {
   @Column(name = "name")
   String name;
   
-  @Column(name = "password")
+  @Column(name = "`password`")
   @Size(min=8)
   String password;
   
-  @Column(name = "email")
+  @Column(name = "`email`")
   @Email
   String email;
   
-  @Column(name = "admin")
+  @Column(name = "`admin`")
   boolean isAdmin;
   
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")

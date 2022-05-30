@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -22,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
  class UserRepositoryTest {
   @Container
    static PostgreSQLContainer container = new PostgreSQLContainer("postgres:11.12")
@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
   
   @DynamicPropertySource
   static void properties(DynamicPropertyRegistry registry) {
+    System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + container.getJdbcUrl());
     registry.add("spring.datasource.url", container::getJdbcUrl);
     registry.add("spring.datasource.password", container::getPassword);
     registry.add("spring.datasource.username", container::getUsername);
@@ -63,7 +64,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     User userFromDB = optionalUserFromDB.get();
     assertThat( userFromDB.getEmail() ).isEqualTo( u1.getEmail() );
     assertThat( userFromDB.getName() ).isEqualTo( u1.getName() );
-    assertThat( userFromDB.getPwd() ).isEqualTo( u1.getPwd() );
+    assertThat( userFromDB.getPassword() ).isEqualTo( u1.getPassword() );
   }
   
   @Test
@@ -81,7 +82,7 @@ import static org.assertj.core.api.Assertions.assertThat;
   private User createAndSaveUser( long i ) {
     User u = new User();
     u.setName( "Pedro" );
-    u.setPwd( "safepassword" );
+    u.setPassword( "safepassword" );
     u.setEmail( "pdfl" + i + "@ua.pt" );
     testEntityManager.persistAndFlush( u );
     return u;

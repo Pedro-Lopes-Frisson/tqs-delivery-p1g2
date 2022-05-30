@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.tqs.frostini.datamodels.UserDTO;
 import ua.tqs.frostini.exceptions.DuplicatedUserException;
 import ua.tqs.frostini.models.User;
-import ua.tqs.frostini.services.UserService;
+import ua.tqs.frostini.service.UserService;
 
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1")
 @Validated
-
 public class UserController {
   @Autowired UserService userService;
   

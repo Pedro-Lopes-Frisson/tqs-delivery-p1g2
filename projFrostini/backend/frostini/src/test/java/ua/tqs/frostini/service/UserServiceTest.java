@@ -4,14 +4,12 @@ import ua.tqs.frostini.datamodels.UserDTO;
 import ua.tqs.frostini.exceptions.DuplicatedUserException;
 import ua.tqs.frostini.models.User;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.tqs.frostini.repositories.UserRepository;
-import ua.tqs.frostini.services.UserService;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -35,7 +33,7 @@ public class UserServiceTest {
   
   @BeforeEach
   void setUp() throws IOException {
-    user = new User( 1l, "Fernando", "12345678", "fernando@ua.pt", null, null );
+    user = new User( 1l, "Fernando", "12345678", "fernando@ua.pt", false,null, null );
     userDto = new UserDTO("Fernando", "12345678", "fernando@ua.pt");
     
   }
@@ -52,7 +50,6 @@ public class UserServiceTest {
   }
   
   @Test
-  @DisplayName("Register: everything is ok, then return")
   public void testRegister_whenEverythingIsOK_thenReturn() throws DuplicatedUserException {
     when( userRepository.findByEmail( user.getEmail() ) ).thenReturn( Optional.empty() );
     

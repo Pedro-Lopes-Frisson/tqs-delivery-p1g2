@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Data
-@Table(name = "order")
+@Table(name = "frostini_order")
 @Getter
 @Setter
 @AllArgsConstructor
