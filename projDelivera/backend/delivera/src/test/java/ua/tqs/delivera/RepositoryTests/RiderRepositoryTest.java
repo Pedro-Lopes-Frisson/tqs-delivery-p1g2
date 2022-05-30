@@ -23,7 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class RiderRepositoryTest {
+class RiderRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
