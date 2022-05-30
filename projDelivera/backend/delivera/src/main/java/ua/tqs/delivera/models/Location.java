@@ -2,7 +2,10 @@ package ua.tqs.delivera.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -12,8 +15,8 @@ import lombok.Data;
 @Table(name = "location")
 public class Location {
     @Id
-    @Column
-    private long riderId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     @Column
     private double latitude;
     @Column
@@ -24,9 +27,14 @@ public class Location {
         this.longitude=longitude;
     }
 
+    public long getId(){
+        return this.id;
+    }
+
     public double getLatitude(){
         return this.latitude;
     }
+
     public double getLongitude(){
         return this.longitude;
     }
