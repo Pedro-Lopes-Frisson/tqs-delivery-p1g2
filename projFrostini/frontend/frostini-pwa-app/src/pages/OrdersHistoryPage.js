@@ -9,6 +9,22 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import { useNavigate } from "react-router-dom";
 import "./OrdersHistoryPage.css";
+import CheckIcon from "@mui/icons-material/Check";
+
+const json = [
+  {
+    id: 1,
+    date: "27-May-2022",
+    address: "Universidade de Aveiro, 3810-193 Aveiro",
+    delivered: false,
+  },
+  {
+    id: 2,
+    date: "28-May-2022",
+    address: "Universidade de Aveiro, 3810-193 Aveiro",
+    delivered: true,
+  },
+];
 
 function OrdersHistoryPage() {
   const navigate = useNavigate();
@@ -16,37 +32,59 @@ function OrdersHistoryPage() {
     <div className="orders-history-page">
       <h1>Orders</h1>
       <div className="orders">
-        <div className="order">
-          <Card sx={{ minWidth: 275 }}>
-            <CardContent>
-              <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                Order #1
-              </Typography>
-              <div>
-                <div className="order-date">
-                  <CalendarTodayIcon />
-                  <Typography variant="body2">27-May-2022</Typography>
+        {json.map((order, key) => (
+          <div className="order">
+            <Card sx={{ minWidth: 275 }} className="order-card">
+              <CardContent>
+                <Typography sx={{ mb: 1.5 }} color="#f8c8b9" fontWeight="900">
+                  Order #{order.id}
+                </Typography>
+                <div className="order-info">
+                  <div className="order-date">
+                    <CalendarTodayIcon />
+                    <Typography variant="body2" color="text.secondary">
+                      {order.date}
+                    </Typography>
+                  </div>
+                  <div className="order-address">
+                    <FmdGoodIcon />
+                    <Typography variant="body2" color="text.secondary">
+                      {order.address}
+                    </Typography>
+                  </div>
                 </div>
-                <div className="order-address">
-                  <FmdGoodIcon />
-                  <Typography variant="body2">
-                    Universidade de Aveiro, 3810-193 Aveiro
-                  </Typography>
+              </CardContent>
+              <CardActions>
+                <div className="order-details">
+                  <Button
+                    style={{
+                      backgroundColor: "#f8c8b9",
+                      color: "#ffffff",
+                      fontWeight: "600",
+                      fontSize: "12px",
+                      border: "0",
+                      height: "40px",
+                    }}
+                    variant="outlined"
+                    size="small"
+                    className="order-card-btn"
+                    onClick={() => {
+                      navigate("/purchase");
+                    }}
+                  >
+                    Check More About The Order
+                  </Button>
+                  {order.delivered && (
+                    <div className="deliver-check">
+                      <CheckIcon sx={{ color: "#9cb737" }} />
+                      <p>Delivered</p>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </CardContent>
-            <CardActions>
-              <Button
-                size="small"
-                onClick={() => {
-                  navigate("/purchase");
-                }}
-              >
-                Check More About The Order
-              </Button>
-            </CardActions>
-          </Card>
-        </div>
+              </CardActions>
+            </Card>
+          </div>
+        ))}
       </div>
     </div>
   );
