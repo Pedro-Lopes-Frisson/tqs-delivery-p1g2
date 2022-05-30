@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
-public class ServiceTests {
+public class RiderServiceTest {
     @Mock( lenient = true)
     private RiderRepository riderRepo;
 
