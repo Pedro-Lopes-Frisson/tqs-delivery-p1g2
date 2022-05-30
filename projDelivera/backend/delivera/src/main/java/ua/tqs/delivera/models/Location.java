@@ -19,8 +19,7 @@ public class Location {
     @Column
     private double longitude;
     
-    public Location(long riderId ,double latitude, double longitude){
-        this.riderId = riderId;
+    public Location(double latitude, double longitude){
         this.latitude=latitude;
         this.longitude=longitude;
     }
