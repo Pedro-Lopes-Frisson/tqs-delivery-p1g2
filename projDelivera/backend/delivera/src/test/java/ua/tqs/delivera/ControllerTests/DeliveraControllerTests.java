@@ -2,7 +2,10 @@ package ua.tqs.delivera.ControllerTests;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import ua.tqs.delivera.controllers.DeliveraController;
+import ua.tqs.delivera.models.Location;
+import ua.tqs.delivera.models.Rider;
 import ua.tqs.delivera.services.RiderService;
 
 @WebMvcTest(DeliveraController.class)
@@ -23,19 +28,31 @@ class DeliveraControllerTests {
 	private MockMvc mvnForTests;
 
 	@MockBean
-	private RiderService service;
+	private RiderService riderService;
+
+	private Location location;
+	private Rider rider;
+
+	@BeforeEach
+	void setUp(){
+		location = new Location(40.85, 25.9999);
+		location.setId(1L);
+        rider = new Rider("Manuel Antunes", "migant", true, location, 0, 0);
+		rider.setRiderId(1L);
+	}
 
     @Test
 	void whenPostRider_thenCreateRider() throws Exception{
 
-		// when(service.save(Mockito.any())).thenReturn(car1);
+		when(riderService.saveRider(Mockito.any())).thenReturn(rider);
 
-		// mvnForTests.perform(MockMvcRequestBuilders.post("/api/car")
-		// 	.contentType(MediaType.APPLICATION_JSON)
-		// 	.content(lab3_2.CarService.JSONUtil.toJson(car1)))
-		// 	.andExpect(MockMvcResultMatchers.status().isCreated())
-		// 	.andExpect(MockMvcResultMatchers.jsonPath("$.maker", Matchers.is(car1.getMaker())));
-		// verify(service, times(1)).save(Mockito.any());
+		mvnForTests.perform(MockMvcRequestBuilders.post("/api/delivera/rider")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(ua.tqs.delivera.JSONUtil.toJson(rider)))
+			.andExpect(MockMvcResultMatchers.status().isCreated())
+			.andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is(rider.getName())))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.riderId", Matchers.is(rider.getRiderId().intValue())));
+		verify(riderService, times(1)).saveRider(Mockito.any());
 	}
     
 }

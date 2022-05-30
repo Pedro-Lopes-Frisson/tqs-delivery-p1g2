@@ -81,4 +81,8 @@ public class Rider{
         this.currentLocation.setLatitude(lat);
         this.currentLocation.setLongitude(lon);
     }
+
+    public void setRiderId(Long id){
+        this.riderId=id;
+    }
 }
