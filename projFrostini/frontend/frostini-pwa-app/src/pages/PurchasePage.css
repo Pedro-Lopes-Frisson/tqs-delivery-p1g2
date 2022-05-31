@@ -33,10 +33,34 @@
 
 .purchase-page .address-details {
   margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .purchase-page .address-details h3 {
   margin-bottom: 30px;
+}
+
+.purchase-page .address-details .delivery-detail {
+  display: flex;
+  gap: 10px;
+}
+
+.purchase-page .address-details .delivery-detail p:first-of-type {
+  font-weight: bold;
+  color: #9cb737;
+}
+
+.purchase-page .address-details .delivery-rating {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.purchase-page .address-details .delivery-rating h4 {
+  margin-top: 30px;
+  color: #f8c8b9;
 }
 
 .purchase-page .address-details .alternative-address {
@@ -74,4 +98,37 @@
 .header-cell.MuiTableCell-root {
   color: white;
   font-weight: 900;
+}
+
+.order-steps {
+  display: flex;
+  align-items: center;
+  margin-bottom: 50px;
+  justify-content: center;
+}
+
+.order-steps .order-state,
+.in-transit-state,
+.delivered-state {
+  background-color: #9cb737;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+}
+
+.order-steps .bar {
+  background-color: grey;
+  height: 8px;
+  width: 150px;
+}
+
+.order-steps .order-state .shopping-basket-icon,
+.in-transit-state .delivery-dining-icon,
+.delivered-state .check-icon {
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  padding: 25px;
+  position: relative;
+  color: white;
 }
