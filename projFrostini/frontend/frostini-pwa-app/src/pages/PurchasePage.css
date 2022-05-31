@@ -103,21 +103,20 @@
 .order-steps {
   display: flex;
   align-items: center;
-  margin-bottom: 50px;
+  margin-bottom: 70px;
   justify-content: center;
 }
 
 .order-steps .order-state,
 .in-transit-state,
 .delivered-state {
-  background-color: #9cb737;
+  /* background-color: #9cb737; */
   border-radius: 50%;
   width: 90px;
   height: 90px;
 }
 
 .order-steps .bar {
-  background-color: grey;
   height: 8px;
   width: 150px;
 }

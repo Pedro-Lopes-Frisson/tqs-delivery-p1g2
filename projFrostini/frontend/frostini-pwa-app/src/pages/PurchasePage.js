@@ -29,8 +29,6 @@ const json = {
   ],
 };
 
-var isDelivered = false;
-
 // function getTotal() {
 //   var total = 0;
 
@@ -40,30 +38,65 @@ var isDelivered = false;
 // }
 
 function PurchasePage() {
-  const [value, setValue] = React.useState(0);
+  const [rating, setRating] = React.useState(0);
   const [newAddress, setNewAddress] = React.useState(false);
+
+  const [step, setStep] = React.useState(0);
+
   // const [order, setOrder] = useLocalStorage("order", []);
 
   const totalPrice = json.reduce(
     (sum, item) => item.quantity * item.price + sum,
     0
   );
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const body = {
+      // "address": e.currentTarget["newAddress"]?.value,
+      cardNumber: e.currentTarget["card-number"].value,
+      expirationDate: e.currentTarget["expiration-date"].value,
+      cvCode: e.currentTarget["cv-code"].value,
+      cardOwner: e.currentTarget["card-owner"].value,
+    };
+
+    console.log(body);
+
+    setStep(3);
+  };
 
   return (
     <div className="purchase-page">
       <h1>My Order</h1>
       <div className="order-steps">
-        <div className="order-state">
+        <div
+          className="order-state"
+          style={{ backgroundColor: step > 0 ? "#9cb737" : "grey" }}
+        >
           <ShoppingBasketIcon className="shopping-basket-icon" />
           <p>Ordered</p>
         </div>
-        <div className="bar"></div>
-        <div className="in-transit-state">
+        <div
+          className="bar"
+          style={{ backgroundColor: step > 0 ? "#9cb737" : "grey" }}
+        ></div>
+        <div
+          className="in-transit-state"
+          style={{ backgroundColor: step > 1 ? "#9cb737" : "grey" }}
+        >
           <DeliveryDiningIcon className="delivery-dining-icon" />
           <p>In Transit</p>
         </div>
-        <div className="bar"></div>
-        <div className="delivered-state">
+        <div
+          className="bar"
+          style={{ backgroundColor: step > 1 ? "#9cb737" : "grey" }}
+        ></div>
+        <div
+          className="delivered-state"
+          style={{
+            backgroundColor: step > 2 ? "#9cb737" : "grey",
+          }}
+        >
           <CheckCircleOutlineIcon className="check-icon" />
           <p>Delivered</p>
         </div>
@@ -111,8 +144,8 @@ function PurchasePage() {
         {/* TODO: get sum of product prices */}
         <Chip label={`Total: ${totalPrice}€`} className="total-price-chip" />
       </div>
-      {isDelivered && (
-        <div>
+      {step === 0 && (
+        <form onSubmit={handleSubmit}>
           <div className="address-details">
             <h3>Address Details</h3>
             <FormControl>
@@ -136,7 +169,7 @@ function PurchasePage() {
                   />
                   <div>
                     {newAddress ? (
-                      <TextField id="outlined-basic" variant="outlined" />
+                      <TextField id="new-address" variant="outlined" />
                     ) : null}
                   </div>
                 </div>
@@ -152,8 +185,6 @@ function PurchasePage() {
                 label="Card Number"
                 multiline
                 maxRows={4}
-                value="Valid Card Number"
-                onChange={() => {}}
               />
               <div className="sensitive-fields">
                 <TextField
@@ -161,34 +192,23 @@ function PurchasePage() {
                   label="Expiration Date"
                   multiline
                   maxRows={4}
-                  value="MM/YYYY"
-                  onChange={() => {}}
                 />
-                <TextField
-                  id="cv-code"
-                  label="CV code"
-                  multiline
-                  maxRows={4}
-                  value="CVC"
-                  onChange={() => {}}
-                />
+                <TextField id="cv-code" label="CV code" multiline maxRows={4} />
               </div>
               <TextField
                 id="card-owner"
                 label="Card Owner"
                 multiline
                 maxRows={4}
-                value="Card Owner Name"
-                onChange={() => {}}
               />
             </div>
           </div>
-          <Button className="payment-btn" variant="contained">
+          <Button className="payment-btn" variant="contained" type="submit">
             Confirm Payment
           </Button>
-        </div>
+        </form>
       )}
-      {!isDelivered && (
+      {step > 2 && (
         <div>
           <div className="address-details">
             <h3>Delivery Details</h3>
@@ -208,9 +228,9 @@ function PurchasePage() {
               <h4>Rider's Rating</h4>
               <Rating
                 name="simple-controlled"
-                value={value}
+                value={rating}
                 onChange={(event, newValue) => {
-                  setValue(newValue);
+                  setRating(newValue);
                 }}
               />
             </div>
