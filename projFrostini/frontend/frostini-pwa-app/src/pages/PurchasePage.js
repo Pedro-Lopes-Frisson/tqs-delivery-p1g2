@@ -61,6 +61,12 @@ function PurchasePage() {
     setStep(3);
   };
 
+  const totalPrice = json.reduce(
+    (sum, item) => item.quantity * item.price + sum,
+    0
+  );
+
+
   return (
     <div className="purchase-page">
       <h1>My Order</h1>
@@ -138,7 +144,7 @@ function PurchasePage() {
       </TableContainer>
       <div className="total-price">
         {/* TODO: get sum of product prices */}
-        <Chip label="Total: x €" className="total-price-chip" />
+        <Chip label={`Total: ${totalPrice}€`} className="total-price-chip" />
       </div>
       {step === 0 && (
         <form onSubmit={handleSubmit}>
