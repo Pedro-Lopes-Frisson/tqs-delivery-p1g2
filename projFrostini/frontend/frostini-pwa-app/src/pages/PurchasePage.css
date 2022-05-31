@@ -2,50 +2,67 @@
   margin-bottom: 48px;
 }
 
-.order-table-header {
+.purchase-page .order-table-header {
   background-color: #f8c8b9;
 }
 
-.tags {
+.purchase-page .tags {
   display: flex;
   justify-content: end;
   gap: 10px;
 }
 
-.tags .tags-chip {
+.purchase-page .tags .tags-chip {
   background-color: #9cb737;
   color: white;
 }
 
-.total-price {
+.purchase-page .total-price {
   text-align: end;
   margin: 20px;
 }
 
-.total-price .total-price-chip {
+.purchase-page .total-price .total-price-chip {
   width: 180px;
   height: 45px;
   border-radius: 10px;
   background-color: #f8c8b9;
 }
 
-.payment-details h3 {
+.purchase-page .address-details {
   margin-bottom: 30px;
 }
 
-.card-info {
+.purchase-page .address-details h3 {
+  margin-bottom: 30px;
+}
+
+.purchase-page .address-details .alternative-address {
+  display: flex;
+  min-height: 58px;
+}
+
+.purchase-page .address-details .alternative-address #outlined-basic {
+  width: 460px;
+}
+
+.purchase-page .payment-details h3 {
+  margin-bottom: 30px;
+}
+
+.purchase-page .payment-details .card-info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 30px;
 }
 
-.card-info .sensitive-fields {
+.purchase-page .payment-details .card-info .sensitive-fields {
   display: flex;
   gap: 30px;
 }
 
-.payment-btn.MuiButton-root {
+.purchase-page .payment-btn.MuiButton-root {
   margin-top: 30px;
   background-color: #9cb737;
   border-radius: 15px;
