@@ -16,6 +16,7 @@ import javax.validation.constraints.Email;
 @RestController
 @RequestMapping("api/v1")
 @Validated
+@CrossOrigin
 public class UserController {
   @Autowired UserService userService;
   
@@ -30,8 +31,8 @@ public class UserController {
     return ResponseEntity.status( HttpStatus.CREATED ).body( uSaved );
   }
   
-  @GetMapping("/user")
-  public ResponseEntity<User> login( @RequestBody @Email String email ) {
+  @GetMapping("/user/{email}")
+  public ResponseEntity<User> login( @PathVariable @Valid @Email String email ) {
     User user = userService.login( email );
     
     if ( user == null ) {

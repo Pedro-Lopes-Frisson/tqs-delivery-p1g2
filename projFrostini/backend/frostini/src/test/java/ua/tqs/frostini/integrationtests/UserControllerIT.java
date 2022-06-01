@@ -128,9 +128,8 @@ public class UserControllerIT {
   public void testLoginUser_WithValidEmailAndUserAlredyRegistered_ThenReturnUser() {
     RestAssured.given()
                .contentType( "application/json" )
-               .body( userDTO.getEmail() )
                .when()
-               .get( createURL() )
+               .get( createURL() + "/{email}" , userDTO.getEmail() )
                .then()
                .statusCode( 200 )
                .body( "name", equalTo( userDTO.getName() ) )
@@ -141,9 +140,8 @@ public class UserControllerIT {
   public void testLoginUser_WithValidEmailAndUserNotYetRegistered_ThenReturnResourceNotFound() {
     RestAssured.given()
                .contentType( "application/json" )
-               .body("iamnotauseryet@ua.pt")
                .when()
-               .get( createURL() )
+               .get( createURL() + "/{email}","iamnotauseryet@ua.pt" )
                .then().log().body()
                .statusCode( 400 );
   }
@@ -152,15 +150,14 @@ public class UserControllerIT {
   public void testLoginUser_WithInValidEmail_ThenReturnResourceNotFound() {
     RestAssured.given()
                .contentType( "application/json" )
-               .body("notarealemail")
                .when()
-               .get( createURL() )
+               .get( createURL() + "/{email}", "notarealemail" )
                .then()
                .statusCode( 400 );
   }
   
   
-  String createURL(){
-    return  "http://localhost:" + randomServerPort + "/api/v1/user";
+  String createURL() {
+    return "http://localhost:" + randomServerPort + "/api/v1/user";
   }
 }

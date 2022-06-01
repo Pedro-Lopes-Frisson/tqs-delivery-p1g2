@@ -131,8 +131,8 @@ public class UserControllerTest {
     
     when( userService.login( any() ) ).thenReturn( u );
     
-    RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( uDto.getEmail() )
-                      .when().get( "api/v1/user" ).then()
+    RestAssuredMockMvc.given()
+                      .when().get( "api/v1/user/{email}", uDto.getEmail()  ).then()
                       .contentType( ContentType.JSON )
                       .status( HttpStatus.OK );
     
@@ -141,14 +141,14 @@ public class UserControllerTest {
   
   
   @Test
-  public void testLoginEndpointForCorrectPathWithValidRequestBody_ThenReturnCorrectUser() {
+  public void testLoginEndpointForCorrectPathWithValidPathParameterForEmail_ThenReturnCorrectUser() {
     User u = createAndSaveUser( 1l );
     UserDTO uDto = createAndSaveUserDTO( 1l );
     
     when( userService.login( any() ) ).thenReturn( u );
     
-    RestAssuredMockMvc.given().body( uDto.getEmail() )
-                      .when().get( "api/v1/user" ).then()
+    RestAssuredMockMvc.given()
+                      .when().get( "api/v1/user/{email}", uDto.getEmail() ).then()
                       .contentType( ContentType.JSON )
                       .status( HttpStatus.OK )
                       .body( "name", equalTo( u.getName() ) )
@@ -163,8 +163,8 @@ public class UserControllerTest {
     UserDTO uDto = createAndSaveUserDTO( 1l );
     when( userService.login( any() ) ).thenReturn( null );
     
-    RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( "unused@email.com" )
-                      .when().get( "api/v1/user" ).then()
+    RestAssuredMockMvc.given()
+                      .when().get( "api/v1/user/{email}", "unused@email.com" ) .then()
                       .status( HttpStatus.BAD_REQUEST );
     
     verify( userService, times( 1 ) ).login( any() );
@@ -174,8 +174,8 @@ public class UserControllerTest {
   @Test
   public void testLoginEndpointForCorrectPathWithInvalidEmail_ThenReturnStatusBAD_Request() {
     when( userService.login( any() ) ).thenReturn( null );
-    RestAssuredMockMvc.given().body( "notarealemail" )
-                      .when().get( "api/v1/user" ).then().log().body()
+    RestAssuredMockMvc.given()
+                      .when().get( "api/v1/user/{email}", "notarealemail" ).then().log().body()
                       .status( HttpStatus.BAD_REQUEST );
     
     verify( userService, times( 0 ) ).login( any() );
