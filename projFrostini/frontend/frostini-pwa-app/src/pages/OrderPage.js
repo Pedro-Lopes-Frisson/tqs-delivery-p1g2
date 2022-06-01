@@ -3,7 +3,9 @@ import QuantityPicker from "../components/QuantityPicker";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../hooks/use-local-storage";
-import { Chip } from "@mui/material";
+import { Chip, IconButton, InputAdornment, TextField } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { useState } from "react";
 
 const data = [
   {
@@ -17,7 +19,7 @@ const data = [
   },
   {
     id: "2",
-    title: "Almond Brittle Fudge",
+    title: "Chocolate Brittle Fudge",
     description:
       "Coconut Milk, Cashew Milk, Vanilla, Sea Salt, Almonds, Cacao Nibs,Chia Seeds, Dairy-free Chocolate Chips, Raw Cane Sugar",
     price: "$4,5",
@@ -27,7 +29,9 @@ const data = [
 ];
 
 function OrderPage() {
+  const navigate = useNavigate();
   const [order, setOrder] = useLocalStorage("order", []);
+  const [search, setSearch] = useState("");
 
   const handleOrderChange = (product) => {
     const productIndex = order.findIndex((p) => p.id === product.id);
@@ -51,12 +55,36 @@ function OrderPage() {
       return setOrder(newOrder);
     }
   };
-  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const filteredData = data.filter((item) =>
+    item.title.match(new RegExp(search, "i"))
+  );
 
   return (
     <div className="order-page">
+      {/* <div className="header"> */}
+      <h1>Order</h1>
       <div className="header">
-        <h1>Order</h1>
+        <div className="search-bar">
+          <TextField
+            value={search}
+            id="search"
+            label="Search for products"
+            variant="standard"
+            onChange={handleChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
         <Button
           variant="contained"
           className="my-order-btn"
@@ -64,11 +92,12 @@ function OrderPage() {
             navigate("/purchase");
           }}
         >
-          My Order
+          My Orders
         </Button>
       </div>
+      {/* </div> */}
       <div className="products">
-        {data.map(({ id, title, description, price, img, tags }) => {
+        {filteredData.map(({ id, title, description, price, img, tags }) => {
           const quantity = order.find((p) => p.id === id)?.quantity;
 
           return (
