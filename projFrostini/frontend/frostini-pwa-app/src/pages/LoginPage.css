@@ -4,15 +4,27 @@ body{
     /* font-family: "work sans"; */
   }
 
+.errmsg {
+    background-color: lightpink;
+    color: firebrick;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    width: 80%;
+    text-align:center;
+}
+
 #loginform{
     max-width: 500px;
     min-width: 300px;
     max-height: 700px;
-    width: 30%;
-    height: 60%;
-    margin: 100px auto;
+    width: 40%;
     background-color: #FFFFFF;
     border-radius: 25px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
 #headerTitle{
