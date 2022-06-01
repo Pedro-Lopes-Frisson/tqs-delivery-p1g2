@@ -88,6 +88,5 @@ function OrdersHistoryPage() {
       </div>
     </div>
   );
-}
 
 export default OrdersHistoryPage;
