@@ -27,7 +27,7 @@ public class UserController {
     } catch (DuplicatedUserException e) {
       return ResponseEntity.status( HttpStatus.CONFLICT ).body( null );
     }
-    return ResponseEntity.status( HttpStatus.OK ).body( uSaved );
+    return ResponseEntity.status( HttpStatus.CREATED ).body( uSaved );
   }
   
   @GetMapping("/user")

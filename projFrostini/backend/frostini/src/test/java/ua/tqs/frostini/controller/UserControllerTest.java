@@ -43,14 +43,14 @@ public class UserControllerTest {
   }
   
   @Test
-  public void testEndpointForCorrectPathWithValidRequestBodyReturn_ThenReturnOkStatus() throws DuplicatedUserException {
+  public void testEndpointForCorrectPathWithValidRequestBodyReturn_ThenReturnCREATED() throws DuplicatedUserException {
     User u = createAndSaveUser( 1l );
     UserDTO uDto = createAndSaveUserDTO( 1l );
     when( userService.register( any() ) ).thenReturn( u );
     RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( uDto )
                       .when().post( "api/v1/user" ).then()
                       .contentType( ContentType.JSON )
-                      .status( HttpStatus.OK );
+                      .status( HttpStatus.CREATED );
     
     verify( userService, times( 1 ) ).register( any() );
   }
@@ -64,7 +64,7 @@ public class UserControllerTest {
     RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( uDto ).when().post( "api/v1/user" )
                       .then()
                       .contentType( ContentType.JSON )
-                      .status( HttpStatus.OK ).log()
+                      .status( HttpStatus.CREATED ).log()
                       .body().body( "name", equalTo( u.getName() ) )
                       .body( "email", equalTo( u.getEmail() )
                       );
