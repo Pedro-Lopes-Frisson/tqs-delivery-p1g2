@@ -21,13 +21,23 @@ import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
-const json = {
-  id: 4,
-  products: [
-    { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
-    { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
-  ],
-};
+// const json = {
+//   id: 4,
+//   products: [
+//     {
+//       icecream: "Frozen yoghurt",
+//       quantity: 2,
+//       price: 6.0,
+//       tags: ["GF", "NF"],
+//     },
+//     { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
+//   ],
+// };
+
+const json = [
+  { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
+  { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
+];
 
 // function getTotal() {
 //   var total = 0;
@@ -118,9 +128,9 @@ function PurchasePage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {json.products.map((row) => (
+            {json.map((row, key) => (
               <TableRow
-                key={row.name}
+                key={key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
@@ -131,7 +141,7 @@ function PurchasePage() {
                 <TableCell align="right">
                   <div className="tags">
                     {row.tags.map((tag, key) => (
-                      <Chip label={tag} className="tags-chip" />
+                      <Chip label={tag} key={key} className="tags-chip" />
                     ))}
                   </div>
                 </TableCell>

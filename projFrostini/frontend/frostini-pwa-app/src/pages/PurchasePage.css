@@ -116,6 +116,12 @@
   height: 90px;
 }
 
+.order-steps .order-state p,
+.in-transit-state p,
+.delivered-state p {
+  text-align: center;
+}
+
 .order-steps .bar {
   height: 8px;
   width: 150px;
@@ -128,6 +134,5 @@
   height: auto;
   margin: 0 auto;
   padding: 25px;
-  position: relative;
   color: white;
 }
