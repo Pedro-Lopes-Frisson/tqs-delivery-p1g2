@@ -31,4 +31,14 @@ public class UserService {
     
   }
   
+  public User login( String email ) {
+    
+    Optional<User> optionalUser = userRepository.findByEmail( email );
+    
+    if ( optionalUser.isEmpty() ) {
+      return null;
+    }
+    
+    return optionalUser.get();
+  }
 }

@@ -12,19 +12,20 @@ import java.io.IOException;
 import static org.springframework.http.HttpStatus.Series.CLIENT_ERROR;
 import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 
+@Log4j2
+@Component
 public class RestTemplateErrorHandler implements ResponseErrorHandler {
   
   @Override
-  public boolean hasError(ClientHttpResponse httpResponse)
+  public boolean hasError( ClientHttpResponse httpResponse )
     throws IOException {
     
     return (
       httpResponse.getStatusCode().series() == CLIENT_ERROR
-        || httpResponse.getStatusCode().series() == SERVER_ERROR);
+        || httpResponse.getStatusCode().series() == SERVER_ERROR );
   }
   
   @Override
-  public void handleError(ClientHttpResponse httpResponse) throws IOException {
-  
+  public void handleError( ClientHttpResponse httpResponse ) throws IOException {
   }
 }

@@ -78,6 +78,7 @@ import static org.assertj.core.api.Assertions.assertThat;
   }
   
   
+  
   /* -- helper -- */
   private User createAndSaveUser( long i ) {
     User u = new User();
