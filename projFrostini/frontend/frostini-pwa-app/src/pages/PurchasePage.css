@@ -72,6 +72,7 @@
   width: 460px;
 }
 
+
 .purchase-page .payment-details h3 {
   margin-bottom: 30px;
 }
@@ -135,6 +136,5 @@
   margin: 0 auto;
   padding: 25px;
   position: relative;
-
   color: white;
 }

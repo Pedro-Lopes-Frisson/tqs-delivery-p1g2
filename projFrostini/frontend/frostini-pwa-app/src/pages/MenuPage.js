@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import useLocalStorage from "../hooks/use-local-storage";
 import { Chip, InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import AuthContext from '../context/AuthProvider';
+import isAuthenticated from '../utils/Authentication';
 
 const data = [
   {
@@ -29,6 +31,8 @@ const data = [
 ];
 
 function MenuPage() {
+  const { auth } = useContext(AuthContext);
+  const isAuth = isAuthenticated(auth);
   const navigate = useNavigate();
   const [order, setOrder] = useLocalStorage("order", []);
   const [search, setSearch] = useState("");
@@ -63,6 +67,12 @@ function MenuPage() {
   const filteredData = data.filter((item) =>
     item.title.match(new RegExp(search, "i"))
   );
+
+  useEffect(() => {
+    if(!isAuth) {
+      navigate('/login');
+    }
+  }, [isAuth]);
 
   return (
     <div className="order-page">

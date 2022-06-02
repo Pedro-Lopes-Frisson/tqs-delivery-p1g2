@@ -20,6 +20,10 @@ import {
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import AuthContext from '../context/AuthProvider';
+import isAuthenticated from '../utils/Authentication';
 
 const json = {
   id: 4,
@@ -38,6 +42,10 @@ const json = {
 // }
 
 function PurchasePage() {
+  const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
+  const isAuth = isAuthenticated(auth);
+
   const [rating, setRating] = React.useState(0);
   const [newAddress, setNewAddress] = React.useState(false);
 
@@ -81,6 +89,11 @@ function PurchasePage() {
     setStep(3);
   };
 
+  useEffect(() => {
+    if(!isAuth) {
+      navigate('/login');
+    }
+  }, [isAuth]);
 
   return (
     <div className="purchase-page">
