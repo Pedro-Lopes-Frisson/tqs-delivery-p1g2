@@ -46,6 +46,7 @@ import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Products from "layouts/products";
 import DeliveraStatistics from "layouts/delivera/delivera-statistics";
+import RiderProfile from "layouts/delivera/delivera-riders-information";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -130,6 +131,14 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/delivera/delivera-statistics",
     component: <DeliveraStatistics />,
+  },
+  {
+    type: "collapse",
+    name: "Riders Profile",
+    key: "delivera-riders-information",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/delivera/delivera-riders-information",
+    component: <RiderProfile />,
   },
 ];
 
