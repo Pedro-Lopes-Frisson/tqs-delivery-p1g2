@@ -41,7 +41,7 @@ public class User {
   
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   Set<Address> address;
-  
+
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   Set<Order> order;
   
