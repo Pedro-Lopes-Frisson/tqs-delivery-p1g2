@@ -1,33 +1,43 @@
 package ua.tqs.frostini.models;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
-import javax.persistence.*;
+import lombok.*;
+import org.springframework.stereotype.Component;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
-import java.util.List;
 
-@Data
+import javax.persistence.*;
+import java.util.Set;
+
 @Entity
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "user")
+@Table(name = "frostini_user")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Component
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @EqualsAndHashCode.Include
-  private long id;
+  @Column(name = "user_id")
+  long id;
   
-  private String name;
+  @Column(name = "name")
+  String name;
   
+  @Column(name = "`password`")
   @Size(min=8)
-  private String pwd;
+  String password;
   
+  @Column(name = "`email`")
   @Email
-  @Column(unique = true)
-  @EqualsAndHashCode.Include
-  private String email;
+  String email;
+
+  
+  @Column(name = "`admin`")
+  boolean isAdmin;
   
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   @ToString.Exclude
