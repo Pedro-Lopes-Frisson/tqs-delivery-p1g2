@@ -37,6 +37,7 @@ public class RiderServiceTest {
     public void setUp(){
         location = new Location(40.85, 25.9999);
         rider = new Rider("mal@gmail.com","Manuel Antunes", "migant", true, location, 0, 0);
+        rider.setLocation(89.5566, 5.333);
         riderSameEmail = new Rider("mal@gmail.com","Maria Alberta", "migant", true, location, 0, 0);
         Mockito.when(riderRepo.save(rider)).thenReturn(rider);
     }
