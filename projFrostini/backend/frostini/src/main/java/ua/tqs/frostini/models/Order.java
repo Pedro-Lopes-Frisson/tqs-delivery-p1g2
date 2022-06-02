@@ -20,30 +20,29 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder @Entity
+@Builder
 @Component
 public class Order {
-  
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "order_id")
   long id;
-  
+
   @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
-  
+
   @Column(name = "total_price")
   Double totalPrice;
-  
+
   @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "address_id", nullable = false)
   private Address address;
-  
+
   @OneToMany(mappedBy = "order")
   List<OrderedProduct> orderedProductList;
 
 }
-
