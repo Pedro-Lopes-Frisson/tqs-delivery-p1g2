@@ -25,9 +25,22 @@ import { useContext, useEffect } from 'react';
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
 
+// const json = {
+//   id: 4,
+//   products: [
+//     {
+//       icecream: "Frozen yoghurt",
+//       quantity: 2,
+//       price: 6.0,
+//       tags: ["GF", "NF"],
+//     },
+//     { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
+//   ],
+// };
+
 const json = [
-    { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
-    { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
+  { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
+  { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
 ];
 
 // function getTotal() {
@@ -50,6 +63,10 @@ function PurchasePage() {
 
   // const [order, setOrder] = useLocalStorage("order", []);
 
+  const totalPrice = json.reduce(
+    (sum, item) => item.quantity * item.price + sum,
+    0
+  );
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -65,11 +82,6 @@ function PurchasePage() {
 
     setStep(3);
   };
-
-  const totalPrice = json.reduce(
-    (sum, item) => item.quantity * item.price + sum,
-    0
-  );
 
   useEffect(() => {
     if(!isAuth) {
@@ -130,9 +142,9 @@ function PurchasePage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {json.map((row) => (
+            {json.map((row, key) => (
               <TableRow
-                key={row.name}
+                key={key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
@@ -143,7 +155,7 @@ function PurchasePage() {
                 <TableCell align="right">
                   <div className="tags">
                     {row.tags.map((tag, key) => (
-                      <Chip label={tag} className="tags-chip" />
+                      <Chip label={tag} key={key} className="tags-chip" />
                     ))}
                   </div>
                 </TableCell>
