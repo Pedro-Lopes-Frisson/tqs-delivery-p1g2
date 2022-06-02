@@ -38,5 +38,3 @@ public class Address {
   @Column(name = "zip_code")
   String zipCode;
 }
-
-

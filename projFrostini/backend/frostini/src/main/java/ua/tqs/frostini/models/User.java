@@ -22,7 +22,6 @@ import java.util.List;
 @Data
 @Component
 public class User {
-
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "user_id")
