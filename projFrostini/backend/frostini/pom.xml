@@ -16,6 +16,8 @@
     <properties>
         <java.version>11</java.version>
         <testcontainers.version>1.17.2</testcontainers.version>
+        <sonar.organization>sophjane</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
         <dependency>
