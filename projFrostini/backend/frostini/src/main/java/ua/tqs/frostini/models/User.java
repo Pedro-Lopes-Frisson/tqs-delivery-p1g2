@@ -1,6 +1,7 @@
 package ua.tqs.frostini.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -39,9 +40,11 @@ public class User {
   @Column(name = "`admin`")
   boolean isAdmin;
   
+  @JsonIgnore
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   Set<Address> address;
   
+  @JsonIgnore
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   Set<Order> order;
 }
