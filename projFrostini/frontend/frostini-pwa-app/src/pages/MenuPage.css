@@ -1,39 +1,84 @@
-.menu-page {
+.order-page {
   max-width: 400px;
   margin: auto;
 }
 
-.menu-page h1 {
-  margin-bottom: 48px;
+.order-page h1 {
+  margin-bottom: 30px;
 }
 
-.menu-page .options {
+.order-page .header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 30px 0px 40px 0px;
+}
+
+.order-page .header .search-bar {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: row;
+}
+
+.order-page .header .my-order-btn {
+  border-radius: 15px;
+  background: #9cb737;
+}
+
+.order-page .products {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 42px;
+  gap: 50px;
 }
 
-.menu-page .options .card {
+.order-page .products .product {
   display: flex;
-  flex: 1 1 100%;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-page .products .product img {
+  height: 270px;
+  display: block;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   width: 100%;
+  object-fit: cover;
+  border-radius: 12px;
 }
 
-.menu-page .options .card .card-box {
+.order-page .products .product .product-info {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  gap: 12px;
+}
+
+.order-page .products .product .product-title {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.order-page .products .product .product-description {
+  color: lightgrey;
+}
+
+.order-page .products .product .product-actions {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
 }
 
-.menu-page .options .card .card-box .card-content {
+.order-page .products .product .product-actions .product-price {
 }
 
-.menu-page .options .card .card-media {
-  width: 200px;
-  flex: 0;
-  height: 200px;
+.product-title-tags {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.product-title-tags .tags {
+  display: flex;
+  gap: 10px;
 }
