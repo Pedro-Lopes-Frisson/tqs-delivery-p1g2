@@ -1,4 +1,4 @@
-name: Build
+name: Spring Boot Project Build (Frostini)
 on:
   push:
     branches: [main, dev]
