@@ -19,7 +19,6 @@ import java.util.Set;
 @Data
 @Component
 public class User {
-  
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "user_id")
@@ -35,13 +34,16 @@ public class User {
   @Column(name = "`email`")
   @Email
   String email;
+
   
   @Column(name = "`admin`")
   boolean isAdmin;
   
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
-  Set<Address> address;
+  @ToString.Exclude
+  private List<Order> order;
   
-  @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
-  Set<Order> order;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+  @ToString.Exclude
+  private List<Address> addresses;
 }

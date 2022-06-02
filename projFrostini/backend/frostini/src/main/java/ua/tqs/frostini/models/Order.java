@@ -1,6 +1,5 @@
 package ua.tqs.frostini.models;
 
-
 import lombok.*;
 import org.springframework.stereotype.Component;
 
