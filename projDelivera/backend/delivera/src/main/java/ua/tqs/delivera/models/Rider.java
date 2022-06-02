@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import lombok.Data;
 
-@Data
+// @Data
 @Entity
 @Table(name = "rider")
 public class Rider{
@@ -21,6 +21,9 @@ public class Rider{
 
     @Column
     private String name;
+
+    @Column
+    private String email;
 
     @Column
     private String password;
@@ -40,7 +43,8 @@ public class Rider{
 
     public Rider(){}
 
-    public Rider(String name, String password, boolean available, Location currentLocation, int numberOfReviews, int sumOfReviews){
+    public Rider(String email, String name, String password, boolean available, Location currentLocation, int numberOfReviews, int sumOfReviews){
+        this.email = email;
         this.name = name;
         this.password = password;
         this.available = available;
@@ -49,8 +53,22 @@ public class Rider{
         this.sumOfReviews = sumOfReviews;
     }
 
+    public Rider(RiderDTO dto){
+        this.email = dto.getEmaildto();
+        this.name = dto.getNamedto();
+        this.password = dto.getPassworddto();
+        this.available = dto.isAvailabledto();
+        this.currentLocation= dto.getLocationdto();
+        this.numberOfReviews=dto.getNumberOfReviewsdto();
+        this.sumOfReviews = dto.getSumOfReviewsdto();
+    }
+
     public Long getRiderId(){
         return this.riderId;
+    }
+
+    public String getEmail(){
+        return this.email;
     }
 
     public String getName(){
@@ -80,5 +98,9 @@ public class Rider{
     public void setLocation(double lat, double lon){
         this.currentLocation.setLatitude(lat);
         this.currentLocation.setLongitude(lon);
+    }
+
+    public void setRiderId(Long id){
+        this.riderId=id;
     }
 }
