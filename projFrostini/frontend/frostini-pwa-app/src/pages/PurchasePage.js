@@ -20,14 +20,15 @@ import {
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import AuthContext from '../context/AuthProvider';
+import isAuthenticated from '../utils/Authentication';
 
-const json = {
-  id: 4,
-  products: [
+const json = [
     { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
     { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
-  ],
-};
+];
 
 // function getTotal() {
 //   var total = 0;
@@ -38,6 +39,10 @@ const json = {
 // }
 
 function PurchasePage() {
+  const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
+  const isAuth = isAuthenticated(auth);
+
   const [rating, setRating] = React.useState(0);
   const [newAddress, setNewAddress] = React.useState(false);
 
@@ -66,6 +71,11 @@ function PurchasePage() {
     0
   );
 
+  useEffect(() => {
+    if(!isAuth) {
+      navigate('/login');
+    }
+  }, [isAuth]);
 
   return (
     <div className="purchase-page">
@@ -120,7 +130,7 @@ function PurchasePage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {json.products.map((row) => (
+            {json.map((row) => (
               <TableRow
                 key={row.name}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

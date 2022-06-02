@@ -8,8 +8,11 @@ import {
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from 'react';
 import "./OrdersHistoryPage.css";
 import CheckIcon from "@mui/icons-material/Check";
+import AuthContext from '../context/AuthProvider';
+import isAuthenticated from '../utils/Authentication';
 
 const json = [
   {
@@ -28,6 +31,15 @@ const json = [
 
 function OrdersHistoryPage() {
   const navigate = useNavigate();
+  const { auth } = useContext(AuthContext);
+  const isAuth = isAuthenticated(auth);
+
+  useEffect(() => {
+    if(!isAuth) {
+      navigate('/login');
+    }
+  }, [isAuth]);
+
   return (
     <div className="orders-history-page">
       <h1>Orders</h1>
@@ -88,5 +100,5 @@ function OrdersHistoryPage() {
       </div>
     </div>
   );
-
+}
 export default OrdersHistoryPage;
