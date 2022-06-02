@@ -5,6 +5,8 @@ import axios from '../api/axios';
 import Popup from '../components/Popup';
 
 const REGISTER_URL = '/user';
+const EMAIL_REGEX = /^[a-zA-Z0-9]+(?:@[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
+/* const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/; */
 
 function RegisterPage() {
     const userRef = useRef();
@@ -41,27 +43,40 @@ function RegisterPage() {
 
       if(password == confirmPassword) {
 
-        await axios.post(`${REGISTER_URL}`, {
-          "name": name,
-          "pwd": password,
-          "email": email
-        })
-          .then(
-            res => {
-              if(res.status == 201) {
-                setSuccess(true);
-              }
+        const v1 = EMAIL_REGEX.test(email);
+        const v2 = password.length >= 8;
 
-          }).catch(err => {
-            if (err.response.status == 0) {
-              setError('No server response');
-            } else if (err.response.status == 409) {
-              setError('User already exists');
-            } else {
-              setError('Register failed');
-            }
-            errRef.current.focus();
+        if(v1 && v2) {
+
+          await axios.post(`${REGISTER_URL}`, {
+            "name": name,
+            "pwd": password,
+            "email": email
           })
+            .then(
+              res => {
+                if(res.status == 201) {
+                  setSuccess(true);
+                }
+
+            }).catch(err => {
+              if (err.response.status == 0) {
+                setError('No server response');
+              } else if (err.response.status == 409) {
+                setError('User already exists');
+              } else {
+                setError('Register failed');
+              }
+              errRef.current.focus();
+            })
+        } else if (!v1) {
+          setError('Invalid email');
+          errRef.current.focus();
+        } else if (!v2) {
+          //setError('Password size must be at least 8 and have lowercase, uppercase, number and special characters');
+          setError('Password size must be at least 8');
+          errRef.current.focus();
+        }
         
       } else {
         setError('Passwords do not match');
