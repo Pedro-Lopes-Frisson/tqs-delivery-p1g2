@@ -28,9 +28,9 @@ public class UserService {
     userToSave.setEmail( userDTO.getEmail() );
     userToSave.setPassword( userDTO.getPwd() );
     userToSave.setName( userDTO.getName() );
-  
     userRepository.save( userToSave );
     log.info( "User with email {} is now registered.", userDTO.getEmail() );
+
     return userToSave;
     
   }
@@ -40,7 +40,7 @@ public class UserService {
     Optional<User> optionalUser = userRepository.findByEmail( email );
     
     if ( optionalUser.isEmpty() ) {
-      log.info( "No such email!" );
+      log.info( "No such email" );
       return null;
     }
   

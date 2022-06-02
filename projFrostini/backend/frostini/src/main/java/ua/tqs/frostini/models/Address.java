@@ -1,6 +1,7 @@
 package ua.tqs.frostini.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Component
 public class Address {
   
@@ -20,7 +22,7 @@ public class Address {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "address_id")
   long id;
-  
+
   @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
@@ -35,8 +37,6 @@ public class Address {
   
   @Column(name = "zip_code")
   String zipCode;
-  
-  
 }
 
 

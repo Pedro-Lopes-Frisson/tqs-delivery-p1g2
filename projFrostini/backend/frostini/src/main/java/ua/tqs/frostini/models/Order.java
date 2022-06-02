@@ -2,18 +2,25 @@ package ua.tqs.frostini.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.*;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Builder @Entity
+
+import java.io.Serializable;
+import java.util.Objects;
+
+@Entity
+@Data
 @Table(name = "frostini_order")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder @Entity
 @Component
 public class Order {
   
@@ -37,5 +44,6 @@ public class Order {
   
   @OneToMany(mappedBy = "order")
   List<OrderedProduct> orderedProductList;
+
 }
 
