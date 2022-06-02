@@ -1,5 +1,6 @@
 package ua.tqs.frostini.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.tqs.frostini.datamodels.UserDTO;
@@ -10,6 +11,7 @@ import ua.tqs.frostini.repositories.UserRepository;
 import java.util.Optional;
 
 @Service
+@Log4j2
 public class UserService {
   
   @Autowired UserRepository userRepository;
@@ -31,4 +33,16 @@ public class UserService {
     
   }
   
+  public User login( String email ) {
+    
+    Optional<User> optionalUser = userRepository.findByEmail( email );
+    
+    if ( optionalUser.isEmpty() ) {
+      log.info( "No such email" );
+      return null;
+    }
+  
+    log.info( "Got User: {} ", optionalUser.get() );
+    return optionalUser.get();
+  }
 }

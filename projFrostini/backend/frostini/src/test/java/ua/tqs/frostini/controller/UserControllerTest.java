@@ -43,14 +43,14 @@ public class UserControllerTest {
   }
   
   @Test
-  public void testEndpointForCorrectPathWithValidRequestBodyReturn_ThenReturnOkStatus() throws DuplicatedUserException {
+  public void testEndpointForCorrectPathWithValidRequestBodyReturn_ThenReturnCREATED() throws DuplicatedUserException {
     User u = createAndSaveUser( 1l );
     UserDTO uDto = createAndSaveUserDTO( 1l );
-    when( userService.register( any() ) ).thenReturn( u);
+    when( userService.register( any() ) ).thenReturn( u );
     RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( uDto )
                       .when().post( "api/v1/user" ).then()
                       .contentType( ContentType.JSON )
-                      .status( HttpStatus.OK );
+                      .status( HttpStatus.CREATED );
     
     verify( userService, times( 1 ) ).register( any() );
   }
@@ -64,7 +64,7 @@ public class UserControllerTest {
     RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( uDto ).when().post( "api/v1/user" )
                       .then()
                       .contentType( ContentType.JSON )
-                      .status( HttpStatus.OK ).log()
+                      .status( HttpStatus.CREATED ).log()
                       .body().body( "name", equalTo( u.getName() ) )
                       .body( "email", equalTo( u.getEmail() )
                       );
@@ -114,11 +114,72 @@ public class UserControllerTest {
     return Stream.of(
       arguments( "Fernando", "12345", "fernando@ua.pt" ),
       arguments( "Fernando", "12345678", "fernandoua.pt" ),
-      arguments( "", "12345", "fernando@ua.pt" )
+      arguments( "", "12345", "fernando@ua.pt" ),
+      arguments( null, "12345", "fernando@ua.pt" ),
+      arguments( null, null, "fernando@ua.pt" ),
+      arguments( null, "12345", null )
     );
     
   }
   
+  
+  @Test
+  public void testLoginEndpointForCorrectPathWithValidRequestBody_ThenReturnOkStatus()
+    throws DuplicatedUserException {
+    User u = createAndSaveUser( 1l );
+    UserDTO uDto = createAndSaveUserDTO( 1l );
+    
+    when( userService.login( any() ) ).thenReturn( u );
+    
+    RestAssuredMockMvc.given()
+                      .when().get( "api/v1/user/{email}", uDto.getEmail()  ).then()
+                      .contentType( ContentType.JSON )
+                      .status( HttpStatus.OK );
+    
+    verify( userService, times( 1 ) ).login( any() );
+  }
+  
+  
+  @Test
+  public void testLoginEndpointForCorrectPathWithValidPathParameterForEmail_ThenReturnCorrectUser() {
+    User u = createAndSaveUser( 1l );
+    UserDTO uDto = createAndSaveUserDTO( 1l );
+    
+    when( userService.login( any() ) ).thenReturn( u );
+    
+    RestAssuredMockMvc.given()
+                      .when().get( "api/v1/user/{email}", uDto.getEmail() ).then()
+                      .contentType( ContentType.JSON )
+                      .status( HttpStatus.OK )
+                      .body( "name", equalTo( u.getName() ) )
+                      .body( "email", equalTo( u.getEmail() ) );
+    
+    verify( userService, times( 1 ) ).login( any() );
+  }
+  
+  @Test
+  public void testLoginEndpointForCorrectPathWithUnusedEmail_ThenReturnStatusCodeResourceNotFound() {
+    User u = createAndSaveUser( 1l );
+    UserDTO uDto = createAndSaveUserDTO( 1l );
+    when( userService.login( any() ) ).thenReturn( null );
+    
+    RestAssuredMockMvc.given()
+                      .when().get( "api/v1/user/{email}", "unused@email.com" ) .then()
+                      .status( HttpStatus.BAD_REQUEST );
+    
+    verify( userService, times( 1 ) ).login( any() );
+  }
+  
+  
+  @Test
+  public void testLoginEndpointForCorrectPathWithInvalidEmail_ThenReturnStatusBAD_Request() {
+    when( userService.login( any() ) ).thenReturn( null );
+    RestAssuredMockMvc.given()
+                      .when().get( "api/v1/user/{email}", "notarealemail" ).then().log().body()
+                      .status( HttpStatus.BAD_REQUEST );
+    
+    verify( userService, times( 0 ) ).login( any() );
+  }
   
   /* -- helper -- */
   private User createAndSaveUser( long i ) {
