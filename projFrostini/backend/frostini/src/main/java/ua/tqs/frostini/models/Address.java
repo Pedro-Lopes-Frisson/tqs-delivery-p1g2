@@ -25,4 +25,3 @@ public class Address {
   private User user;
 }
 
-

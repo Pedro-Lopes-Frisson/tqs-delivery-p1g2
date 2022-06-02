@@ -1,6 +1,5 @@
 package ua.tqs.frostini.models;
 
-
 import lombok.*;
 import org.springframework.stereotype.Component;
 
@@ -27,4 +26,3 @@ public class Order {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 }
-

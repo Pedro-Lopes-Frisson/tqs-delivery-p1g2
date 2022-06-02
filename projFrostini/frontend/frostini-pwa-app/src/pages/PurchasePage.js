@@ -65,6 +65,21 @@ function PurchasePage() {
     (sum, item) => item.quantity * item.price + sum,
     0
   );
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const body = {
+      // "address": e.currentTarget["newAddress"]?.value,
+      cardNumber: e.currentTarget["card-number"].value,
+      expirationDate: e.currentTarget["expiration-date"].value,
+      cvCode: e.currentTarget["cv-code"].value,
+      cardOwner: e.currentTarget["card-owner"].value,
+    };
+
+    console.log(body);
+
+    setStep(3);
+  };
 
 
   return (
@@ -122,7 +137,7 @@ function PurchasePage() {
           <TableBody>
             {json.products.map((row) => (
               <TableRow
-                key={row.name}
+                key={key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
@@ -133,7 +148,7 @@ function PurchasePage() {
                 <TableCell align="right">
                   <div className="tags">
                     {row.tags.map((tag, key) => (
-                      <Chip label={tag} className="tags-chip" />
+                      <Chip label={tag} key={key} className="tags-chip" />
                     ))}
                   </div>
                 </TableCell>
