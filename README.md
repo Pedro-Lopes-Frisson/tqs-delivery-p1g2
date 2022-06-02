@@ -16,5 +16,6 @@ Delivera
 ## Project Bookmarks
 
 - [Project Backlog](https://tqs-g12.atlassian.net/jira/software/projects/TQS/boards/1)
-- [Static analysis](https://sonarcloud.io/project/overview?id=sophjane_tqs-delivery-p1g2)
+- [Static analysis Delivera](https://sonarcloud.io/project/overview?id=sophjane_tqs-delivery-p1g2)
+- [Static analysis Frostini](https://sonarcloud.io/project/overview?id=sophjane_tqs-delivery-p1g2_frostini)
 - [CI/CD pipeline](https://github.com/sophjane/tqs-delivery-p1g2/actions)
