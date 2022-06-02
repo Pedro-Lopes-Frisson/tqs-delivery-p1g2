@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ua.tqs.delivera.models.Rider;
+import ua.tqs.delivera.models.RiderDTO;
 import ua.tqs.delivera.services.RiderService;
 
 @RestController
@@ -18,7 +19,8 @@ public class DeliveraController {
     private RiderService riderService;
     
     @PostMapping("/rider")
-    public ResponseEntity<Rider> createRider(@RequestBody Rider rider){
+    public ResponseEntity<Rider> createRider(@RequestBody RiderDTO riderDTO){
+        Rider rider = new Rider(riderDTO);
         Rider saved = riderService.saveRider(rider);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }

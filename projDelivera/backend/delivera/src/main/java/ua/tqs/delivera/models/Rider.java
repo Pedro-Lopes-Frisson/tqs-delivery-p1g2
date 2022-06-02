@@ -53,6 +53,16 @@ public class Rider{
         this.sumOfReviews = sumOfReviews;
     }
 
+    public Rider(RiderDTO dto){
+        this.email = dto.getEmail();
+        this.name = dto.getName();
+        this.password = dto.getPassword();
+        this.available = dto.isAvailable();
+        this.currentLocation= dto.getlLocation();
+        this.numberOfReviews=dto.getNumberOfReviews();
+        this.sumOfReviews = dto.getSumOfReviews();
+    }
+
     public Long getRiderId(){
         return this.riderId;
     }

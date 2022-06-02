@@ -18,7 +18,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import ua.tqs.delivera.controllers.DeliveraController;
 import ua.tqs.delivera.models.Location;
+import ua.tqs.delivera.models.LocationDTO;
 import ua.tqs.delivera.models.Rider;
+import ua.tqs.delivera.models.RiderDTO;
 import ua.tqs.delivera.services.RiderService;
 
 @WebMvcTest(DeliveraController.class)
@@ -30,16 +32,20 @@ class DeliveraControllerTests {
 	@MockBean
 	private RiderService riderService;
 
-	private Location location;
-	private Rider rider;
+	private RiderDTO riderDTO;
+    private Rider rider;
+    private LocationDTO locationDTO;
+    private Location location;
 
-	@BeforeEach
-	void setUp(){
-		location = new Location(40.85, 25.9999);
+    @BeforeEach
+    public void setUp(){
+        locationDTO = new LocationDTO(40.85, 25.9999);
+		location = new Location(locationDTO);
 		location.setId(1L);
-        rider = new Rider("ma@gmail.com","Manuel Antunes", "migant", true, location, 0, 0);
+        riderDTO = new RiderDTO("ma@gmail.com","Manuel Antunes", "migant", true, location, 0, 0);
+        rider = new Rider(riderDTO);
 		rider.setRiderId(1L);
-	}
+    }
 
     @Test
 	void whenPostRider_thenCreateRider() throws Exception{

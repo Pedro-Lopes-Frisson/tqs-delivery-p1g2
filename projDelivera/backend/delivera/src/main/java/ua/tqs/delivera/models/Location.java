@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -27,6 +26,11 @@ public class Location {
     public Location(double latitude, double longitude){
         this.latitude=latitude;
         this.longitude=longitude;
+    }
+
+    public Location(LocationDTO dto){
+        this.latitude=dto.getLatitude();
+        this.longitude=dto.getLongitude();
     }
 
     public long getId(){
