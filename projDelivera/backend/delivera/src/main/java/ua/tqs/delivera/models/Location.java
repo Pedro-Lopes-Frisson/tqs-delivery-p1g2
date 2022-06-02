@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.Data;
 
-@Data
+// @Data
 @Entity
 @Table(name = "location")
 public class Location {
