@@ -54,13 +54,13 @@ public class Rider{
     }
 
     public Rider(RiderDTO dto){
-        this.email = dto.getEmail();
-        this.name = dto.getName();
-        this.password = dto.getPassword();
-        this.available = dto.isAvailable();
-        this.currentLocation= dto.getlLocation();
-        this.numberOfReviews=dto.getNumberOfReviews();
-        this.sumOfReviews = dto.getSumOfReviews();
+        this.email = dto.getEmaildto();
+        this.name = dto.getNamedto();
+        this.password = dto.getPassworddto();
+        this.available = dto.isAvailabledto();
+        this.currentLocation= dto.getLocationdto();
+        this.numberOfReviews=dto.getNumberOfReviewsdto();
+        this.sumOfReviews = dto.getSumOfReviewsdto();
     }
 
     public Long getRiderId(){

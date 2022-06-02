@@ -1,50 +1,50 @@
 package ua.tqs.delivera.models;
 
 public class RiderDTO {
-    private String name;
-    private String email;
-    private String password;
-    private boolean available;
-    private Location currentLocation;
-    private int numberOfReviews;
-    private int sumOfReviews;
+    private String namedto;
+    private String emaildto;
+    private String passworddto;
+    private boolean availabledto;
+    private Location currentLocationdto;
+    private int numberOfReviewsdto;
+    private int sumOfReviewsdto;
 
     public RiderDTO(String email, String name, String password, boolean available, Location currentLocation, int numberOfReviews, int sumOfReviews){
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.available = available;
-        this.currentLocation=currentLocation;
-        this.numberOfReviews=numberOfReviews;
-        this.sumOfReviews = sumOfReviews;
+        this.emaildto =email;
+        this.namedto = name;
+        this.passworddto = password;
+        this.availabledto=available;
+        this.currentLocationdto=currentLocation;
+        this.numberOfReviewsdto=numberOfReviews;
+        this.sumOfReviewsdto = sumOfReviews;
     }
 
-    public String getEmail(){
-        return this.email;
+    public String getEmaildto(){
+        return this.emaildto;
     }
 
-    public String getName(){
-        return this.name;
+    public String getNamedto(){
+        return this.namedto;
     }
 
-    public String getPassword(){
-        return this.password;
+    public String getPassworddto(){
+        return this.passworddto;
     }
 
-    public boolean isAvailable(){
-        return this.available;
+    public boolean isAvailabledto(){
+        return this.availabledto;
     }
 
-    public Location getlLocation(){
-        return this.currentLocation;
+    public Location getLocationdto(){
+        return this.currentLocationdto;
     }
 
-    public int getNumberOfReviews(){
-        return this.numberOfReviews;
+    public int getNumberOfReviewsdto(){
+        return this.numberOfReviewsdto;
     }
 
-    public int getSumOfReviews(){
-        return this.sumOfReviews;
+    public int getSumOfReviewsdto(){
+        return this.sumOfReviewsdto;
     }
 
 }
