@@ -20,6 +20,7 @@ public class UserService {
     Optional<User> optionalUser = userRepository.findByEmail( userDTO.getEmail() );
     
     if ( optionalUser.isPresent() ) {
+      log.info( "User already registered with email {}.", userDTO.getEmail() );
       throw new DuplicatedUserException( "User Already Exists!" );
     }
     
@@ -27,8 +28,9 @@ public class UserService {
     userToSave.setEmail( userDTO.getEmail() );
     userToSave.setPassword( userDTO.getPwd() );
     userToSave.setName( userDTO.getName() );
-    
     userRepository.save( userToSave );
+    log.info( "User with email {} is now registered.", userDTO.getEmail() );
+
     return userToSave;
     
   }
