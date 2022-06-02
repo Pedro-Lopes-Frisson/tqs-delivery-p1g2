@@ -25,23 +25,13 @@ import { useContext, useEffect } from 'react';
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
 
-// const json = {
-//   id: 4,
-//   products: [
-//     {
-//       icecream: "Frozen yoghurt",
-//       quantity: 2,
-//       price: 6.0,
-//       tags: ["GF", "NF"],
-//     },
-//     { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
-//   ],
-// };
-
-const json = [
-  { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
-  { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
-];
+const json = {
+  id: 4,
+  products: [
+    { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
+    { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
+  ],
+};
 
 // function getTotal() {
 //   var total = 0;
@@ -62,6 +52,22 @@ function PurchasePage() {
   const [step, setStep] = React.useState(0);
 
   // const [order, setOrder] = useLocalStorage("order", []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const body = {
+      // "address": e.currentTarget["newAddress"]?.value,
+      cardNumber: e.currentTarget["card-number"].value,
+      expirationDate: e.currentTarget["expiration-date"].value,
+      cvCode: e.currentTarget["cv-code"].value,
+      cardOwner: e.currentTarget["card-owner"].value,
+    };
+
+    console.log(body);
+
+    setStep(3);
+  };
 
   const totalPrice = json.reduce(
     (sum, item) => item.quantity * item.price + sum,
@@ -142,7 +148,7 @@ function PurchasePage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {json.map((row, key) => (
+            {json.products.map((row) => (
               <TableRow
                 key={key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
