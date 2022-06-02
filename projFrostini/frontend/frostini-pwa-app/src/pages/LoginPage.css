@@ -19,12 +19,9 @@ body{
     min-width: 300px;
     max-height: 700px;
     width: 40%;
+    margin: 50px auto;
     background-color: #FFFFFF;
     border-radius: 25px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
   }
 
 #headerTitle{
@@ -96,26 +93,26 @@ body{
     opacity: 0.8;
 }
 
-#googleIcon{
+/* #googleIcon{
     border-color: transparent;
     background:transparent;
-  }
+  } */
 
-#googleIcon:hover{
+/* #googleIcon:hover{
       background-color: beige;
       border-radius: 25px;
-  }
+  } */
 
-#googleLogin{
+/* #googleLogin{
     display: flex;
     justify-content: center;
     padding: 1rem 0;
-  }
+  } */
 
-#alternativeLogin {
+/* #alternativeLogin {
     text-align: center;
     margin-top: 1.5rem;
- }
+ } */
 
 /* #resetPassword {
     text-align: center;

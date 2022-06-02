@@ -61,12 +61,12 @@ function LoginPage() {
               }
             }
 
-        }).catch(error => {
-          if(!error.response) {
+        }).catch(err => {
+          if(err.response.status == 0) {
             setError('No server response');
-          } else if (error.response.status == 400) {
+          } else if (err.response.status == 400) {
             setError('Wrong email or password');
-          } else if (error.response.status == 401) {
+          } else if (err.response.status == 401) {
             setError('Unauthorized');
           } else {
             setError('Login failed');

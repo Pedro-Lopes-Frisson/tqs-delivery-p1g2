@@ -9,9 +9,8 @@ body{
     max-width: 500px;
     min-width: 300px;
     max-height: 700px;
-    width: 30%;
-    height: 60%;
-    margin: 100px auto;
+    width: 40%;
+    margin: 50px auto;
     background-color: #FFFFFF;
     border-radius: 25px;
   }
@@ -79,7 +78,6 @@ body{
     cursor: pointer;
     transition: opacity 0.25s ease-out;
     margin-top: 1rem;
-    margin-bottom: 1.5rem;
 }
 
 .row button:hover{
@@ -96,3 +94,7 @@ body{
     padding-bottom: 1rem;
     color: rgba(187,187,187,0.9);
  }
+
+#success {
+    color: rgba(187,187,187,0.9);
+}
