@@ -16,10 +16,11 @@ import javax.validation.constraints.Email;
 @RestController
 @RequestMapping("api/v1")
 @Validated
-@CrossOrigin
+
+@CrossOrigin("http://localhost:3000")
 public class UserController {
   @Autowired UserService userService;
-  
+
   @PostMapping("/user")
   public ResponseEntity<User> register( @Valid @RequestBody UserDTO user ) {
     User uSaved;
@@ -30,16 +31,16 @@ public class UserController {
     }
     return ResponseEntity.status( HttpStatus.CREATED ).body( uSaved );
   }
-  
+
   @GetMapping("/user/{email}")
   public ResponseEntity<User> login( @PathVariable @Valid @Email String email ) {
     User user = userService.login( email );
-    
+
     if ( user == null ) {
       return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
     }
-    
+
     return ResponseEntity.status( HttpStatus.OK ).body( user );
   }
-  
+
 }
