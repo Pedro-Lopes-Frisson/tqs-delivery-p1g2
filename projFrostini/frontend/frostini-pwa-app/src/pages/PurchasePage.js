@@ -53,26 +53,11 @@ function PurchasePage() {
 
   // const [order, setOrder] = useLocalStorage("order", []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const body = {
-      // "address": e.currentTarget["newAddress"]?.value,
-      cardNumber: e.currentTarget["card-number"].value,
-      expirationDate: e.currentTarget["expiration-date"].value,
-      cvCode: e.currentTarget["cv-code"].value,
-      cardOwner: e.currentTarget["card-owner"].value,
-    };
-
-    console.log(body);
-
-    setStep(3);
-  };
-
   const totalPrice = json.reduce(
     (sum, item) => item.quantity * item.price + sum,
     0
   );
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -148,7 +133,7 @@ function PurchasePage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {json.products.map((row) => (
+            {json.products.map((row, key) => (
               <TableRow
                 key={key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

@@ -1,4 +1,4 @@
-name: Spring Boot Project Build
+name: Spring Boot Project Build (Delivera)
 on:
   push:
     branches: [main, dev]

@@ -1,6 +1,7 @@
 function isAuthenticated(auth) {
     console.log(auth);
-    if(Object.keys(auth) > 0) {
+    console.log(Object.keys(auth).length);
+    if(Object.keys(auth).length > 0) {
         return true;
     }
     return false;
