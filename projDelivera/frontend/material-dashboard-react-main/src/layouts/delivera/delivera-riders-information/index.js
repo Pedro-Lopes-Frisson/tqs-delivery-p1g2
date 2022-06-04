@@ -31,7 +31,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
-import ProfilesList from "layouts/delivera/delivera-riders-information/components/ProfilesList";
+import OrderList from "layouts/delivera/delivera-riders-information/components/OrderList";
 // import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 
 // Overview page components
@@ -39,7 +39,7 @@ import Header from "layouts/delivera/delivera-riders-information/components/Head
 // import PlatformSettings from "layouts/delivera/delivera-riders-information/components/PlatformSettings";
 
 // Data
-import profilesListData from "layouts/delivera/delivera-riders-information/data/profilesListData";
+import orderListData from "layouts/delivera/delivera-riders-information/data/orderListData";
 
 // Images
 // import homeDecor1 from "assets/images/home-decor-1.jpg";
@@ -75,7 +75,7 @@ function RiderProfile() {
               <Divider orientation="vertical" sx={{ mx: 0 }} />
             </Grid>
             <Grid item xs={18} xl={6}>
-              <ProfilesList title="Order list" profiles={profilesListData} shadow={false} />
+              <OrderList title="Order list" profiles={orderListData} shadow={false} />
             </Grid>
           </Grid>
         </MDBox>

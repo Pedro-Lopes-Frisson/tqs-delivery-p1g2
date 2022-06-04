@@ -28,7 +28,7 @@ import MDTypography from "components/MDTypography";
 // import MDAvatar from "components/MDAvatar";
 import MDButton from "components/MDButton";
 
-function ProfilesList({ title, profiles, shadow }) {
+function OrderList({ title, profiles, shadow }) {
   const renderProfiles = profiles.map(({ name, description, action }) => (
     <MDBox key={name} component="li" display="flex" alignItems="center" py={1} mb={1}>
       <MDBox display="flex" flexDirection="column" alignItems="flex-start" justifyContent="center">
@@ -77,15 +77,15 @@ function ProfilesList({ title, profiles, shadow }) {
 }
 
 // Setting default props for the ProfilesList
-ProfilesList.defaultProps = {
+OrderList.defaultProps = {
   shadow: true,
 };
 
 // Typechecking props for the ProfilesList
-ProfilesList.propTypes = {
+OrderList.propTypes = {
   title: PropTypes.string.isRequired,
   profiles: PropTypes.arrayOf(PropTypes.object).isRequired,
   shadow: PropTypes.bool,
 };
 
-export default ProfilesList;
+export default OrderList;
