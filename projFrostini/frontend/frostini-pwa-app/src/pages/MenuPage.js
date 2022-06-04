@@ -6,8 +6,8 @@ import useLocalStorage from "../hooks/use-local-storage";
 import { Chip, InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState, useContext, useEffect } from "react";
-import AuthContext from '../context/AuthProvider';
-import isAuthenticated from '../utils/Authentication';
+import AuthContext from "../context/AuthProvider";
+import isAuthenticated from "../utils/Authentication";
 
 const data = [
   {
@@ -69,16 +69,25 @@ function MenuPage() {
   );
 
   useEffect(() => {
-    if(!isAuth) {
-      navigate('/login');
+    if (!isAuth) {
+      navigate("/login");
     }
   }, [isAuth]);
 
   return (
     <div className="order-page">
       {/* <div className="header"> */}
-      <h1>Menu</h1>
-      <div className="header">
+      <div className="first-header">
+        <h1>MENU</h1>
+        <Button
+          variant="outlined"
+          className="my-account-btn"
+          onClick={() => {}}
+        >
+          My Account
+        </Button>
+      </div>
+      <div className="second-header">
         <div className="search-bar">
           <TextField
             value={search}
@@ -118,7 +127,7 @@ function MenuPage() {
                   <p className="product-title">{title}</p>
                   <div className="tags">
                     {tags.map((tag, i) => (
-                      <Chip label={tag} className="tags-chip" />
+                      <Chip key={i} label={tag} className="tags-chip" />
                     ))}
                   </div>
                 </div>

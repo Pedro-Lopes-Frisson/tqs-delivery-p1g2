@@ -9,6 +9,7 @@ import MenuPage from "./pages/MenuPage";
 import PurchasePage from "./pages/PurchasePage";
 import Layout from "./pages/Layout";
 import OrdersHistoryPage from "./pages/OrdersHistoryPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         {/* <Route path="/menu/:filter" element={<OrderPage />} /> */}
         <Route path="/purchase" element={<PurchasePage />} />
         {/* <Route path="/purchase" element={<PurchasePage />} /> */}
+        <Route path="/profile" element={<ProfilePage />}></Route>
       </Routes>
     </Layout>
   );

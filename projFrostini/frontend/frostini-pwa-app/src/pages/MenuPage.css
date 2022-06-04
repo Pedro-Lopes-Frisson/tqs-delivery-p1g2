@@ -3,24 +3,36 @@
   margin: auto;
 }
 
-.order-page h1 {
+.order-page .first-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.order-page .first-header h1 {
   margin-bottom: 30px;
 }
 
-.order-page .header {
+.order-page .first-header .my-account-btn {
+  color: #f8c8b9;
+  font-weight: bold;
+  border: #f8c8b9 5px solid;
+}
+
+.order-page .second-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   margin: 30px 0px 40px 0px;
 }
 
-.order-page .header .search-bar {
+.order-page .second-header .search-bar {
   display: flex;
   align-items: flex-end;
   flex-direction: row;
 }
 
-.order-page .header .my-order-btn {
+.order-page .second-header .my-order-btn {
   border-radius: 15px;
   background: #9cb737;
 }
