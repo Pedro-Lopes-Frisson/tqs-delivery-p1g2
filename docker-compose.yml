@@ -1,10 +1,12 @@
-version: '3.3'
+version: '3.8'
 
 # Define services
 services:
   # App backend service
   frostini:
     # Configuration for building the docker image for the backend service
+    container_name: frostiniSpring
+    hostname: frostiniSpring
     build:
       context:  projFrostini/backend/frostini  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
@@ -18,30 +20,7 @@ services:
         window: 120s
     depends_on:
       - postgres-db-frostini # This service depends on mysql. Start that first.
-    environment: # Pass environment variables to the service
-      SERVER_PORT: 9001
-      SPRING_APPLICATION_NAME: Frostini
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdbfrostini:5432/frostini
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_LOGGING_CONFIG: "/app/log4j2.xml"
-
-      # This is true to make SpringBoot to automatically register a bean of type
-      # 'org.springframework.amqp.core.AmqpAdmin'.
-      # Check the org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration javadoc for details.
-
-      # THE PORT TO WHICH THE CLIENT SHOULD CONNECT DEFAULTS TO 5672_
-      SPRING_RABBITMQ_PORT: 5672
-
-      # USERNAME AND PASSWORD
-      SPRING_RABBITMQ_USERNAME: delivera
-      SPRING_RABBITMQ_PASSWORD: delivera
-
-      # THE HOST, DEFAULTS TO LOCALHOST_
-      SPRING_RABBITMQ_HOST: rabbitmq
-
+      - rabbitmq
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - backend
       - backend-frostini
@@ -50,11 +29,12 @@ services:
   # Database Service (PostGres)
   postgres-db-frostini:
     image: postgres:11.12
+
     container_name: postgresdbfrostini
     hostname: postgresdbfrostini
     restart: unless-stopped
-    ports:
-      - 5457:5432
+      #ports:
+      #- 27117:27017
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -65,15 +45,85 @@ services:
     networks:
       - backend-frostini
 
+  # Database Service (PostGres)
+  frostini-web:
+    image: frostini-web-app-tqs
+    build:
+      context:  projFrostini/frontend/frostini-pwa-app  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
+      dockerfile: Dockerfile
+    container_name: frostiniWeb
+    hostname: frostiniWeb
+    restart: unless-stopped
+    networks:
+      - backend-frostini
+
+  # App backend service
+  delivera:
+    # Configuration for building the docker image for the backend service
+    build:
+      context: projDelivera/backend/delivera  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
+      dockerfile: Dockerfile
+    ports:
+      - "9002:9002"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 2
+        window: 120s
+    depends_on:
+      - postgres-db-delivera # This service depends on mysql. Start that first.
+      - rabbitmq
+
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - backend-delivera
+      - backend
+
+
+  # Database Service (PostGres)
+  postgres-db-delivera:
+    image: postgres:11.12
+    container_name: postgresdbdelivera
+    hostname: postgresdbdelivera
+    restart: unless-stopped
+      #ports:
+      #- 27117:27017
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=delivera
+
+    volumes:
+      - deliveradb:/var/lib/postgresql/deliveraData
+    networks:
+      - backend-delivera
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    restart: always
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=delivera
+      - RABBITMQ_DEFAULT_PASS=delivera
+    networks:
+      - backend
+
+
 
 volumes:
   frostinidb:
+  deliveradb:
 
 # Networks to be created to facilitate communication between containers
 networks:
+  backend-delivera:
+    driver: bridge
+  backend:
+      name: external-network
   backend-frostini:
     driver: bridge
-
-  backend:
-    external: # network to attach rabbitMq to both projects in a more realistic use case
-      name: external-network
