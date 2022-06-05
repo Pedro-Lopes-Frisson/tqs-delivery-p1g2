@@ -17,15 +17,11 @@ body{
 #loginform{
     max-width: 500px;
     min-width: 300px;
-    max-height: 700px;
+    max-height: 800px;
     width: 40%;
     margin: 50px auto;
     background-color: #FFFFFF;
     border-radius: 25px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
   }
 
 #headerTitle{

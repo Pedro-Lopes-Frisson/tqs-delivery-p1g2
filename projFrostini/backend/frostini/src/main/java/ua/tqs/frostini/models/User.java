@@ -30,15 +30,15 @@ public class User {
   @Column(name = "name")
   String name;
 
-  @Column(name = "`password`")
+  @Column(name = "password")
   @Size(min=8)
   String password;
 
-  @Column(name = "`email`")
+  @Column(name = "email")
   @Email
   String email;
   
-  @Column(name = "`admin`")
+  @Column(name = "admin")
   boolean isAdmin;
   
   @JsonIgnore
@@ -48,5 +48,4 @@ public class User {
   @JsonIgnore
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   Set<Order> order;
-
 }
