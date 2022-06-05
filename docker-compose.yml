@@ -10,8 +10,8 @@ services:
     build:
       context:  projFrostini/backend/frostini  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
-    ports:
-      - "9001:9001"
+    #ports:
+      #- "9001:9001"
     deploy:
       restart_policy:
         condition: on-failure
@@ -55,7 +55,7 @@ services:
     hostname: frostiniWeb
     restart: unless-stopped
     ports:
-      - 3001:80
+      - 3000:80
     networks:
       - backend-frostini
 
@@ -112,7 +112,7 @@ services:
     hostname: deliveraWeb
     restart: unless-stopped
     ports:
-      - 3000:80
+      - 3001:80
     networks:
       - backend-frostini
 
