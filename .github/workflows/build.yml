@@ -1,4 +1,4 @@
-name: Spring Boot Project Build
+name: Spring Boot Project Build (Delivera)
 on:
   push:
     branches: [main, dev]
@@ -6,7 +6,7 @@ on:
     branches: [main, dev]
 jobs:
   build:
-    name: Build
+    name: Delivera Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
