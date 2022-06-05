@@ -20,11 +20,11 @@ jobs:
       - name: Build frostini Spring boot Application
         run: docker-compose build frostini # build frostini docker
       - name: Start frostini Spring boot Application
-        run: docker-compose up frostini # start frostini docker
+        run: docker-compose up -d frostini # start frostini docker
       - name: Build frostini pwa react app
         run: docker-compose build frostini-web # build frostini-web docker
       - name: Start frostini pwa react app
-        run: docker-compose up -e API_URL="frostiniSpring" frostini-web # start frostini-web docker and change the url to match the docker that is inside the same network
+        run: docker-compose up -d -e API_URL="frostiniSpring" frostini-web # start frostini-web docker and change the url to match the docker that is inside the same network
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
