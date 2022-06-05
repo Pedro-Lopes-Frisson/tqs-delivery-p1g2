@@ -54,12 +54,16 @@ services:
     container_name: frostiniWeb
     hostname: frostiniWeb
     restart: unless-stopped
+    ports:
+      - 3001:80
     networks:
       - backend-frostini
 
   # App backend service
   delivera:
     # Configuration for building the docker image for the backend service
+    container_name: deliveraSpring
+    hostname: deliveraSpring
     build:
       context: projDelivera/backend/delivera  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
@@ -97,6 +101,20 @@ services:
       - deliveradb:/var/lib/postgresql/deliveraData
     networks:
       - backend-delivera
+
+
+  delivera-web:
+    image: delivera-web-app-tqs
+    build:
+      context: projDelivera/frontend/material-dashboard-react-main  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
+      dockerfile: Dockerfile
+    container_name: deliveraWeb
+    hostname: deliveraWeb
+    restart: unless-stopped
+    ports:
+      - 3000:80
+    networks:
+      - backend-frostini
 
 
   rabbitmq:
