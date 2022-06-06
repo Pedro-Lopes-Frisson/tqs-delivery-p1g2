@@ -1,5 +1,8 @@
 Feature: Order an ice cream from Frostini
 
+    Background: User accesses website
+        Given I access "http://localhost:3000/"
+
     Scenario: User register successfully
         When I navigate to the User register page
         Then I fill in the necessary information

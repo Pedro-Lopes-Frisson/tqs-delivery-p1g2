@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
@@ -14,6 +15,7 @@ public class UserSteps {
 
     private WebDriver driver = new FirefoxDriver();
 
+    private HomePage homePage;
     private RegisterPage registerPage;
     private UserLoginPage userLoginPage;
     private MenuPage menuPage;
@@ -23,10 +25,16 @@ public class UserSteps {
         driver.close();
     }
 
+    @Given("I access {string}")
+    public void iAccess(String access) {
+        homePage = new HomePage(driver, access);
+    }
+
     // REGISTER
 
     @When("I navigate to the User register page") 
     public void iNavigateRegisterPage() {
+        homePage.clickRegister();
         registerPage = new RegisterPage(driver);
     }
 
@@ -53,6 +61,7 @@ public class UserSteps {
 
     @When("I navigate to the User login page")
     public void iNavigateLoginPage() {
+        homePage.clickLogin();
         userLoginPage = new UserLoginPage(driver);
         menuPage = new MenuPage(driver);
     }

@@ -13,6 +13,12 @@ public class HomePage {
     @FindBy(tagName = "h1")
     WebElement title;
 
+    @FindBy(css = ".user-btn-page-0")
+    WebElement loginButton;
+
+    @FindBy(css = ".user-btn-page-1")
+    WebElement registerButton;
+
     //Constructor
     public HomePage(WebDriver driver, String url){
         this.driver=driver;
@@ -23,5 +29,13 @@ public class HomePage {
 
     public boolean isPageOpened(String pageTitle) {
         return title.getText().equals(pageTitle);
+    }
+
+    public void clickLogin() {
+        loginButton.click();
+    }
+
+    public void clickRegister() {
+        registerButton.click();
     }
 }

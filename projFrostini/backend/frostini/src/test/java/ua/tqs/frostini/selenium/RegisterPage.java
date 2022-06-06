@@ -15,7 +15,7 @@ public class RegisterPage {
     private WebDriver driver;
 
     //Page URL
-    private static String PAGE_URL="http://localhost:3000/register";
+    //private static String PAGE_URL="http://localhost:3000/register";
 
     //Locators
     @FindBy(css = ".row:nth-child(2) > .register__textBox")
@@ -38,7 +38,7 @@ public class RegisterPage {
 
     public RegisterPage(WebDriver driver){
         this.driver=driver;
-        driver.get(PAGE_URL);
+        //driver.get(PAGE_URL);
         //Initialise Elements
         PageFactory.initElements(driver, this);
     }
