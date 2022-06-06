@@ -16,6 +16,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
+@Builder
 public class Admin {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
