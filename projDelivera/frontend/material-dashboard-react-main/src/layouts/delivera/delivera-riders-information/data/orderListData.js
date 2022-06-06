@@ -15,7 +15,7 @@ Coded by www.creative-tim.com
 export default [
   {
     name: "Frostini",
-    description: "Don't quite know what to put here",
+    description: "Profit X$ just drive to ShopeLocation and then to ClientLocation",
     action: {
       type: "internal",
       route: "/order/id",
