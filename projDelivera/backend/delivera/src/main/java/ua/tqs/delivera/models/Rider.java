@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.Data;
+import ua.tqs.delivera.datamodels.RiderDTO;
 
 // @Data
 @Entity
@@ -53,7 +53,7 @@ public class Rider{
         this.sumOfReviews = sumOfReviews;
     }
 
-    public Rider(RiderDTO dto){
+    public Rider( RiderDTO dto){
         this.email = dto.getEmaildto();
         this.name = dto.getNamedto();
         this.password = dto.getPassworddto();
