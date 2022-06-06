@@ -27,6 +27,6 @@ import org.junit.platform.suite.api.Suite;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("ua/tqs/frostini/selenium")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "ua.tqs.frostini.selenium")
-public class CucumberTest {
+class CucumberTest {
 
 }

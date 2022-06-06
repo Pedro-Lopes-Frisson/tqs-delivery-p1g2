@@ -18,7 +18,7 @@ public class UserSteps {
 
     private final FirefoxOptions options = new FirefoxOptions();
     private WebDriver driver;
-    
+
 
     private HomePage homePage;
     private RegisterPage registerPage;
@@ -32,11 +32,11 @@ public class UserSteps {
 
     @Given("I access {string}")
     public void iAccess(String access) {
-    
+
         WebDriverManager.firefoxdriver().setup();
         options.setHeadless(true);
         driver = new FirefoxDriver(options);
-        
+
         homePage = new HomePage(driver, access);
     }
 
