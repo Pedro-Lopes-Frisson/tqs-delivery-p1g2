@@ -23,53 +23,53 @@ import static org.hamcrest.Matchers.equalTo;
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerIT {
+ class UserControllerIT {
   @LocalServerPort
   int randomServerPort;
-  
+
   @Autowired
   private UserRepository userRepository;
-  
-  
+
+
   @Autowired
   private TestRestTemplate testRestTemplate;
-  
+
   private String token;
   private User user;
   private UserDTO userDTO;
-  
-  
+
+
   @Container
   static PostgreSQLContainer container = new PostgreSQLContainer( "postgres:11.12" )
     .withUsername( "demo" )
     .withPassword( "demopw" )
     .withDatabaseName( "shop" );
-  
-  
+
+
   @DynamicPropertySource
   static void properties( DynamicPropertyRegistry registry ) {
     registry.add( "spring.datasource.url", container::getJdbcUrl );
     registry.add( "spring.datasource.password", container::getPassword );
     registry.add( "spring.datasource.username", container::getUsername );
   }
-  
+
   @BeforeEach
-  public void setUp() {
+   void setUp() {
     user = new User();
     user.setName( "Joaquim" );
     user.setPassword( "safepassword" );
     user.setEmail( "joaquim@ua.pt" );
-    
+
     user = userRepository.saveAndFlush( user );
     userDTO = new UserDTO( "Joaquim", "safepassword", "joaquim@ua.pt" );
   }
-  
+
   @AfterEach
-  public void resetDb() {
+   void resetDb() {
     userRepository.deleteAll();
     userRepository.flush();
   }
-  
+
   @Test
   void testOnRegisterIfEmailIsUsed_ThenReturnConflict() {
     RestAssured.given()
@@ -79,13 +79,13 @@ public class UserControllerIT {
                .post( createURL() )// post createURL() means register
                .then()
                .statusCode( 409 );
-    
+
   }
-  
+
   @Test
-  public void testRegisterUser_whenValidUserDTO_then200() {
+   void testRegisterUser_whenValidUserDTO_then200() {
     UserDTO newUser = new UserDTO( "Alfredo", "alfredoisnotbigenough", "alfredo@ua.pt" );
-    
+
     RestAssured.given()
                .contentType( "application/json" )
                .body( newUser )
@@ -96,11 +96,11 @@ public class UserControllerIT {
                .body( "email", equalTo( newUser.getEmail() ) )
                .statusCode( 201 );
   }
-  
+
   @Test
-  public void testRegisterUser_ThenInvalidUserDTO_thenBAD_REQUEST() {
+   void testRegisterUser_ThenInvalidUserDTO_thenBAD_REQUEST() {
     UserDTO newUser = new UserDTO( "alfredoJoaquim", "somepass", "not an email" );
-    
+
     RestAssured.given()
                .contentType( "application/json" )
                .body( newUser )
@@ -109,11 +109,11 @@ public class UserControllerIT {
                .then()
                .statusCode( 400 );
   }
-  
+
   @Test
-  public void testRegisterUser_whenInvalidUserDTO_thenBAD_REQUEST() {
+   void testRegisterUser_whenInvalidUserDTO_thenBAD_REQUEST() {
     UserDTO newUser = new UserDTO( "alfredoJoaquim", "somepass", "not an email" );
-    
+
     RestAssured.given()
                .contentType( "application/json" )
                .body( newUser )
@@ -122,10 +122,10 @@ public class UserControllerIT {
                .then()
                .statusCode( 400 );
   }
-  
-  
+
+
   @Test
-  public void testLoginUser_WithValidEmailAndUserAlredyRegistered_ThenReturnUser() {
+   void testLoginUser_WithValidEmailAndUserAlredyRegistered_ThenReturnUser() {
     RestAssured.given()
                .contentType( "application/json" )
                .when()
@@ -135,9 +135,9 @@ public class UserControllerIT {
                .body( "name", equalTo( userDTO.getName() ) )
                .body( "email", equalTo( userDTO.getEmail() ) );
   }
-  
+
   @Test
-  public void testLoginUser_WithValidEmailAndUserNotYetRegistered_ThenReturnResourceNotFound() {
+   void testLoginUser_WithValidEmailAndUserNotYetRegistered_ThenReturnResourceNotFound() {
     RestAssured.given()
                .contentType( "application/json" )
                .when()
@@ -145,9 +145,9 @@ public class UserControllerIT {
                .then().log().body()
                .statusCode( 400 );
   }
-  
+
   @Test
-  public void testLoginUser_WithInValidEmail_ThenReturnResourceNotFound() {
+   void testLoginUser_WithInValidEmail_ThenReturnResourceNotFound() {
     RestAssured.given()
                .contentType( "application/json" )
                .when()
@@ -155,8 +155,8 @@ public class UserControllerIT {
                .then()
                .statusCode( 400 );
   }
-  
-  
+
+
   String createURL() {
     return "http://localhost:" + randomServerPort + "/api/v1/user";
   }

@@ -19,35 +19,37 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-  
+
   // error handle for @Valid
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                 HttpHeaders headers,
                                                                 HttpStatus status, WebRequest request) {
-    
+
     Map<String, Object> body = new LinkedHashMap<>();
     body.put("timestamp", new Date());
     body.put("status", status.value());
-    
+
     //Get all errors
     List<String> errors = ex.getBindingResult()
                             .getFieldErrors()
                             .stream()
-                            .map(x -> x.getDefaultMessage())
+                            .map(DefaultMessageSourceResolvable::getDefaultMessage)
                             .collect(Collectors.toList());
-    
+
     body.put("errors", errors);
-    
+
     return new ResponseEntity<>(body, headers, status);
-    
+
   }
   @ExceptionHandler(ConstraintViolationException.class)
   public void constraintViolationException( HttpServletResponse response) throws IOException {
     response.sendError(HttpStatus.BAD_REQUEST.value());
   }
-  
-  
+
+
 }

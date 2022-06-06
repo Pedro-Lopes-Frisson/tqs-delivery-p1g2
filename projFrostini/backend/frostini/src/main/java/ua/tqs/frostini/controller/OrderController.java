@@ -26,7 +26,7 @@ public class OrderController {
 
     ArrayList<Order> orderArrayList = (ArrayList<Order>) orderService.getAllOrdersByUser( userId );
 
-    if ( orderArrayList.size() == 0 ) {
+    if ( orderArrayList.isEmpty() ) {
       return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
     }
 

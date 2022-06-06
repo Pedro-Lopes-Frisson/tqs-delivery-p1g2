@@ -3,7 +3,6 @@ package ua.tqs.frostini.datamodels;
 import lombok.*;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -15,9 +14,9 @@ public class OrderedProductDTO {
   @Min( 1 )
   @NotNull
   long quantity;
-  
+
   @NotNull
   long productId;
-  
-  
+
+
 }

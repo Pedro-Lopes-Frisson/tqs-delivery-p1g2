@@ -11,7 +11,6 @@ import javax.validation.constraints.Size;
 
 import javax.persistence.*;
 import java.util.Set;
-import java.util.List;
 
 @Entity
 @Table(name = "`frostini_user`")

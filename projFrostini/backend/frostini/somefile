@@ -1,0 +1,35 @@
+create table frostini_address (address_id  bigserial not null,
+							 street varchar(255),
+							 zip_code varchar(255),
+							 user_id int8 not null,
+							 primary key (address_id))
+create table frostini_order (order_id  bigserial not null,
+							 total_price float8,
+							 address_id int8 not null,
+							 user_id int8 not null,
+							 primary key (order_id))
+create table frostini_ordered_product (order_id int8 not null,
+							 product_id int8 not null,
+							 price float8,
+							 quantity int8,
+							 primary key (order_id,
+							 product_id))
+create table frostini_product (product_id  bigserial not null,
+							 description varchar(255),
+							 name varchar(255),
+							 price float8,
+							 stock_quantity int4,
+							 primary key (product_id))
+create table frostini_user (user_id int8 not null,
+							 "email" varchar(255),
+							 "admin" boolean,
+							 name varchar(255),
+							 "password" varchar(255),
+							 primary key (user_id))
+
+
+alter table frostini_address add constraint FK5j6ilhe1x9i9yf8quaklxuw38 foreign key (user_id) references frostini_user
+alter table frostini_order add constraint FKel35i48nbh5dhrh9052s3j1y3 foreign key (address_id) references frostini_address
+alter table frostini_order add constraint FKwhsmq25afn46o9bcjj1y2xuo foreign key (user_id) references frostini_user
+alter table frostini_ordered_product add constraint FKfv1k7ncv3nl3tff6xf4anloci foreign key (order_id) references frostini_order
+alter table frostini_ordered_product add constraint FKdk9r72ca5q8ndj5bxgtvf4qag foreign key (product_id) references frostini_product
