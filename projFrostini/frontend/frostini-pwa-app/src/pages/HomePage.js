@@ -11,10 +11,12 @@ import {
     Container, 
     Button, 
     MenuItem,
-    Divider
+    Divider,
+    Grid
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
+import banner from '../assets/banner.jpg';
 
 /* const pages = ['Products', 'Pricing', 'Blog']; */
 const user = ['Login', 'Register'];
@@ -32,8 +34,8 @@ function HomePage() {
         setAnchorElNav(null);
     };
 
-    return (
-        <AppBar position="static">
+    return (<>
+        <AppBar position="fixed" sx={{ my: 1, bgcolor: '#ffffff'}}>
             <Container maxWidth="xl" sx={{ bgcolor: '#ffffff' }}>
                 <Toolbar disableGutters>
                 <AdbIcon sx={{ display: { xs: 'none', md: 'flex', color: '#9cb75c' }, mr: 1 }} />
@@ -148,7 +150,47 @@ function HomePage() {
                 </Toolbar>
             </Container>
         </AppBar>
-    );
+        <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            sx={{ my: 5 }}
+        >
+            <img 
+                src={banner}
+            />
+        </Grid>
+        <Grid sx={{ flexGrow: 1, justifyContent: 'space-evenly', display: { xs: 'none', md: 'flex' } }} >
+            {user.map((page,index) => (
+                <Button
+                    key={page}
+                    className={`user-btn-page-${index}`}
+                    onClick={handleCloseNavMenu}
+                    size="large"
+                    sx={{ my: 2, mx: 1, p: 2, bgcolor: '#f8c8b9', color: '#555555', display: 'block' }}
+                >
+                    {page}
+                </Button>
+                ))}
+        </Grid>
+
+        <Grid 
+            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+            direction="column"
+        >
+            {user.map((page, index) => (
+                <Button
+                    key={page}
+                    className={`user-btn-page-${index}`}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, mx: 1, bgcolor: '#f8c8b9', color: '#555555', display: 'block' }}
+                >
+                    {page}
+                </Button>
+                ))}
+        </Grid>
+    </>);
 }
 
 export default HomePage;

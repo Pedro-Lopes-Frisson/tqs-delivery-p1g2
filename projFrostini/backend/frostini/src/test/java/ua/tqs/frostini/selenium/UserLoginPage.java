@@ -10,7 +10,7 @@ public class UserLoginPage {
     private WebDriver driver;
 
     //Page URL
-    private static String PAGE_URL="http://localhost:3000/login";
+    //private static String PAGE_URL="http://localhost:3000/login";
 
     //Locators
     @FindBy(css = ".row:nth-child(2) > .login__textBox")
@@ -25,7 +25,7 @@ public class UserLoginPage {
     //Constructor
     public UserLoginPage(WebDriver driver){
         this.driver=driver;
-        driver.get(PAGE_URL);
+        //driver.get(PAGE_URL);
         //Initialise Elements
         PageFactory.initElements(driver, this);
     }

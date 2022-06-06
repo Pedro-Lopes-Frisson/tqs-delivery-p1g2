@@ -9,17 +9,14 @@ public class MenuPage {
 
     private WebDriver driver;
 
-    //Page URL
-    private static String PAGE_URL="http://localhost:3000/menu";
-
     //Locators
     @FindBy(tagName = "h1")
     WebElement title;
 
     //Constructor
-    public MenuPage(WebDriver driver){
+    public MenuPage(WebDriver driver/* , String url */){
         this.driver=driver;
-        driver.get(PAGE_URL);
+        /* driver.get(url); */
         //Initialise Elements
         PageFactory.initElements(driver, this);
     }
