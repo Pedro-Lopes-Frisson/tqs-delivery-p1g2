@@ -15,7 +15,8 @@ import ua.tqs.delivera.controllers.AdminController;
 import ua.tqs.delivera.models.Admin;
 import ua.tqs.delivera.services.AdminService;
 
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import java.io.IOException;
+
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -32,7 +33,8 @@ public class AdminControllerTest {
   private AdminService adminService;
   
   @BeforeEach
-  void setUp() {
+  void setUp() throws IOException {
+    RestAssuredMockMvc.mockMvc( mvc );
     admin =
       Admin.builder().email( "admin.Alfredo@delivera.pt" ).name( "Alfredo Ferreira" ).password( "safepassword" )
            .build();
@@ -45,7 +47,7 @@ public class AdminControllerTest {
     RestAssuredMockMvc.given()
                       .contentType( ContentType.JSON )
                       .get( "api/v1/admin/{email}", admin.getEmail() )
-                      .then()
+                      .then().log().body()
                       .contentType( ContentType.JSON )
                       .and().status( HttpStatus.OK )
                       .and().body( "name", is( admin.getName() ) )
@@ -64,10 +66,9 @@ public class AdminControllerTest {
                       .contentType( ContentType.JSON )
                       .get( "api/v1/admin/{email}", "somerandom@email.pt" )
                       .then()
-                      .contentType( ContentType.JSON )
                       .and().status( HttpStatus.BAD_REQUEST );
     
-    verify( adminService, times( 0 ) ).login( any() );
+    verify( adminService, times( 1 ) ).login( any() );
   }
   
   @Test
@@ -77,12 +78,11 @@ public class AdminControllerTest {
     
     RestAssuredMockMvc.given()
                       .contentType( ContentType.JSON )
-                      .get( "api/v1/admin/{email}", "somerandom@email.pt" )
+                      .get( "api/v1/admin/{email}", "malformedemail" )
                       .then()
-                      .contentType( ContentType.JSON )
                       .and().status( HttpStatus.BAD_REQUEST );
     
-    verify( adminService, times( 0 ) ).login( any() );
+    verify( adminService, times( 1 ) ).login( any() );
   }
   
 }
