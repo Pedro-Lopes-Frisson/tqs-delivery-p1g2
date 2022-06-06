@@ -16,6 +16,22 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+          distribution: 'adopt'
+      - name: Build frostini Spring boot Application
+        run: docker-compose build frostini # build frostini docker
+
+      - name: Start frostini Spring boot Application
+        run: export FROSTINI_ID=$(docker-compose run -d frostini) ; docker network inspect tqs-delivery-p1g2_backend-frostini # start frostini docker
+
+      - name: Build frostini pwa react app
+        run: export FROSTINI_ID=$(docker ps -a --format "{{.ID}} {{.Names}}" | grep "frostini_run" | awk -F " " '// {printf $1 "\n"}' | head -n1); docker-compose build --build-arg API_HOSTNAME=$(docker inspect $FROSTINI_ID | grep IPAddress | awk -v RS='([0-9]+\\.){3}[0-9]+' 'RT{print RT}' | tail -n1) frostini-web # build frostini-web docker with the correct ip for the frostiniSpringBootDocker
+
+      - name: Start frostini pwa react app
+        run: docker-compose run -p 3000:80 -d frostini-web # run frostini-web and map port 80 to host's port 3000
+
+      - name: Curl in localhost3000 to assert that seb service is running
+        run: curl localhost:3000
+
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
@@ -32,4 +48,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.TQS_FROSTINI }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sophjane_tqs-delivery-p1g2_frostini --file projFrostini/backend/frostini/pom.xml
+        run: mvn -B verify integration-test test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sophjane_tqs-delivery-p1g2_frostini --file projFrostini/backend/frostini/pom.xml

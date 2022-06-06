@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.List;
 
 @Entity
-@Table(name = "frostini_user")
+@Table(name = "`frostini_user`")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,10 +24,10 @@ import java.util.List;
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "user_id")
+  @Column(name = "`user_id`")
   long id;
 
-  @Column(name = "name")
+  @Column(name = "`name`")
   String name;
 
   @Column(name = "`password`")
@@ -37,16 +37,15 @@ public class User {
   @Column(name = "`email`")
   @Email
   String email;
-  
+
   @Column(name = "`admin`")
   boolean isAdmin;
-  
+
   @JsonIgnore
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   Set<Address> address;
-  
+
   @JsonIgnore
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   Set<Order> order;
-
 }
