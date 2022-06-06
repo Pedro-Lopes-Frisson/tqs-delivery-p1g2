@@ -10,7 +10,7 @@ public class AdminService {
   @Autowired AdminRepository adminRepository;
   
   public Admin login( String email ) {
-    return null;
+    return adminRepository.findByEmail( email ).orElse( null );
   }
 }
 
