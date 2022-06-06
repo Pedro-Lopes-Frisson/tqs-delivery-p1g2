@@ -3,8 +3,8 @@ FROM node:18 as build
 WORKDIR /app
 COPY . /app
 # Replace localhost with correct hostname
-ARG API_HOSTNAME=localhost
-RUN sed -i "s/localhost/${API_URL}/g" src/api/axios.js
+ARG API_HOSTNAME=frostiniSpring
+RUN sed -i "s/localhost/${API_HOSTNAME}/g" src/api/axios.js
 RUN npm install
 RUN npm run build
 
