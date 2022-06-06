@@ -24,7 +24,7 @@ jobs:
         run: FROSTINI_ID=$(docker-compose run -d frostini) # start frostini docker
 
       - name: Build frostini pwa react app
-        run: docker-compose build --build-arg API_URL=$(docker inspect $FROSTINI_ID | grep IPAddress | awk -v RS='([0-9]+\\.){3}[0-9]+' 'RT{print RT}' | tail -n1) frostini-web # build frostini-web docker with the correct ip for the frostiniSpringBootDocker
+        run: docker-compose build --build-arg API_HOSTNAME=$(docker inspect $FROSTINI_ID | grep IPAddress | awk -v RS='([0-9]+\\.){3}[0-9]+' 'RT{print RT}' | tail -n1) frostini-web # build frostini-web docker with the correct ip for the frostiniSpringBootDocker
 
       - name: Start frostini pwa react app
         run: docker-compose run -p 3000:80 -d frostini-web # run frostini-web and map port 80 to host's port 3000
@@ -48,4 +48,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.TQS_FROSTINI }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sophjane_tqs-delivery-p1g2_frostini --file projFrostini/backend/frostini/pom.xml
+        run: mvn -B verify integration-test test org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sophjane_tqs-delivery-p1g2_frostini --file projFrostini/backend/frostini/pom.xml
