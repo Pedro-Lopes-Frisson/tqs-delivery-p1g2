@@ -1,8 +1,11 @@
 package ua.tqs.frostini.selenium;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.springframework.boot.test.context.SpringBootTest;
+
 
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
@@ -13,7 +16,9 @@ import io.cucumber.java.en.When;
 @SpringBootTest
 public class UserSteps {
 
-    private WebDriver driver = new FirefoxDriver();
+    private final FirefoxOptions options = new FirefoxOptions();
+    private WebDriver driver;
+    
 
     private HomePage homePage;
     private RegisterPage registerPage;
@@ -27,6 +32,11 @@ public class UserSteps {
 
     @Given("I access {string}")
     public void iAccess(String access) {
+    
+        WebDriverManager.firefoxdriver().setup();
+        options.setHeadless(true);
+        driver = new FirefoxDriver(options);
+        
         homePage = new HomePage(driver, access);
     }
 
