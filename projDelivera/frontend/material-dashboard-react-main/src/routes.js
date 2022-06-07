@@ -37,15 +37,16 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
-import Notifications from "layouts/notifications";
-import Profile from "layouts/profile";
+// import Tables from "layouts/tables";
+// import Billing from "layouts/billing";
+// import RTL from "layouts/rtl";
+// import Notifications from "layouts/notifications";
+// import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
-import Products from "layouts/products";
+// import Products from "layouts/products";
 import DeliveraStatistics from "layouts/delivera/delivera-statistics";
+import RiderProfile from "layouts/delivera/delivera-riders-information";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -60,6 +61,7 @@ const routes = [
     component: <Dashboard />,
   },
   {
+    /* {
     type: "collapse",
     name: "Products",
     key: "products",
@@ -107,6 +109,8 @@ const routes = [
     route: "/profile",
     component: <Profile />,
   },
+  */
+  },
   {
     type: "collapse",
     name: "Sign In",
@@ -130,6 +134,14 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/delivera/delivera-statistics",
     component: <DeliveraStatistics />,
+  },
+  {
+    type: "collapse",
+    name: "Riders Profile",
+    key: "delivera-riders-information",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/delivera/delivera-riders-information",
+    component: <RiderProfile />,
   },
 ];
 

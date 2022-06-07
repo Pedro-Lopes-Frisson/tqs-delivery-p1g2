@@ -2,51 +2,139 @@
   margin-bottom: 48px;
 }
 
-.order-table-header {
+.purchase-page .order-table-header {
   background-color: #f8c8b9;
 }
 
-.tags {
+.purchase-page .tags {
   display: flex;
   justify-content: end;
   gap: 10px;
 }
 
-.tags .tags-chip {
+.purchase-page .tags .tags-chip {
   background-color: #9cb737;
   color: white;
 }
 
-.total-price {
+.purchase-page .total-price {
   text-align: end;
   margin: 20px;
 }
 
-.total-price .total-price-chip {
+.purchase-page .total-price .total-price-chip {
   width: 180px;
   height: 45px;
   border-radius: 10px;
   background-color: #f8c8b9;
+  color: white;
+  font-weight: 900;
 }
 
-.payment-details h3 {
+.purchase-page .address-details {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.purchase-page .address-details h3 {
   margin-bottom: 30px;
 }
 
-.card-info {
+.purchase-page .address-details .delivery-detail {
+  display: flex;
+  gap: 10px;
+}
+
+.purchase-page .address-details .delivery-detail p:first-of-type {
+  font-weight: bold;
+  color: #9cb737;
+}
+
+.purchase-page .address-details .delivery-rating {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.purchase-page .address-details .delivery-rating h4 {
+  margin-top: 30px;
+  color: #f8c8b9;
+}
+
+.purchase-page .address-details .alternative-address {
+  display: flex;
+  min-height: 58px;
+}
+
+.purchase-page .address-details .alternative-address #outlined-basic {
+  width: 460px;
+}
+
+
+.purchase-page .payment-details h3 {
+  margin-bottom: 30px;
+}
+
+.purchase-page .payment-details .card-info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 30px;
 }
 
-.card-info .sensitive-fields {
+.purchase-page .payment-details .card-info .sensitive-fields {
   display: flex;
   gap: 30px;
 }
 
-.payment-btn.MuiButton-root {
+.purchase-page .payment-btn.MuiButton-root {
   margin-top: 30px;
   background-color: #9cb737;
   border-radius: 15px;
+  height: 50px;
+}
+
+.header-cell.MuiTableCell-root {
+  color: white;
+  font-weight: 900;
+}
+
+.order-steps {
+  display: flex;
+  align-items: center;
+  margin-bottom: 70px;
+  justify-content: center;
+}
+
+.order-steps .order-state,
+.in-transit-state,
+.delivered-state {
+  /* background-color: #9cb737; */
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+}
+
+.order-steps .order-state p,
+.in-transit-state p,
+.delivered-state p {
+  text-align: center;
+}
+
+.order-steps .bar {
+  height: 8px;
+  width: 150px;
+}
+
+.order-steps .order-state .shopping-basket-icon,
+.in-transit-state .delivery-dining-icon,
+.delivered-state .check-icon {
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  padding: 25px;
+  position: relative;
+  color: white;
 }
