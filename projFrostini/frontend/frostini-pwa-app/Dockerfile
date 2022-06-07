@@ -3,7 +3,7 @@ FROM node:18 as build
 WORKDIR /app
 COPY . /app
 # Replace localhost with correct hostname
-ARG API_HOSTNAME=172.20.0.5
+ARG API_HOSTNAME=172.20.202.10
 RUN sed -i "s/localhost/${API_HOSTNAME}/g" /app/src/api/axios.js
 CMD cat src/api/axios.js
 RUN npm install
