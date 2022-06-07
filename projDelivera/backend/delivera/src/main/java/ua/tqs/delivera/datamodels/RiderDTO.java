@@ -1,4 +1,6 @@
-package ua.tqs.delivera.models;
+package ua.tqs.delivera.datamodels;
+
+import ua.tqs.delivera.models.Location;
 
 public class RiderDTO {
     private String namedto;

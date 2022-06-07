@@ -1,4 +1,4 @@
-package ua.tqs.delivera.models;
+package ua.tqs.delivera.datamodels;
 
 public class LocationDTO {
     private double latitude;

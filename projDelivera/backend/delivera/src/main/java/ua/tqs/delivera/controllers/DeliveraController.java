@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ua.tqs.delivera.models.Rider;
-import ua.tqs.delivera.models.RiderDTO;
+import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.services.RiderService;
 
 @RestController

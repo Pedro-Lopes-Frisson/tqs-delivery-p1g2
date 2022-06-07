@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Data;
+import ua.tqs.delivera.datamodels.LocationDTO;
 
 // @Data
 @Entity
@@ -28,7 +28,7 @@ public class Location {
         this.longitude=longitude;
     }
 
-    public Location(LocationDTO dto){
+    public Location( LocationDTO dto){
         this.latitude=dto.getLatitude();
         this.longitude=dto.getLongitude();
     }
