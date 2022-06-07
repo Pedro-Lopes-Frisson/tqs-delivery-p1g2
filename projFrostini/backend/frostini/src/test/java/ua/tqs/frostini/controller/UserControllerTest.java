@@ -28,22 +28,22 @@ import static org.mockito.Mockito.*;
 
 @WebMvcTest(value = UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class UserControllerTest {
-  
+class UserControllerTest {
+
   @Autowired
   private MockMvc mvc;
-  
+
   @MockBean
   private UserService userService;
-  
-  
+
+
   @BeforeEach
   void setUp() throws IOException {
     RestAssuredMockMvc.mockMvc( mvc );
   }
-  
+
   @Test
-  public void testEndpointForCorrectPathWithValidRequestBodyReturn_ThenReturnCREATED() throws DuplicatedUserException {
+  void testEndpointForCorrectPathWithValidRequestBodyReturn_ThenReturnCREATED() throws DuplicatedUserException {
     User u = createAndSaveUser( 1l );
     UserDTO uDto = createAndSaveUserDTO( 1l );
     when( userService.register( any() ) ).thenReturn( u );
@@ -51,16 +51,16 @@ public class UserControllerTest {
                       .when().post( "api/v1/user" ).then()
                       .contentType( ContentType.JSON )
                       .status( HttpStatus.CREATED );
-    
+
     verify( userService, times( 1 ) ).register( any() );
   }
-  
+
   @Test
-  public void createNewUser_ShouldReturnTheUserThatHasBeenCreated() throws DuplicatedUserException {
+  void createNewUser_ShouldReturnTheUserThatHasBeenCreated() throws DuplicatedUserException {
     User u = createAndSaveUser( 1l );
     UserDTO uDto = createAndSaveUserDTO( 1l );
     when( userService.register( any() ) ).thenReturn( u );
-    
+
     RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( uDto ).when().post( "api/v1/user" )
                       .then()
                       .contentType( ContentType.JSON )
@@ -68,25 +68,25 @@ public class UserControllerTest {
                       .body().body( "name", equalTo( u.getName() ) )
                       .body( "email", equalTo( u.getEmail() )
                       );
-    
+
     verify( userService, times( 1 ) ).register( any() );
   }
-  
-  
+
+
   @Test
-  public void createConflictingUser_ShouldReturnHttpStatusConflictAndItShouldNotUpdateThePreviousUser()
+  void createConflictingUser_ShouldReturnHttpStatusConflictAndItShouldNotUpdateThePreviousUser()
     throws DuplicatedUserException {
     User u = createAndSaveUser( 1l );
     UserDTO userDto = createAndSaveUserDTO( 1l );
     doThrow( new DuplicatedUserException( "User already exists!" ) ).when( userService ).register( userDto );
-    
+
     RestAssuredMockMvc.given().contentType( ContentType.JSON ).body( userDto ).when().post( "api/v1/user" )
                       .then()
                       .status( HttpStatus.CONFLICT );
-    
+
     verify( userService, times( 1 ) ).register( userDto );
   }
-  
+
   @ParameterizedTest
   @MethodSource("invalidAccounts")
   void whenInvalidRegisterRequestBody_thenReturnStatus400( String name, String pwd, String email )
@@ -95,7 +95,7 @@ public class UserControllerTest {
     u.setEmail( email );
     u.setName( name );
     u.setPwd( pwd );
-    
+
     RestAssuredMockMvc.given()
                       .contentType( "application/json" )
                       .body( u )
@@ -103,13 +103,13 @@ public class UserControllerTest {
                       .post( "api/v1/user" )
                       .then()
                       .statusCode( 400 );
-    
+
     verify( userService, times( 0 ) ).register( any() );
-    
-    
+
+
   }
-  
-  
+
+
   private static Stream<Arguments> invalidAccounts() {
     return Stream.of(
       arguments( "Fernando", "12345", "fernando@ua.pt" ),
@@ -119,73 +119,73 @@ public class UserControllerTest {
       arguments( null, null, "fernando@ua.pt" ),
       arguments( null, "12345", null )
     );
-    
+
   }
-  
-  
+
+
   @Test
-  public void testLoginEndpointForCorrectPathWithValidRequestBody_ThenReturnOkStatus()
+  void testLoginEndpointForCorrectPathWithValidRequestBody_ThenReturnOkStatus()
     throws DuplicatedUserException {
     User u = createAndSaveUser( 1l );
     UserDTO uDto = createAndSaveUserDTO( 1l );
-    
+
     when( userService.login( any() ) ).thenReturn( u );
-    
+
     RestAssuredMockMvc.given()
                       .when().get( "api/v1/user/{email}", uDto.getEmail()  ).then()
                       .contentType( ContentType.JSON )
                       .status( HttpStatus.OK );
-    
+
     verify( userService, times( 1 ) ).login( any() );
   }
-  
-  
+
+
   @Test
-  public void testLoginEndpointForCorrectPathWithValidPathParameterForEmail_ThenReturnCorrectUser() {
+  void testLoginEndpointForCorrectPathWithValidPathParameterForEmail_ThenReturnCorrectUser() {
     User u = createAndSaveUser( 1l );
     UserDTO uDto = createAndSaveUserDTO( 1l );
-    
+
     when( userService.login( any() ) ).thenReturn( u );
-    
+
     RestAssuredMockMvc.given()
                       .when().get( "api/v1/user/{email}", uDto.getEmail() ).then()
                       .contentType( ContentType.JSON )
                       .status( HttpStatus.OK )
                       .body( "name", equalTo( u.getName() ) )
                       .body( "email", equalTo( u.getEmail() ) );
-    
+
     verify( userService, times( 1 ) ).login( any() );
   }
-  
+
   @Test
-  public void testLoginEndpointForCorrectPathWithUnusedEmail_ThenReturnStatusCodeResourceNotFound() {
+  void testLoginEndpointForCorrectPathWithUnusedEmail_ThenReturnStatusCodeResourceNotFound() {
     User u = createAndSaveUser( 1l );
     UserDTO uDto = createAndSaveUserDTO( 1l );
     when( userService.login( any() ) ).thenReturn( null );
-    
+
     RestAssuredMockMvc.given()
                       .when().get( "api/v1/user/{email}", "unused@email.com" ) .then()
                       .status( HttpStatus.BAD_REQUEST );
-    
+
     verify( userService, times( 1 ) ).login( any() );
   }
-  
-  
+
+
   @Test
-  public void testLoginEndpointForCorrectPathWithInvalidEmail_ThenReturnStatusBAD_Request() {
+  void testLoginEndpointForCorrectPathWithInvalidEmail_ThenReturnStatusBAD_Request() {
     when( userService.login( any() ) ).thenReturn( null );
     RestAssuredMockMvc.given()
                       .when().get( "api/v1/user/{email}", "notarealemail" ).then().log().body()
                       .status( HttpStatus.BAD_REQUEST );
-    
+
     verify( userService, times( 0 ) ).login( any() );
   }
-  
+
   /* -- helper -- */
   private User createAndSaveUser( long i ) {
     return new User( i, "Pedro", "safepassword", "pdfl" + i + "@ua.pt", false, null, null );
   }
-  
+
   private UserDTO createAndSaveUserDTO( long l ) {
     return new UserDTO( "Pedro", "safepassword", "pdfl" + l + "@ua.pt" );
   }
