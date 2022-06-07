@@ -73,7 +73,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     User u2 = createAndSaveUser( 2l );
 
     Optional<User> optionalUserFromDB = userRepository.findByEmail( "thisisnotavalid@email.com" );
-    assertThat( optionalUserFromDB ).isPresent();
+    assertThat( optionalUserFromDB ).isEmpty();
 
   }
 
