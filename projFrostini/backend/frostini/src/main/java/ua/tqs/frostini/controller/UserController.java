@@ -16,8 +16,7 @@ import javax.validation.constraints.Email;
 @RestController
 @RequestMapping("api/v1")
 @Validated
-
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin
 public class UserController {
   @Autowired UserService userService;
 
