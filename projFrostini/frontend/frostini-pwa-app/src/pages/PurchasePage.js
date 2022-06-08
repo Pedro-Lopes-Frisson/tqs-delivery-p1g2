@@ -11,10 +11,10 @@ import {
   Button,
   Chip,
   TextField,
-  RadioGroup,
+  /* RadioGroup,
   Radio,
   FormControl,
-  FormControlLabel,
+  FormControlLabel, */
   Rating,
 } from "@mui/material";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
@@ -22,47 +22,37 @@ import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
+import useLocalStorage from "../hooks/use-local-storage";
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
+import axios from '../api/axios';
+import Popup from '../components/Popup';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const json = {
-  id: 4,
-  products: [
-    { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
-    { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
-  ],
-};
-
-// function getTotal() {
-//   var total = 0;
-
-//   json.map((row) => (total += row.price));
-
-//   return total;
-// }
+const NEW_ORDER_URL = '/order';
 
 function PurchasePage() {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   const isAuth = isAuthenticated(auth);
 
+  const [order, setOrder] = useLocalStorage("order", []);
+  const [success, setSuccess] = React.useState(false);
+
   const [rating, setRating] = React.useState(0);
-  const [newAddress, setNewAddress] = React.useState(false);
+  const [address, setAddress] = useLocalStorage('address', []);
 
   const [step, setStep] = React.useState(0);
 
-  // const [order, setOrder] = useLocalStorage("order", []);
-
-  const totalPrice = json.reduce(
+  const totalPrice = order.reduce(
     (sum, item) => item.quantity * item.price + sum,
     0
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const body = {
-      // "address": e.currentTarget["newAddress"]?.value,
       cardNumber: e.currentTarget["card-number"].value,
       expirationDate: e.currentTarget["expiration-date"].value,
       cvCode: e.currentTarget["cv-code"].value,
@@ -71,7 +61,30 @@ function PurchasePage() {
 
     console.log(body);
 
-    setStep(3);
+    // TODO: get address id
+    // address.lenght > 0 ?  address : auth.address
+
+    await axios.post(`${NEW_ORDER_URL}`, {
+      'addressId': 1,
+      'userId': auth.id,
+      'orderedProductsList': order
+    })
+      .then(
+        res => {
+          if(res.status === 201) {
+            setSuccess(true);
+            // it should be 2
+            setStep(3);
+          }
+
+      }).catch(err => {
+        if (err.response.status === 0) {
+          //setError('No server response');
+        } else {
+          //setError('Register failed');
+        }
+      })
+    
   };
 
   useEffect(() => {
@@ -116,6 +129,12 @@ function PurchasePage() {
           <p>Delivered</p>
         </div>
       </div>
+
+      <Popup trigger={success} setTrigger={setSuccess}>
+        <h3>Order In Transit</h3>
+        <p id="success">Order registered with success</p>
+      </Popup>
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           <TableHead className="order-table-header">
@@ -133,13 +152,13 @@ function PurchasePage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {json.products.map((row, key) => (
+            {order.map((row, key) => (
               <TableRow
                 key={key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.icecream}
+                  {row.title}
                 </TableCell>
                 <TableCell align="right">{row.quantity}</TableCell>
                 <TableCell align="right">{row.price} €</TableCell>
@@ -156,12 +175,15 @@ function PurchasePage() {
         </Table>
       </TableContainer>
       <div className="total-price">
-        {/* TODO: get sum of product prices */}
         <Chip label={`Total: ${totalPrice}€`} className="total-price-chip" />
       </div>
       {step === 0 && (
         <form onSubmit={handleSubmit}>
           <div className="address-details">
+            <h3>Address Details</h3>
+            <p>{address.length > 0 ? `${address[0]} ${address[2]} ${address[1]}` : auth.address}</p>
+          </div>
+          {/* <div className="address-details">
             <h3>Address Details</h3>
             <FormControl>
               <RadioGroup
@@ -169,12 +191,20 @@ function PurchasePage() {
                 defaultValue="default-address"
                 name="radio-buttons-group"
               >
-                <FormControlLabel
-                  value="default-address"
-                  control={<Radio />}
-                  label="Default Address"
-                  onClick={() => setNewAddress(false)}
-                />
+                {auth.address ? 
+                  <FormControlLabel
+                    value="default-address"
+                    control={<Radio />}
+                    label="Default Address"
+                    onClick={() => setNewAddress(false)}
+                  />
+                  : <FormControlLabel
+                    disabled
+                    value="default-address"
+                    control={<Radio />}
+                    label="Default Address"
+                  />
+                }
                 <div className="alternative-address">
                   <FormControlLabel
                     value="another-address"
@@ -184,13 +214,17 @@ function PurchasePage() {
                   />
                   <div>
                     {newAddress ? (
-                      <TextField id="new-address" variant="outlined" />
+                      <div>
+                        <TextField id="address" variant="outlined" label="Address"/>
+                        <TextField id="city" variant="outlined" label="City"/>
+                        <TextField id="zip-code" variant="outlined" label="Zip code"/>
+                      </div>
                     ) : null}
                   </div>
                 </div>
               </RadioGroup>
             </FormControl>
-          </div>
+          </div> */}
 
           <div className="payment-details">
             <h3>Payment Details</h3>
@@ -200,6 +234,7 @@ function PurchasePage() {
                 label="Card Number"
                 multiline
                 maxRows={4}
+                required
               />
               <div className="sensitive-fields">
                 <TextField
@@ -207,6 +242,7 @@ function PurchasePage() {
                   label="Expiration Date"
                   multiline
                   maxRows={4}
+                  required
                 />
                 <TextField id="cv-code" label="CV code" multiline maxRows={4} />
               </div>
@@ -215,6 +251,7 @@ function PurchasePage() {
                 label="Card Owner"
                 multiline
                 maxRows={4}
+                required
               />
             </div>
           </div>

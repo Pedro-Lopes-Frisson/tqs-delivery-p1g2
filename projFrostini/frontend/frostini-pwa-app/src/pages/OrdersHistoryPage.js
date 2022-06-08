@@ -13,6 +13,7 @@ import "./OrdersHistoryPage.css";
 import CheckIcon from "@mui/icons-material/Check";
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
+import axios from '../api/axios';
 
 
 const json = [
@@ -40,6 +41,17 @@ function OrdersHistoryPage() {
       navigate('/login');
     }
   }, [isAuth]);
+
+  useEffect(() => {
+    const userId = auth.id;
+    console.log(userId);
+    axios.get(`/order/user/${userId}`)
+      .then(res => {
+        console.log(res)
+      }).catch(err => {
+
+      })
+  });
 
   return (
     <div className="orders-history-page">
