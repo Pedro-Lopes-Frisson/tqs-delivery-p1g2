@@ -40,7 +40,7 @@ function HomePage() {
 
     useEffect(() => {
         console.log("HERE");
-        console.log(auth);
+        //console.log(auth);
         if(isAuth) {
           navigate('/menu');
         }

@@ -28,8 +28,6 @@ import isAuthenticated from '../utils/Authentication';
 import axios from '../api/axios';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const NEW_ORDER_URL = '/order';
-
 function PurchasePage() {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
@@ -67,7 +65,7 @@ function PurchasePage() {
     // address.lenght > 0 ?  address : auth.address
 
 
-    await axios.post(`${NEW_ORDER_URL}`, {
+    /* await axios.post(`${NEW_ORDER_URL}`, {
       'addressId': 1,
       'userId': auth.id,
       'orderedProductsList': order.map(product => {
@@ -88,8 +86,8 @@ function PurchasePage() {
           //setError('Register failed');
         }
       })
-    
-  };
+    */
+  }; 
 
   useEffect(() => {
     if(!isAuth) {

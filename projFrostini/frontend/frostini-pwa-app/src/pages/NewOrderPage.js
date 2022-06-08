@@ -22,6 +22,9 @@ import {
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
 import Popup from '../components/Popup';
+import axios from '../api/axios';
+
+const NEW_ORDER_URL = '/order';
 
 function NewOrderPage() {
   const navigate = useNavigate();
@@ -33,8 +36,8 @@ function NewOrderPage() {
   const [state, setState] = useLocalStorage('state', '');
   const [success, setSuccess] = useState(false);
 
-  console.log(auth);
-  console.log(order);
+  /* console.log(auth);
+  console.log(order); */
 
   useEffect(() => {
     if(!auth.address) {
@@ -42,28 +45,55 @@ function NewOrderPage() {
     }
   });
 
+  useEffect(() => {
+    if(!isAuth) {
+      navigate('/login');
+    }
+  }, [isAuth]);
+
   const totalPrice = order.reduce(
     (sum, item) => item.quantity * item.price + sum,
     0
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if(newAddress) {
       setAddress([e.currentTarget['address'].value, e.currentTarget['city'].value, e.currentTarget['zip-code'].value]);
     }
 
-    setSuccess(true);
-    setState('ordered');
+    console.log("POST");
+    console.log(body);
+
+    const body =  {
+      "addressId": 1,
+      "userId": auth.id,
+      "orderedProductsList": order.map(product => {
+        return {"quantity": product.quantity, "productId": product.id };
+      })
+    };
+
+    await axios.post(`${NEW_ORDER_URL}`, body)
+      .then(
+        res => {
+          if(res.status === 201) {
+            console.log("NEW ORDER");
+            setSuccess(true);
+            setState('ordered');
+          }
+  
+      }).catch(err => {
+        console.log(err.response);
+        if (err.response.status === 0) {
+          //setError('No server response');
+        } else {
+          //setError('Register failed');
+        }
+      })
+    
     //navigate('/purchase');
   };
-
-  useEffect(() => {
-    if(!isAuth) {
-      navigate('/login');
-    }
-  }, [isAuth]);
 
   return (
     <div className="new-order-page">

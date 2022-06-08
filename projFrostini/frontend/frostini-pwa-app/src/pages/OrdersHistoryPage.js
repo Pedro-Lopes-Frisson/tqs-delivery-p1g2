@@ -55,12 +55,12 @@ function OrdersHistoryPage() {
 
   useEffect(() => {
     const userId = auth.id;
-    console.log(userId);
+    //console.log(userId);
     axios.get(`/order/user/${userId}`)
       .then(res => {
         console.log(res)
       }).catch(err => {
-        //setError('User does not have orders');
+        setError('User does not have orders');
       })
   });
 
