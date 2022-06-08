@@ -26,7 +26,6 @@ import useLocalStorage from "../hooks/use-local-storage";
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
 import axios from '../api/axios';
-import Popup from '../components/Popup';
 // import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const NEW_ORDER_URL = '/order';
@@ -43,6 +42,9 @@ function PurchasePage() {
   const [address, setAddress] = useLocalStorage('address', []);
 
   const [step, setStep] = React.useState(0);
+
+  const [state, setState] = useLocalStorage('state', '');
+  console.log(state);
 
   const totalPrice = order.reduce(
     (sum, item) => item.quantity * item.price + sum,
@@ -64,17 +66,19 @@ function PurchasePage() {
     // TODO: get address id
     // address.lenght > 0 ?  address : auth.address
 
+
     await axios.post(`${NEW_ORDER_URL}`, {
       'addressId': 1,
       'userId': auth.id,
-      'orderedProductsList': order
+      'orderedProductsList': order.map(product => {
+        return {"quantity": product.quantity, "productId": product.id };
+      })
     })
       .then(
         res => {
           if(res.status === 201) {
             setSuccess(true);
-            // it should be 2
-            setStep(3);
+            setState("in transit");
           }
 
       }).catch(err => {
@@ -92,6 +96,21 @@ function PurchasePage() {
       navigate('/login');
     }
   }, [isAuth]);
+
+  useEffect(() => {
+    console.log(state);
+    switch(state) {
+      case "ordered":
+        setStep(1);
+        break;
+      case "in transit":
+        setStep(2);
+        break;
+      case "delivered":
+        setStep(3);
+        break;
+    }
+  });
 
   return (
     <div className="purchase-page">
@@ -129,11 +148,6 @@ function PurchasePage() {
           <p>Delivered</p>
         </div>
       </div>
-
-      <Popup trigger={success} setTrigger={setSuccess}>
-        <h3>Order In Transit</h3>
-        <p id="success">Order registered with success</p>
-      </Popup>
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -177,7 +191,7 @@ function PurchasePage() {
       <div className="total-price">
         <Chip label={`Total: ${totalPrice}€`} className="total-price-chip" />
       </div>
-      {step === 0 && (
+      {step === 1 && (
         <form onSubmit={handleSubmit}>
           <div className="address-details">
             <h3>Address Details</h3>
@@ -244,7 +258,7 @@ function PurchasePage() {
                   maxRows={4}
                   required
                 />
-                <TextField id="cv-code" label="CV code" multiline maxRows={4} />
+                <TextField id="cv-code" label="CV code" multiline maxRows={4} required/>
               </div>
               <TextField
                 id="card-owner"

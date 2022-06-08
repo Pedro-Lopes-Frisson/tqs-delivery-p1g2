@@ -133,7 +133,7 @@ function MenuPage() {
           className="new-order-btn"
           onClick={() => { navigate('/order') }}
         >
-          Create New Order
+          Confirm New Order
         </Button>
         <Button
           variant="contained"

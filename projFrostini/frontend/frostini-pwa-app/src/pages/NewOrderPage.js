@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import "./NewOrderPage.css";
 import useLocalStorage from "../hooks/use-local-storage";
 import Table from "@mui/material/Table";
@@ -20,6 +21,7 @@ import {
 } from "@mui/material";
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
+import Popup from '../components/Popup';
 
 function NewOrderPage() {
   const navigate = useNavigate();
@@ -28,6 +30,8 @@ function NewOrderPage() {
   const [order, setOrder] = useLocalStorage("order", []);
   const [newAddress, setNewAddress] = useState(false);
   const [address, setAddress] = useLocalStorage('address', []);
+  const [state, setState] = useLocalStorage('state', '');
+  const [success, setSuccess] = useState(false);
 
   console.log(auth);
   console.log(order);
@@ -50,7 +54,9 @@ function NewOrderPage() {
       setAddress([e.currentTarget['address'].value, e.currentTarget['city'].value, e.currentTarget['zip-code'].value]);
     }
 
-    navigate('/purchase');
+    setSuccess(true);
+    setState('ordered');
+    //navigate('/purchase');
   };
 
   useEffect(() => {
@@ -104,6 +110,11 @@ function NewOrderPage() {
       <div className="total-price">
         <Chip label={`Total: ${totalPrice}€`} className="total-price-chip" />
       </div>
+      <Popup trigger={success} setTrigger={setSuccess}>
+        <h3>Order Confirmed</h3>
+        <p>Wait for a rider to be attributed</p>
+        <p>Go back to the <Link to="/menu">Menu</Link></p>
+      </Popup>
       <form onSubmit={handleSubmit}>
           <div className="address-details">
             <h3>Address Details</h3>
