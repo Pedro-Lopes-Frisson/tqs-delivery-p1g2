@@ -22,9 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
- class UserRepositoryTest {
+class UserRepositoryTest {
   @Container
-   static PostgreSQLContainer container = new PostgreSQLContainer("postgres:11.12")
+  static PostgreSQLContainer container = new PostgreSQLContainer("postgres:11.12")
     .withUsername("demo")
     .withPassword("demopw")
     .withDatabaseName("shop");

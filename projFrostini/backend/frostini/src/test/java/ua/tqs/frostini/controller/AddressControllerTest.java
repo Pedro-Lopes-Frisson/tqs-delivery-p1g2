@@ -41,17 +41,7 @@ public class AddressControllerTest {
   @BeforeEach
   void setUp() throws IOException {
     RestAssuredMockMvc.mockMvc( mvc );
-    /* userOrders = new ArrayList<>();
-    userOrders.add( createOrder( 1 ) );
-    System.out.println( userOrders.get( 0 ) );
-    userOrders.add( createOrder( 2 ) );
-    userOrders.add( createOrder( 3 ) );
-    userOrders.add( createOrder( 4 ) ); */
-
     addressDTO = createAddressDTO( 1 );
-    /* order1DTO = createOrderDTO( 2 );
-    order2DTO = createOrderDTO( 3 ); */
-
   }
 
   @Test
@@ -89,7 +79,6 @@ public class AddressControllerTest {
 
     given().contentType( ContentType.JSON ).body( aDto )
                       .when().post( "api/v1/address" ).then()
-                      .contentType( ContentType.JSON )
                       .status( HttpStatus.BAD_REQUEST );
 
     verify( addressService, times( 1 ) ).getAddress( any() );
@@ -102,18 +91,7 @@ public class AddressControllerTest {
   }
 
   private Address createAddress( int i ) { 
-
-    Address a = new Address( i, user, null, "Street, " + i, "City", "234" );
-
-    /* Address a1 = new Address( i, u, Collections.emptyList(), "Street, " + i, "City", "234" );
-
-    Address a2 = new Address();
-    a2.setUser(u);
-    a2.setStreet("Street, " + i); */
-
-    System.out.println( "Address: " + a.toString());
-
-    return a;
+    return new Address( i, user, null, "Street, " + i, "City", "234" );
   }
 
   private AddressDTO createAddressDTO( int i ) {

@@ -26,7 +26,7 @@ public class AddressService {
         User user = userOptional.get();
         
         // Get address and check if exists
-        Optional<Address> addressOptional = addressRepository.findByUserAndStreetAndCityAndZipCode(user.getId(), addressDto.getStreet(), addressDto.getCity(), addressDto.getZipCode());
+        Optional<Address> addressOptional = addressRepository.findByUserAndStreetAndCityAndZipCode(user, addressDto.getStreet(), addressDto.getCity(), addressDto.getZipCode());
         if ( addressOptional.isEmpty() ) {
             Address a = new Address();
             a.setUser(user);
