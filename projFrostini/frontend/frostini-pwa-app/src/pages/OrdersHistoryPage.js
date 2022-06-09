@@ -55,7 +55,7 @@ function OrdersHistoryPage() {
 
   useEffect(() => {
     const userId = auth.id;
-    //console.log(userId);
+    console.log("HISTORY: " + userId);
     axios.get(`/order/user/${userId}`)
       .then(res => {
         console.log(res)

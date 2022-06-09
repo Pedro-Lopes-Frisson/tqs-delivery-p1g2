@@ -64,7 +64,6 @@ function NewOrderPage() {
     }
 
     console.log("POST");
-    console.log(body);
 
     const body =  {
       "addressId": 1,
@@ -74,6 +73,7 @@ function NewOrderPage() {
       })
     };
 
+    console.log(body);
     await axios.post(`${NEW_ORDER_URL}`, body)
       .then(
         res => {

@@ -86,7 +86,7 @@ public class OrderService {
       System.out.println("USER BD");
       return new ArrayList<>();
     }
-    System.out.println("USER ORDERS");
+    System.out.println("USER ORDERS - " + orderRepository.findAllByUser( userFromDb.get(), Pageable.unpaged() ).size());
     return orderRepository.findAllByUser( userFromDb.get(), Pageable.unpaged() );
   }
 }
