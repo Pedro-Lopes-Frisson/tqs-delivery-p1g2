@@ -2,6 +2,7 @@ package ua.tqs.frostini.controller;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import static org.hamcrest.Matchers.equalTo;
 
 @WebMvcTest(value = AddressController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -51,23 +54,29 @@ public class AddressControllerTest {
     when( addressService.getAddress( any() ) ).thenReturn( a );
 
     given().contentType( ContentType.JSON ).body( aDto )
-                      .when().post( "api/v1/address" ).then()
+                      .when().post( "api/v1/addresses" ).then()
                       .contentType( ContentType.JSON )
-                      .status( HttpStatus.OK );
+                      .status( HttpStatus.OK ).and()
+                      .body("street", equalTo( a.getStreet() ) )
+                      .body("city", equalTo( a.getCity() ) )
+                      .body("zipCode", equalTo( a.getZipCode() ) );
 
     verify( addressService, times( 1 ) ).getAddress( any() );
   }
 
   @Test
-  void testPostoldAddressWithValidUser_ThenReturnAddressId() {
+  void testPostOldAddressWithValidUser_ThenReturnAddressId() {
     Address a = createAddress( 1 );
     AddressDTO aDto = createAddressDTO( 1 );
     when( addressService.getAddress( any() ) ).thenReturn( a );
 
     given().contentType( ContentType.JSON ).body( aDto )
-                      .when().post( "api/v1/address" ).then()
+                      .when().post( "api/v1/addresses" ).then()
                       .contentType( ContentType.JSON )
-                      .status( HttpStatus.OK );
+                      .status( HttpStatus.OK ).and()
+                      .body("street", equalTo( a.getStreet() ) )
+                      .body("city", equalTo( a.getCity() ) )
+                      .body("zipCode", equalTo( a.getZipCode() ) );
 
     verify( addressService, times( 1 ) ).getAddress( any() );
   }

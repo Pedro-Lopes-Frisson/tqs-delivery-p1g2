@@ -77,10 +77,6 @@ class AddressRepositoryTest {
     testEntityManager.persist( u2 );
     Optional<Address> optionalAddress = addressRepository.findByUserAndStreetAndCityAndZipCode(u2, address1.getStreet(), address1.getCity(), address1.getZipCode());
     assertThat( optionalAddress ).isEmpty();
-    /* assertThat( optionalAddress.get().getUser() ).isEqualTo( u1 );
-    assertThat( optionalAddress.get().getStreet() ).isEqualTo( address1.getStreet() );
-    assertThat( optionalAddress.get().getCity() ).isEqualTo( address1.getCity() );
-    assertThat( optionalAddress.get().getZipCode() ).isEqualTo( address1.getZipCode() ); */
   }
    /* helpers */
 

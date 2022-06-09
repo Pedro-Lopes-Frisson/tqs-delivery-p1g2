@@ -30,7 +30,7 @@ public class AddressController {
         return null;
     } */
 
-    @PostMapping("/address")
+    @PostMapping("/addresses")
     public ResponseEntity<Object> newAddressId(@Valid @RequestBody AddressDTO addressDTO) {
         // if response is null -> bad request
         // else -> OK with id (ResponseEntity.status( HttpStatus.OK ).body( order );)
