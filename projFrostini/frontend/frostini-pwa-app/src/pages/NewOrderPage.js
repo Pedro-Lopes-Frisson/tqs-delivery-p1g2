@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
@@ -18,13 +19,17 @@ import {
   Radio,
   FormControl,
   FormControlLabel,
+  Snackbar,
+  IconButton
 } from "@mui/material";
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
+import CloseIcon from '@mui/icons-material/Close';
 import Popup from '../components/Popup';
 import axios from '../api/axios';
 
 const NEW_ORDER_URL = '/order';
+const ADDRESS_URL = '/addresses';
 
 function NewOrderPage() {
   const navigate = useNavigate();
@@ -35,6 +40,8 @@ function NewOrderPage() {
   const [address, setAddress] = useLocalStorage('address', []);
   const [state, setState] = useLocalStorage('state', '');
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const [open, setOpen] = useState(false);
 
   /* console.log(auth);
   console.log(order); */
@@ -56,6 +63,31 @@ function NewOrderPage() {
     0
   );
 
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -63,36 +95,63 @@ function NewOrderPage() {
       setAddress([e.currentTarget['address'].value, e.currentTarget['city'].value, e.currentTarget['zip-code'].value]);
     }
 
-    console.log("POST");
+    let idAddress = '';
 
-    const body =  {
-      "addressId": 1,
-      "userId": auth.id,
-      "orderedProductsList": order.map(product => {
-        return {"quantity": product.quantity, "productId": product.id };
+    if(newAddress) {
+      await axios.post(`${ADDRESS_URL}`, {
+        "userId": auth.id,
+        "street": address[0],
+        "city": address[1],
+        "zipCode": address[2]
       })
-    };
-
-    console.log(body);
-    await axios.post(`${NEW_ORDER_URL}`, body)
-      .then(
-        res => {
-          if(res.status === 201) {
-            console.log("NEW ORDER");
-            setSuccess(true);
-            setState('ordered');
+        .then(
+          res => {
+            if(res.status === 200) {
+              idAddress = res.data.id;
+            }
+        }).catch(err => {
+          console.log(err.response);
+          if (err.response.status === 0) {
+            setError('No server response');
+          } else {
+            setError('Order failed');
           }
-  
-      }).catch(err => {
-        console.log(err.response);
-        if (err.response.status === 0) {
-          //setError('No server response');
-        } else {
-          //setError('Register failed');
-        }
-      })
+        })
+    } else {
+      idAddress = auth.address.id;
+    }
+
+    if(error) {
+      setOpen(true);
+    } else {
+      const body =  {
+        "addressId": idAddress,
+        "userId": auth.id,
+        "orderedProductsList": order.map(product => {
+          return {"quantity": product.quantity, "productId": product.id };
+        })
+      };
+
+      await axios.post(`${NEW_ORDER_URL}`, body)
+        .then(
+          res => {
+            if(res.status === 201) {
+              console.log("NEW ORDER");
+              setSuccess(true);
+              setState('ordered');
+            }
     
-    //navigate('/purchase');
+        }).catch(err => {
+          console.log(err.response);
+          if (err.response.status === 0) {
+            setError('No server response');
+            setOpen(true);
+          } else {
+            setError('Order failed');
+            setOpen(true);
+          }
+        })
+    }
   };
 
   return (
@@ -140,11 +199,21 @@ function NewOrderPage() {
       <div className="total-price">
         <Chip label={`Total: ${totalPrice}€`} className="total-price-chip" />
       </div>
+
       <Popup trigger={success} setTrigger={setSuccess}>
         <h3>Order Confirmed</h3>
         <p>Wait for a rider to be attributed</p>
         <p>Go back to the <Link to="/menu">Menu</Link></p>
       </Popup>
+
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={error}
+        action={action}
+      />
+      
       <form onSubmit={handleSubmit}>
           <div className="address-details">
             <h3>Address Details</h3>
