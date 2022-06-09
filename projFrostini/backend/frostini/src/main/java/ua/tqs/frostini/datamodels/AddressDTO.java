@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 public class AddressDTO {
    
   @NotNull
-  @NotEmpty
   private long userId;
   
   @NotNull
