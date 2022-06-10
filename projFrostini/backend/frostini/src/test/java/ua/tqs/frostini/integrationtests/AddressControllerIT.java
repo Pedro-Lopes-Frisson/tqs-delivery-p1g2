@@ -40,7 +40,6 @@ class AddressControllerIT {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    private String token;
     private User user;
     private Address address;
     private AddressDTO addressDTO;
@@ -71,12 +70,11 @@ class AddressControllerIT {
 
         address = new Address();
         address.setUser(user);
-        address.setStreet("Street");
-        address.setCity("City");
-        address.setZipCode("234");
+        address.setLatitude(40.640506);
+        address.setLongitude(-8.653754);
 
         addressRepository.saveAndFlush( address );
-        addressDTO = new AddressDTO( user.getId(), "Street", "City", "234" );
+        addressDTO = new AddressDTO( user.getId(), 40.640506, -8.653754 );
     }
 
     @AfterEach
@@ -98,7 +96,7 @@ class AddressControllerIT {
 
     @Test
     public void testOnAddNewAddress_ThenReturn200() {
-        AddressDTO aDto = new AddressDTO( user.getId(), "Street1", "City1", "2345" ); 
+        AddressDTO aDto = new AddressDTO( user.getId(), 41.640506, -7.653754 ); 
         RestAssured.given()
                .contentType( "application/json" )
                .body( aDto )
@@ -110,7 +108,7 @@ class AddressControllerIT {
 
     @Test
     public void testOnAddAddressWithInvalidUser_ThenReturnBadRequest() {
-        AddressDTO aDto = new AddressDTO( 2l, "Street", "City", "234" ); 
+        AddressDTO aDto = new AddressDTO( 3l, 40.640506, -8.653754 ); 
         RestAssured.given()
                .contentType( "application/json" )
                .body( aDto )

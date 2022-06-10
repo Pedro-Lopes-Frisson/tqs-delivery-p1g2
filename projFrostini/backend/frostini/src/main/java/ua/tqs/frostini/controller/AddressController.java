@@ -25,15 +25,8 @@ public class AddressController {
 
     @Autowired AddressService addressService;
 
-    /* @GetMapping("/address")
-    public ResponseEntity<Object> getAddressId(@Valid @RequestBody AddressDTO addressDTO) {
-        return null;
-    } */
-
     @PostMapping("/addresses")
     public ResponseEntity<Object> newAddressId(@Valid @RequestBody AddressDTO addressDTO) {
-        // if response is null -> bad request
-        // else -> OK with id (ResponseEntity.status( HttpStatus.OK ).body( order );)
         Address address = addressService.getAddress(addressDTO);
         if(address == null) {
             return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );

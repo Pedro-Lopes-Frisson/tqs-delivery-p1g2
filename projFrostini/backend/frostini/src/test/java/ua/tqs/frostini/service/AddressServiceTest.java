@@ -43,9 +43,8 @@ public class AddressServiceTest {
         Address address = addressService.getAddress( aDto );
 
         assertThat(address.getUser(), equalTo(u));
-        assertThat(address.getStreet(), equalTo(a.getStreet()));
-        assertThat(address.getCity(), equalTo(a.getCity()));
-        assertThat(address.getZipCode(), equalTo(a.getZipCode()));
+        assertThat(address.getLatitude(), equalTo(a.getLatitude()));
+        assertThat(address.getLongitude(), equalTo(a.getLongitude()));
 
         verify( userRepository, times( 1 ) ).findById( a.getUser().getId() );
     }
@@ -61,10 +60,10 @@ public class AddressServiceTest {
     }
 
     private Address createAddress( int i ) {
-        return new Address( i, u, null, "Street, " + i, "City", "234" );
+        return new Address( i, u, null, 40.640506, -8.653754 );
     }
 
     private AddressDTO createAddressDto( int i ) {
-        return new AddressDTO( u.getId(), "Street, " + i, "City", "234" );
+        return new AddressDTO( u.getId(), 40.640506, -8.653754 );
     }
 }

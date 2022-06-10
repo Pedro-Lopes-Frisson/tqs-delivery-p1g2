@@ -32,12 +32,9 @@ public class Address {
   @OneToMany(mappedBy = "address")
   private List<Order> order;
   
-  @Column(name = "street")
-  String street;
+  @Column(name = "latitude")
+  double latitude;
 
-  @Column(name = "city")
-  String city;
-  
-  @Column(name = "zip_code")
-  String zipCode;
+  @Column(name = "longitude")
+  double longitude;
 }

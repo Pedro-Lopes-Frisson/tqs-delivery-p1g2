@@ -83,10 +83,8 @@ public class OrderService {
   public List<Order> getAllOrdersByUser( long id ) {
     Optional<User> userFromDb = userRepository.findById( id );
     if ( userFromDb.isEmpty() ) {
-      System.out.println("USER BD");
       return new ArrayList<>();
     }
-    System.out.println("USER ORDERS - " + orderRepository.findAllByUser( userFromDb.get(), Pageable.unpaged() ).size());
     return orderRepository.findAllByUser( userFromDb.get(), Pageable.unpaged() );
   }
 }

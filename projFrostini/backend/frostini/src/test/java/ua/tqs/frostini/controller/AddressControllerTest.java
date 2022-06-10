@@ -57,9 +57,8 @@ public class AddressControllerTest {
                       .when().post( "api/v1/addresses" ).then()
                       .contentType( ContentType.JSON )
                       .status( HttpStatus.OK ).and()
-                      .body("street", equalTo( a.getStreet() ) )
-                      .body("city", equalTo( a.getCity() ) )
-                      .body("zipCode", equalTo( a.getZipCode() ) );
+                      .body("latitude", equalTo( (float) a.getLatitude() ) )
+                      .body("longitude", equalTo( (float) a.getLongitude() ) );
 
     verify( addressService, times( 1 ) ).getAddress( any() );
   }
@@ -74,9 +73,8 @@ public class AddressControllerTest {
                       .when().post( "api/v1/addresses" ).then()
                       .contentType( ContentType.JSON )
                       .status( HttpStatus.OK ).and()
-                      .body("street", equalTo( a.getStreet() ) )
-                      .body("city", equalTo( a.getCity() ) )
-                      .body("zipCode", equalTo( a.getZipCode() ) );
+                      .body("latitude", equalTo( (float) a.getLatitude() ) )
+                      .body("longitude", equalTo( (float) a.getLongitude() ) );
 
     verify( addressService, times( 1 ) ).getAddress( any() );
   }
@@ -87,7 +85,7 @@ public class AddressControllerTest {
     when( addressService.getAddress( any() ) ).thenReturn( null );
 
     given().contentType( ContentType.JSON ).body( aDto )
-                      .when().post( "api/v1/address" ).then()
+                      .when().post( "api/v1/addresses" ).then()
                       .status( HttpStatus.BAD_REQUEST );
 
     verify( addressService, times( 1 ) ).getAddress( any() );
@@ -100,7 +98,7 @@ public class AddressControllerTest {
   }
 
   private Address createAddress( int i ) { 
-    return new Address( i, user, null, "Street, " + i, "City", "234" );
+    return new Address( i, user, null, 40.640506, -8.653754 );
   }
 
   private AddressDTO createAddressDTO( int i ) {
@@ -108,9 +106,8 @@ public class AddressControllerTest {
     AddressDTO addressDto = new AddressDTO();
 
     addressDto.setUserId(user.getId());
-    addressDto.setStreet("Street, " + i);
-    addressDto.setCity("City");
-    addressDto.setZipCode("234");
+    addressDto.setLatitude(40.640506);
+    addressDto.setLongitude(-8.653754);
 
     System.out.println( "AddressDTO: " + addressDto.toString());
 

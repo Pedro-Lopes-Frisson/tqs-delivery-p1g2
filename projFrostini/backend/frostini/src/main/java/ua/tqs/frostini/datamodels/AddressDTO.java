@@ -16,14 +16,8 @@ public class AddressDTO {
   private long userId;
   
   @NotNull
-  @NotEmpty
-  private String street;
+  private double latitude;
 
   @NotNull
-  @NotEmpty
-  private String city;
-  
-  @NotNull
-  @NotEmpty
-  private String zipCode;
+  private double longitude;
 }

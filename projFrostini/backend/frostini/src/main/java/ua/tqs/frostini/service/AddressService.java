@@ -26,13 +26,12 @@ public class AddressService {
         User user = userOptional.get();
         
         // Get address and check if exists
-        Optional<Address> addressOptional = addressRepository.findByUserAndStreetAndCityAndZipCode(user, addressDto.getStreet(), addressDto.getCity(), addressDto.getZipCode());
+        Optional<Address> addressOptional = addressRepository.findByUserAndLatitudeAndLongitude(user, addressDto.getLatitude(), addressDto.getLongitude());
         if ( addressOptional.isEmpty() ) {
             Address a = new Address();
             a.setUser(user);
-            a.setStreet(addressDto.getStreet());
-            a.setCity(addressDto.getCity());
-            a.setZipCode(addressDto.getZipCode());
+            a.setLatitude(addressDto.getLatitude());
+            a.setLongitude(addressDto.getLongitude());
 
             addressRepository.save(a);
             return a;
@@ -40,9 +39,5 @@ public class AddressService {
 
         return addressOptional.get();
     }
-
-    // check if user exist, if not, return null
-    // check if address exists, if yes, return the id
-    // if not, create and return id
     
 }

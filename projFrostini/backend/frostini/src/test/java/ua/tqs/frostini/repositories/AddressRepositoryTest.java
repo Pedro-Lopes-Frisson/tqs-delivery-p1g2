@@ -64,18 +64,17 @@ class AddressRepositoryTest {
 
   @Test
   void whenFindByValidUserAndAddress_ThenReturnAddress() {
-    Optional<Address> optionalAddress = addressRepository.findByUserAndStreetAndCityAndZipCode(u1, address1.getStreet(), address1.getCity(), address1.getZipCode());
+    Optional<Address> optionalAddress = addressRepository.findByUserAndLatitudeAndLongitude(u1, address1.getLatitude(), address1.getLongitude());
     assertThat( optionalAddress ).isPresent();
     assertThat( optionalAddress.get().getUser() ).isEqualTo( u1 );
-    assertThat( optionalAddress.get().getStreet() ).isEqualTo( address1.getStreet() );
-    assertThat( optionalAddress.get().getCity() ).isEqualTo( address1.getCity() );
-    assertThat( optionalAddress.get().getZipCode() ).isEqualTo( address1.getZipCode() );
+    assertThat( optionalAddress.get().getLatitude() ).isEqualTo( address1.getLatitude() );
+    assertThat( optionalAddress.get().getLongitude() ).isEqualTo( address1.getLongitude() );
   }
 
   @Test
   void whenFindByInvalidUserAndAddress_ThenReturnAddress() {
     testEntityManager.persist( u2 );
-    Optional<Address> optionalAddress = addressRepository.findByUserAndStreetAndCityAndZipCode(u2, address1.getStreet(), address1.getCity(), address1.getZipCode());
+    Optional<Address> optionalAddress = addressRepository.findByUserAndLatitudeAndLongitude(u2, address1.getLatitude(), address1.getLongitude());
     assertThat( optionalAddress ).isEmpty();
   }
    /* helpers */
@@ -93,8 +92,8 @@ class AddressRepositoryTest {
 
     Address address = new Address();
     address.setUser( u );
-    address.setStreet( "Some Real Street " + i );
-    address.setZipCode( "0000-" + i + "23" );
+    address.setLatitude( 40.640506 );
+    address.setLongitude( -8.653754 );
     testEntityManager.persistAndFlush( address );
 
     return address;

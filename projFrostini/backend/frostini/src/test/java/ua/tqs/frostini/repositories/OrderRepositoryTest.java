@@ -131,8 +131,8 @@ class OrderRepositoryTest {
   private Address createAddress( int i, User u ) {
     Address address = new Address();
     address.setUser( u );
-    address.setStreet( "Some Real Street " + i );
-    address.setZipCode( "0000-" + i + "23" );
+    address.setLatitude( 40.640506 + i );
+    address.setLongitude( -8.653754 + i );
     return address;
   }
 
