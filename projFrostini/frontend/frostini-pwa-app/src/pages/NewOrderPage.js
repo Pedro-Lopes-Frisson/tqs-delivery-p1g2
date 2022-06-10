@@ -63,10 +63,6 @@ function NewOrderPage() {
     0
   );
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -92,7 +88,7 @@ function NewOrderPage() {
     e.preventDefault();
 
     if(newAddress) {
-      setAddress([e.currentTarget['address'].value, e.currentTarget['city'].value, e.currentTarget['zip-code'].value]);
+      setAddress([e.currentTarget['latitude'].value, e.currentTarget['longitude'].value]);
     }
 
     let idAddress = '';
@@ -246,9 +242,8 @@ function NewOrderPage() {
                   <div>
                     {newAddress ? (
                       <div>
-                        <TextField id="address" variant="outlined" label="Address" required/>
-                        <TextField id="city" variant="outlined" label="City" required/>
-                        <TextField id="zip-code" variant="outlined" label="Zip code" required/>
+                        <TextField id="latitude" variant="outlined" label="Latitude" required/>
+                        <TextField id="longitude" variant="outlined" label="Longitude" required/>
                       </div>
                     ) : null}
                   </div>
