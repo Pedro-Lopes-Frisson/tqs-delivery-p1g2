@@ -1,4 +1,4 @@
-package ua.tqs.delivera.IntegrationTests;
+package ua.tqs.delivera.integrationtests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
