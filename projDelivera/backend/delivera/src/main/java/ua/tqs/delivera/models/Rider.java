@@ -1,15 +1,11 @@
 package ua.tqs.delivera.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import ua.tqs.delivera.datamodels.RiderDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // @Data
 @Entity
@@ -31,16 +27,21 @@ public class Rider{
     @Column
     private boolean available;
 
-    @OneToOne
-    @JoinColumn
-    private Location currentLocation;
-
     @Column
     private int numberOfReviews;
 
     @Column
     private int sumOfReviews;
-
+    
+    @OneToOne
+    @JoinColumn(name = "location_id")
+    private Location currentLocation;
+    
+    @OneToMany(mappedBy = "rider") private List<OrderProfit> orderProfits = new ArrayList<>();
+    public List<OrderProfit> getOrderProfits() {return orderProfits;}
+    
+    public void setOrderProfits( List<OrderProfit> orderProfits ) {this.orderProfits = orderProfits;}
+    
     public Rider(){}
 
     public Rider(String email, String name, String password, boolean available, Location currentLocation, int numberOfReviews, int sumOfReviews){

@@ -1,6 +1,4 @@
-package ua.tqs.delivera.ServiceTests;
-
-import java.util.Optional;
+package ua.tqs.delivera.servicestests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

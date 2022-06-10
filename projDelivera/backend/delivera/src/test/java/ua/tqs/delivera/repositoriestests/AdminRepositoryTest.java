@@ -1,6 +1,5 @@
-package ua.tqs.delivera.RepositoryTests;
+package ua.tqs.delivera.repositoriestests;
 
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
