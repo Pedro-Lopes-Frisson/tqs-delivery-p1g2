@@ -3,11 +3,12 @@ package ua.tqs.frostini.service;
 import java.util.List;
 import java.util.Optional;
 
+import ua.tqs.frostini.datamodels.ProductDTO;
 import ua.tqs.frostini.models.Product;
 
 public class ProductService {
      //add product
-    public Product createProduct(){
+    public Product createProduct(ProductDTO productDTO){
          return null;
     }
  

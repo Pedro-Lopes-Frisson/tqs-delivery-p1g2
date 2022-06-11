@@ -26,7 +26,7 @@ public class Product {
   long id;
   
   @Column
-  double price;
+  Double price;
   
   @Column(name = "stock_quantity")
   int stockQuantity;
