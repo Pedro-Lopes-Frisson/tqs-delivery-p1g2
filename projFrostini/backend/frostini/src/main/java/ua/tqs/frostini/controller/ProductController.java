@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ua.tqs.frostini.datamodels.ProductDTO;
@@ -45,33 +46,50 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @DeleteMapping("/delete/{productId}")
-    public ResponseEntity<List<Product>> removeProduct(@Valid @RequestBody long productId){
-        return null;
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Product> removeProduct(@Valid @PathVariable long productId){
+        boolean deleted = productService.deleteProduct(productId);
+        if (!deleted){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
     @PutMapping("/{productId}")
-    public ResponseEntity<List<Product>> editProduct(@Valid @RequestBody long productId){
-        return null;
+    public ResponseEntity<Product> editProduct(@Valid @PathVariable long productId, @RequestBody ProductDTO updatedProductDTO){
+        Product edited = productService.editProduct(productId, updatedProductDTO);
+        if (edited==null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(edited);
     }
 
     @GetMapping("")
     public ResponseEntity<List<Product>> getAllProducts(@RequestParam(required = false) String substring){
-        return null;
+        if (substring!=null){
+            List<Product> filteredProducts = productService.getProductsBySubstring(substring);
+            return ResponseEntity.status(HttpStatus.OK).body(filteredProducts);
+        }
+        List<Product> allProducts = productService.getAllProducts();
+        return ResponseEntity.status(HttpStatus.OK).body(allProducts);
     }
 
     @GetMapping("/available")
     public ResponseEntity<List<Product>> getAllAvailableProducts(){
-        return null;
+        List<Product> allAvailableProducts = productService.getAllAvailableProducts();
+        return ResponseEntity.status(HttpStatus.OK).body(allAvailableProducts);
     }
 
     @GetMapping("/unavailable")
     public ResponseEntity<List<Product>> getAllUnavailableProducts(){
-        return null;
+        List<Product> allUnavailableProducts = productService.getAllUnavailableProducts();
+        return ResponseEntity.status(HttpStatus.OK).body(allUnavailableProducts);
     }
     
     @GetMapping("/{productId}")
-    public ResponseEntity<List<Product>> getProduct(@PathVariable long productId){
-        return null;
+    public ResponseEntity<Product> getProduct(@PathVariable long productId){
+        Product found = productService.getProductById(productId);
+        if (found==null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        return ResponseEntity.status(HttpStatus.OK).body(found);
     }
 //azure to upload product image
 

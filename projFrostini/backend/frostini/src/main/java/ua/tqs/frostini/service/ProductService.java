@@ -3,6 +3,8 @@ package ua.tqs.frostini.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import ua.tqs.frostini.datamodels.ProductDTO;
 import ua.tqs.frostini.models.Product;
 
@@ -13,12 +15,12 @@ public class ProductService {
     }
  
      //remove product
-    public Boolean deleteProduct(){
-        return null;
+     public boolean deleteProduct(long productId) {
+        return false;
     }
  
      //update product
-    public Product editProduct(){
+    public Product editProduct(long productId, ProductDTO updatedProductDTO){
         return null;
     }
  
@@ -35,13 +37,15 @@ public class ProductService {
         return null;
     }
      //list products according to a substring
-     public List<Product> getProductsBySubstring(){
+     public List<Product> getProductsBySubstring(String subString){
         return null;
     }
  
      //get product by id
-     public Product getProductById(){
+     public Product getProductById(long productId){
         return null;
     }
+
+    
  
 }
