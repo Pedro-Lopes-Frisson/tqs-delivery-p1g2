@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import ua.tqs.delivera.exceptions.NonExistentResource;
 import ua.tqs.delivera.models.Rider;
 import ua.tqs.delivera.repositories.RiderRepository;
 
@@ -23,18 +24,22 @@ public class RiderService {
         throw new DuplicateKeyException("Email already in use");
     }
 
-    public Map<String, Object> getRiderStatistics(long riderId) {
+    public Map<String, Object> getRiderStatistics(long riderId) throws NonExistentResource {
         // check if rider exists
         Optional<Rider> rider = riderRepo.findById(riderId);
         if (rider.isEmpty()) {
-            return null;
+            throw new NonExistentResource( "This rider does not exist!" );
         }
 
-        // averageReviewValue: get sumOfReviews e numOfReviews e dividir
-        double average = rider.get().getNumberOfReviews() != 0 ? rider.get().getSumOfReviews()/rider.get().getNumberOfReviews() * 1.0 : 0.0;
+        Map<String, Object> result = new HashMap<>();
 
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("averageReviewValue", average);
+        if(rider.get().getNumberOfReviews() != 0) {
+
+            double average = (double) rider.get().getSumOfReviews()/rider.get().getNumberOfReviews();
+            result.put("averageReviewValue", average);
+        }
+
+        
 
         // TODO: totalNumberOfOrdersDelivered
 
