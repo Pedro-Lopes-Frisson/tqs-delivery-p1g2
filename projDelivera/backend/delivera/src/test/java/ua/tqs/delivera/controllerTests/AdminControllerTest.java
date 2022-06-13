@@ -1,4 +1,4 @@
-package ua.tqs.delivera.ControllerTests;
+package ua.tqs.delivera.controllerTests;
 
 
 import io.restassured.http.ContentType;

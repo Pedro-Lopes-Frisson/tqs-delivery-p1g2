@@ -1,5 +1,7 @@
-package ua.tqs.delivera.ServiceTests;
+package ua.tqs.delivera.serviceTests;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -62,6 +64,41 @@ public class RiderServiceTest {
         assertThat(foundRider).isEqualTo(rider);
         verifySaveRiderIsCalledOnce();
 
+    }
+
+    @Test
+    void whenGetRiderStatsWithZeroReviews_thenReturnMap() {
+        Mockito.when(riderRepo.findById(Mockito.any())).thenReturn(Optional.of(rider));
+        rider.setRiderId(1l);
+        riderService.saveRider(rider);
+
+        Map<String, Object> stats = riderService.getRiderStatistics(rider.getRiderId());
+        Map<String, Object> expected = new HashMap<String, Object>();
+        expected.put("averageReviewValue", 0.0);
+
+        assertThat(stats).isEqualTo(expected);
+    }
+
+    @Test
+    void whenGetRiderStats_thenReturnMap() {
+        Mockito.when(riderRepo.findById(Mockito.any())).thenReturn(Optional.of(rider));
+        rider.setRiderId(1l);
+        rider.setNumberOfReviews(10);
+        rider.setSumOfReviews(35);
+        riderService.saveRider(rider);
+
+        Map<String, Object> stats = riderService.getRiderStatistics(rider.getRiderId());
+        Map<String, Object> expected = new HashMap<String, Object>();
+        expected.put("averageReviewValue", rider.getSumOfReviews()/rider.getNumberOfReviews()*1.0);
+
+        assertThat(stats).isEqualTo(expected);
+    }
+
+    @Test
+    void whenGetRiderStatsWithInvalidRider_thenReturnNull() {
+        Map<String, Object> stats = riderService.getRiderStatistics(10l);
+
+        assertThat(stats).isNull();
     }
 
     private void verifySaveRiderIsCalledOnce() {

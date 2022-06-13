@@ -103,4 +103,12 @@ public class Rider{
     public void setRiderId(Long id){
         this.riderId=id;
     }
+
+    public void setNumberOfReviews(int numberOfReviews){
+        this.numberOfReviews = numberOfReviews;
+    }
+
+    public void setSumOfReviews(int sumOfReviews){
+        this.sumOfReviews = sumOfReviews;
+    }
 }
