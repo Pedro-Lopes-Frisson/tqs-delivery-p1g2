@@ -22,8 +22,9 @@ services:
       - postgres-db-frostini # This service depends on mysql. Start that first.
       - rabbitmq
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
-      - backend
-      - backend-frostini
+      backend-frostini:
+        ipv4_address: 172.20.202.10
+      backend:
 
 
   # Database Service (PostGres)
@@ -43,7 +44,8 @@ services:
     volumes:
       - frostinidb:/var/lib/postgresql/frostiniData
     networks:
-      - backend-frostini
+      backend-frostini:
+        ipv4_address: 172.20.202.2
 
   # Database Service (PostGres)
   frostini-web:
@@ -57,7 +59,8 @@ services:
     ports:
       - 3000:80
     networks:
-      - backend-frostini
+      backend-frostini:
+        ipv4_address: 172.20.202.3
 
   # App backend service
   delivera:
@@ -80,9 +83,9 @@ services:
       - rabbitmq
 
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
-      - backend-delivera
-      - backend
-
+      backend-delivera:
+        ipv4_address: 172.20.200.10
+      backend:
 
   # Database Service (PostGres)
   postgres-db-delivera:
@@ -100,7 +103,8 @@ services:
     volumes:
       - deliveradb:/var/lib/postgresql/deliveraData
     networks:
-      - backend-delivera
+      backend-delivera:
+        ipv4_address: 172.20.200.2
 
 
   delivera-web:
@@ -114,7 +118,8 @@ services:
     ports:
       - 3001:80
     networks:
-      - backend-frostini
+      backend-delivera:
+        ipv4_address: 172.20.200.3
 
 
   rabbitmq:
@@ -140,8 +145,12 @@ volumes:
 # Networks to be created to facilitate communication between containers
 networks:
   backend-delivera:
-    driver: bridge
-  backend:
-      name: external-network
+    ipam:
+      config:
+        - subnet: "172.20.200.0/24"
   backend-frostini:
-    driver: bridge
+    ipam:
+      config:
+        - subnet: "172.20.202.0/24"
+  backend:
+    name: external-network

@@ -28,8 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
     .withUsername("demo")
     .withPassword("demopw")
     .withDatabaseName("shop");
-  
-  
+
+
   @DynamicPropertySource
   static void properties(DynamicPropertyRegistry registry) {
     System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + container.getJdbcUrl());
@@ -37,48 +37,48 @@ import static org.assertj.core.api.Assertions.assertThat;
     registry.add("spring.datasource.password", container::getPassword);
     registry.add("spring.datasource.username", container::getUsername);
   }
-  
+
   @AfterEach
    void tearDown() {
     userRepository.deleteAll();
     testEntityManager.clear();
-    
+
   }
-  
+
   @Autowired
   private UserRepository userRepository;
-  
-  
+
+
   @Autowired
   private TestEntityManager testEntityManager;
-  
-  
+
+
   @Test
    void whenUserSaved_findByCorrectEmailShouldReturnCorrectUserEntity() {
     User u1 = createAndSaveUser( 1l );
     User u2 = createAndSaveUser( 2l );
-    
+
     Optional<User> optionalUserFromDB = userRepository.findByEmail( u1.getEmail() );
-    assertThat( optionalUserFromDB.isPresent() ).isTrue();
-    
+    assertThat( optionalUserFromDB ).isPresent();
+
     User userFromDB = optionalUserFromDB.get();
     assertThat( userFromDB.getEmail() ).isEqualTo( u1.getEmail() );
     assertThat( userFromDB.getName() ).isEqualTo( u1.getName() );
     assertThat( userFromDB.getPassword() ).isEqualTo( u1.getPassword() );
   }
-  
+
   @Test
    void whenUserSaved_findByIncorrectEmailShouldReturnEmptyOptionalObject() {
     User u1 = createAndSaveUser( 1l );
     User u2 = createAndSaveUser( 2l );
-    
+
     Optional<User> optionalUserFromDB = userRepository.findByEmail( "thisisnotavalid@email.com" );
-    assertThat( optionalUserFromDB.isPresent() ).isFalse();
-    
+    assertThat( optionalUserFromDB ).isEmpty();
+
   }
-  
-  
-  
+
+
+
   /* -- helper -- */
   private User createAndSaveUser( long i ) {
     User u = new User();

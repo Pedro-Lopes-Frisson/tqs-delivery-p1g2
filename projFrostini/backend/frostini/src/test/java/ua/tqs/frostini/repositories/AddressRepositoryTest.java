@@ -1,2 +1,2 @@
-package ua.tqs.frostini.repositories;public class AddressRepositoryTest {
+package ua.tqs.frostini.repositories;class AddressRepositoryTest {
 }
