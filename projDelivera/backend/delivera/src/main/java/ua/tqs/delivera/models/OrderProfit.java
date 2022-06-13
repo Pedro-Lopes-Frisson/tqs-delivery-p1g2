@@ -29,6 +29,6 @@ public class OrderProfit {
   private Order order;
   
   @Column(name = "order_price")
-  private long orderPrice;
+  private Double orderPrice;
   
 }
