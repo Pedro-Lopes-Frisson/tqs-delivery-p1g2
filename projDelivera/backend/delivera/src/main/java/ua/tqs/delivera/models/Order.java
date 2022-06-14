@@ -1,5 +1,6 @@
 package ua.tqs.delivera.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,26 +17,31 @@ public class Order {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id", nullable = false)
-  private Long id;
+  Long id;
   
   
   @Column(name = "external_id", nullable = false)
-  private Long externalId;
+  Long externalId;
   
   @OneToOne
   @JoinColumn(name = "order_profit_id")
-  private OrderProfit orderProfit;
+  OrderProfit orderProfit;
   
   
   @OneToOne
   @JoinColumn(name = "location_id")
-  private Location currentLocation;
+  Location currentLocation;
   
-  @Column(name = "shop_location", nullable = false)
-  private String shopLocation;
+  //@Column(name = "shop_location", nullable = false)
+  // String shopLocation;
   
   @Column(name = "client_location", nullable = false)
-  private String clientLocation;
+  String clientLocation;
+  
+  @JsonIgnore
+  @ManyToOne
+  @JoinColumn(name = "store_id")
+  Store store;
   
   
 }

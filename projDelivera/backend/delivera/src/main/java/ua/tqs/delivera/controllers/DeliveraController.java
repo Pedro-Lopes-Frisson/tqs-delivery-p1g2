@@ -1,5 +1,6 @@
 package ua.tqs.delivera.controllers;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/delivera")
 @CrossOrigin
+@Log4j2
 public class DeliveraController {
   @Autowired
   private RiderService riderService;
@@ -37,9 +39,11 @@ public class DeliveraController {
     try {
       orderList = riderService.getAllOrdersForRider( id );
     } catch (NonExistentResource e) {
+      log.error( "Error: Rider not Found" );
       return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
     }
-    
+  
+    log.info( " Response method returned -> {} ", orderList );
     return ResponseEntity.status( HttpStatus.OK ).body( orderList );
   }
   
