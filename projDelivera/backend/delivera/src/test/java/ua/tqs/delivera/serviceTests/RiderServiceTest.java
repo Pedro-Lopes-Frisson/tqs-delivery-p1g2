@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ua.tqs.delivera.exceptions.NonExistentResource;
 import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Rider;
 import ua.tqs.delivera.repositories.RiderRepository;
@@ -67,20 +68,20 @@ public class RiderServiceTest {
     }
 
     @Test
-    void whenGetRiderStatsWithZeroReviews_thenReturnMap() {
+    void whenGetRiderStatsWithZeroReviews_thenReturnMap() throws NonExistentResource {
         Mockito.when(riderRepo.findById(Mockito.any())).thenReturn(Optional.of(rider));
         rider.setRiderId(1l);
         riderService.saveRider(rider);
 
         Map<String, Object> stats = riderService.getRiderStatistics(rider.getRiderId());
         Map<String, Object> expected = new HashMap<String, Object>();
-        expected.put("averageReviewValue", 0.0);
 
         assertThat(stats).isEqualTo(expected);
+        Mockito.verify(riderRepo, VerificationModeFactory.times(1)).findById(any());
     }
 
     @Test
-    void whenGetRiderStats_thenReturnMap() {
+    void whenGetRiderStats_thenReturnMap() throws NonExistentResource {
         Mockito.when(riderRepo.findById(Mockito.any())).thenReturn(Optional.of(rider));
         rider.setRiderId(1l);
         rider.setNumberOfReviews(10);
@@ -89,16 +90,20 @@ public class RiderServiceTest {
 
         Map<String, Object> stats = riderService.getRiderStatistics(rider.getRiderId());
         Map<String, Object> expected = new HashMap<String, Object>();
-        expected.put("averageReviewValue", rider.getSumOfReviews()/rider.getNumberOfReviews()*1.0);
+        expected.put("averageReviewValue", (double) rider.getSumOfReviews()/rider.getNumberOfReviews());
 
         assertThat(stats).isEqualTo(expected);
+        Mockito.verify(riderRepo, VerificationModeFactory.times(1)).findById(any());
     }
 
     @Test
     void whenGetRiderStatsWithInvalidRider_thenReturnNull() {
-        Map<String, Object> stats = riderService.getRiderStatistics(10l);
+        Mockito.when(riderRepo.findById(Mockito.any())).thenReturn(Optional.empty());
+        assertThrows( NonExistentResource.class, () -> {
+          riderService.getRiderStatistics(10l);
+        } );
 
-        assertThat(stats).isNull();
+        Mockito.verify(riderRepo, VerificationModeFactory.times(1)).findById(any());
     }
 
     private void verifySaveRiderIsCalledOnce() {
