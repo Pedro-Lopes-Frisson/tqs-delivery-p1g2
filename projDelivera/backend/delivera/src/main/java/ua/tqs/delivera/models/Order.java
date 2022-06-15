@@ -1,10 +1,7 @@
 package ua.tqs.delivera.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,6 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Order {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,8 +36,7 @@ public class Order {
   @Column(name = "client_location", nullable = false)
   String clientLocation;
   
-  @JsonIgnore
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "store_id")
   Store store;
   

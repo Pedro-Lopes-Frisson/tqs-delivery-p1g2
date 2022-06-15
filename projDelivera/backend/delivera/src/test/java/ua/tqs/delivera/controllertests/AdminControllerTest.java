@@ -41,7 +41,7 @@ public class AdminControllerTest {
   }
   
   @Test
-  public void testWhenLoginEndpointIsCalledWithCorrectEmail_ThenReturnAdminAndOkStatus() {
+  void testWhenLoginEndpointIsCalledWithCorrectEmail_ThenReturnAdminAndOkStatus() {
     when( adminService.login( admin.getEmail() ) ).thenReturn( admin );
     
     RestAssuredMockMvc.given()
@@ -58,7 +58,7 @@ public class AdminControllerTest {
   }
   
   @Test
-  public void testWhenLoginEndpointIsCalledWithInvalidEmail_ThenReturnBadRequeust() {
+  void testWhenLoginEndpointIsCalledWithInvalidEmail_ThenReturnBadRequeust() {
     
     when( adminService.login( any() ) ).thenReturn( null );
     
@@ -72,7 +72,7 @@ public class AdminControllerTest {
   }
   
   @Test
-  public void testWhenLoginEndpointIsCalledWithUnusedEmail_ThenReturnBadRequeust() {
+  void testWhenLoginEndpointIsCalledWithUnusedEmail_ThenReturnBadRequeust() {
     
     when( adminService.login( any() ) ).thenReturn( null );
     

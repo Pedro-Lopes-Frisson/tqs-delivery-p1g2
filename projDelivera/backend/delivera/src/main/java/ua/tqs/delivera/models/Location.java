@@ -2,11 +2,16 @@ package ua.tqs.delivera.models;
 
 import javax.persistence.*;
 
+import lombok.*;
 import ua.tqs.delivera.datamodels.LocationDTO;
 
 // @Data
 @Entity
 @Table(name = "location")
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

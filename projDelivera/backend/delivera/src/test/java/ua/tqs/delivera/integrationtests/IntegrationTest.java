@@ -2,6 +2,7 @@ package ua.tqs.delivera.integrationtests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,17 +122,87 @@ public class IntegrationTest {
     if ( response != null && response.hasBody() ) {
       orderListResp = response.getBody();
     }
-    System.out.println(orderListResp);
+    System.out.println( orderListResp );
     
     assertThat( orderListResp ).isNotEmpty();
     assertThat( orderListResp ).hasSize( rider.get().getOrderProfits().size() );
+    assertThat( orderListResp.get( 0 ).getOrderProfit().getOrderPrice() ).isEqualTo(
+      rider.get().getOrderProfits().get( 0 ).getOrderPrice() );
+    
+    assertThat( orderListResp.get( 1 ).getOrderProfit().getOrderPrice() ).isEqualTo(
+      rider.get().getOrderProfits().get( 1 ).getOrderPrice() );
+    
     
     //assertThat( orderListResp.get( 0 ).getId() ).isEqualTo( orderList.get( 0 ).getId() );
   }
   
+  @Test
+  void whenInValidRiderIdAndValidOrderId_ThenReturnBAD_REQUEST() {
+    
+    ResponseEntity<Order> response =
+      restTemplate.exchange( "/api/delivera/rider/" + - 1 + "/orders/" + 2,
+        HttpMethod.GET, null,
+        Order.class
+      );
+    
+    assertEquals( response.getStatusCode(), HttpStatus.BAD_REQUEST );
+    
+  }
+  @Test
+  void whenInValidRiderId_ThenReturnBAD_REQUEST() {
+    
+    ResponseEntity<Order> response =
+      restTemplate.exchange( "/api/delivera/rider/" + - 1 + "/orders",
+        HttpMethod.GET, null,
+        Order.class
+      );
+    
+    assertEquals( response.getStatusCode(), HttpStatus.BAD_REQUEST );
+    
+  }
   
-  
-  
+  @Test
+  void whenValidRiderIdAndValidOrderId_ThenReturnOrder() {
+    Optional<Rider> rider = riderRepo.findById( 1L );
+    assertThat( rider ).isNotEmpty();
+    Rider riderObj = rider.get();
+    
+    ResponseEntity<Order> response =
+      restTemplate.exchange( "/api/delivera/rider/" + riderObj.getRiderId() + "/orders/" +
+          riderObj.getOrderProfits().get( 0 ).getOrder().getId(),
+        HttpMethod.GET, null,
+        Order.class
+      );
+    
+    assertEquals( response.getStatusCode(), HttpStatus.OK );
+    
+    Order order = null;
+    if ( response != null && response.hasBody() ) {
+      order = response.getBody();
+    }
+    
+    assertNotNull( order );
+    
+    assertThat( order.getClientLocation() ).isEqualTo(
+      riderObj.getOrderProfits().get( 0 ).getOrder().getClientLocation() );
+    
+    assertThat( order.getExternalId() ).isEqualTo( riderObj.getOrderProfits().get( 0 ).getOrder().getExternalId() );
+    
+    assertThat( order.getStore().getName() ).isEqualTo(
+      riderObj.getOrderProfits().get( 0 ).getOrder().getStore().getName() );
+    
+    assertThat( order.getStore().getAddress().getLatitude() ).isEqualTo(
+      riderObj.getOrderProfits().get( 0 ).getOrder().getStore().getAddress().getLatitude() );
+    
+    assertThat( order.getStore().getAddress().getLongitude() ).isEqualTo(
+      riderObj.getOrderProfits().get( 0 ).getOrder().getStore().getAddress().getLongitude() );
+    
+    assertThat( order.getStore().getName() ).isEqualTo(
+      riderObj.getOrderProfits().get( 0 ).getOrder().getStore().getName() );
+    
+    
+    //assertThat( orderListResp.get( 0 ).getId() ).isEqualTo( orderList.get( 0 ).getId() );
+  }
   
   
   //-------------------------------- HELPERS ----------------------------------------

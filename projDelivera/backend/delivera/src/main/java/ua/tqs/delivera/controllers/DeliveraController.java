@@ -59,6 +59,7 @@ public class DeliveraController {
     }
     
     log.info( " Response method returned -> {} ", order );
+    log.info( " Response method returned -> {} ", order.getStore() );
     return ResponseEntity.status( HttpStatus.OK ).body( order );
   }
   

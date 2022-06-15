@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@ToString
 public class Store {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +21,13 @@ public class Store {
   @Column(name = "name")
   String name;
   
-  @OneToOne
+  @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "address_id")
   Location address;
   
   @JsonIgnore
   @OneToMany(mappedBy = "store")
+  @ToString.Exclude
   List<Order> orders;
   
 }
