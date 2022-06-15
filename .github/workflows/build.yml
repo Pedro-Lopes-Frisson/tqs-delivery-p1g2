@@ -27,7 +27,7 @@ jobs:
         run: docker-compose build delivera-web # build delivera-web docker with the correct ip for the deliveraSpringBootDocker
 
       - name: Start delivera pwa react app
-        run: docker-compose run -p 3000:80 -d delivera-web # run delivera-web and map port 80 to host's port 3000
+        run: docker-compose run -p 3000:3000 -d delivera-web # run delivera-web and map port 80 to host's port 3000
 
 
 
