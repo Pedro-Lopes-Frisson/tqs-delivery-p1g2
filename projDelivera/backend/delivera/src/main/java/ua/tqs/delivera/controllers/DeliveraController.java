@@ -42,22 +42,23 @@ public class DeliveraController {
       log.error( "Error: Rider not Found" );
       return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
     }
-  
+    
     log.info( " Response method returned -> {} ", orderList );
     return ResponseEntity.status( HttpStatus.OK ).body( orderList );
   }
   
   
   @GetMapping("/rider/{id}/orders/{orderId}")
-  public ResponseEntity<Order> getAllOrdersForRider( @PathVariable Long id,  @PathVariable Long orderId  ) {
+  public ResponseEntity<Order> getAllOrdersForRider( @PathVariable Long id, @PathVariable Long orderId ) {
     // get rider with Rider service then user order service
     Order order = null;
     try {
-      order = riderService.getOrder(id, orderId );
+      order = riderService.getOrder( id, orderId );
     } catch (NonExistentResource e) {
       return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
     }
     
+    log.info( " Response method returned -> {} ", order );
     return ResponseEntity.status( HttpStatus.OK ).body( order );
   }
   

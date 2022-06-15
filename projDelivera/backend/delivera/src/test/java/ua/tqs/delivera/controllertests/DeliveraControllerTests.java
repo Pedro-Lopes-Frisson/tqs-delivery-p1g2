@@ -32,17 +32,13 @@ import ua.tqs.delivera.services.RiderService;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebMvcTest(DeliveraController.class)
-class DeliveraControllerTests {
+@WebMvcTest(DeliveraController.class) class DeliveraControllerTests {
   
-  @Autowired
-  private MockMvc mvnForTests;
+  @Autowired private MockMvc mvnForTests;
   
-  @MockBean
-  private RiderService riderService;
+  @MockBean private RiderService riderService;
   
-  @MockBean
-  private OrderService orderService;
+  @MockBean private OrderService orderService;
   
   private RiderDTO riderDTO;
   private Rider rider;
@@ -59,8 +55,7 @@ class DeliveraControllerTests {
   List<OrderProfit> orderProfitList;
   
   
-  @BeforeEach
-  public void setUp() {
+  @BeforeEach public void setUp() {
     locationDTO = new LocationDTO( 40.85, 25.9999 );
     location = new Location( locationDTO );
     location.setId( 1L );
@@ -75,6 +70,7 @@ class DeliveraControllerTests {
     order = new Order();
     order.setClientLocation( "Aveiro, Rua da Pega" );
     order.setExternalId( 2l );
+    order.setId( 1L );
     
     
     order1 = new Order();
@@ -100,13 +96,11 @@ class DeliveraControllerTests {
     rider.setOrderProfits( orderProfitList );
   }
   
-  @Test
-  void whenPostRider_thenCreateRider() throws Exception {
+  @Test void whenPostRider_thenCreateRider() throws Exception {
     
     when( riderService.saveRider( Mockito.any() ) ).thenReturn( rider );
     
-    mvnForTests.perform( MockMvcRequestBuilders.post( "/api/delivera/rider" )
-                                               .contentType( MediaType.APPLICATION_JSON )
+    mvnForTests.perform( MockMvcRequestBuilders.post( "/api/delivera/rider" ).contentType( MediaType.APPLICATION_JSON )
                                                .content( ua.tqs.delivera.JSONUtil.toJson( rider ) ) )
                .andExpect( MockMvcResultMatchers.status().isCreated() )
                .andExpect( MockMvcResultMatchers.jsonPath( "$.name", Matchers.is( rider.getName() ) ) )
@@ -116,31 +110,26 @@ class DeliveraControllerTests {
   }
   
   
-  @Test
-  void whenGetAllOrdersForRider_ThenReturnAListOfOrders() throws Exception {
+  @Test void whenGetAllOrdersForRider_ThenReturnAListOfOrders() throws Exception {
     when( riderService.getAllOrdersForRider( rider.getRiderId() ) ).thenReturn( orderList );
     
     
     mvnForTests.perform( MockMvcRequestBuilders.get( "/api/delivera/rider/" + rider.getRiderId() + "/orders" ) )
                .andExpect( MockMvcResultMatchers.status().isOk() )
-               .andExpect( MockMvcResultMatchers.jsonPath( "$", Matchers.hasSize( 2 ) ) )
-               .andExpect( MockMvcResultMatchers.jsonPath( "$[0].clientLocation",
-                 Matchers.is( order.getClientLocation() ) ) )
-               .andExpect( MockMvcResultMatchers.jsonPath( "$[1].clientLocation",
-                 Matchers.is( order1.getClientLocation() ) ) )
-               .andExpect( MockMvcResultMatchers.jsonPath( "$[0].externalId",
-                 Matchers.is( order.getExternalId().intValue() ) ) )
-               .andExpect( MockMvcResultMatchers.jsonPath( "$[1].externalId",
-                 Matchers.is( order1.getExternalId().intValue() ) ) );
+               .andExpect( MockMvcResultMatchers.jsonPath( "$", Matchers.hasSize( 2 ) ) ).andExpect(
+                 MockMvcResultMatchers.jsonPath( "$[0].clientLocation", Matchers.is( order.getClientLocation() ) ) ).andExpect(
+                 MockMvcResultMatchers.jsonPath( "$[1].clientLocation", Matchers.is( order1.getClientLocation() ) ) ).andExpect(
+                 MockMvcResultMatchers.jsonPath( "$[0].externalId", Matchers.is( order.getExternalId().intValue() ) ) ).andExpect(
+                 MockMvcResultMatchers.jsonPath( "$[1].externalId",
+                   Matchers.is( order1.getExternalId().intValue() ) ) );
     
     verify( riderService, times( 1 ) ).getAllOrdersForRider( rider.getRiderId() );
   }
   
   
-  @Test
-  void whenGetAllOrdersForNonExistentRider_ThenReturnBAD_REQUEST() throws Exception {
-    when( riderService.getAllOrdersForRider( anyLong() ) ).thenThrow( new NonExistentResource( "This rider " +
-      "does not exist at the moment!" ) );
+  @Test void whenGetAllOrdersForNonExistentRider_ThenReturnBAD_REQUEST() throws Exception {
+    when( riderService.getAllOrdersForRider( anyLong() ) ).thenThrow(
+      new NonExistentResource( "This rider " + "does not exist at the moment!" ) );
     
     
     mvnForTests.perform( MockMvcRequestBuilders.get( "/api/delivera/rider/" + - 1 + "/orders" ) )
@@ -149,5 +138,36 @@ class DeliveraControllerTests {
     verify( riderService, times( 1 ) ).getAllOrdersForRider( anyLong() );
   }
   
+  @Test void whenGetOrderForValidArguments_ThenReturnOrder() throws Exception {
+    when( riderService.getOrder( rider.getRiderId(), order.getId() ) ).thenReturn( order );
+    
+    
+    mvnForTests.perform(
+                 MockMvcRequestBuilders.get( "/api/delivera/rider/" + rider.getRiderId() + "/orders/" + order.getId() ) )
+               .andExpect( MockMvcResultMatchers.status().isOk() );
+    
+    verify( riderService, times( 1 ) ).getOrder( rider.getRiderId(), order.getId() );
+  }
   
+  @Test void whenGetOrderForNonExistentRider_ThenReturnBAD_REQUEST() throws Exception {
+    when( riderService.getOrder( anyLong(), anyLong() ) ).thenThrow(
+      new NonExistentResource( "This rider " + "does not exist at the moment!" ) );
+    
+    
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/delivera/rider/" + - 1 + "/orders/-1" ) )
+               .andExpect( MockMvcResultMatchers.status().isBadRequest() );
+    
+    verify( riderService, times( 1 ) ).getOrder( anyLong(), anyLong() );
+  }
+  
+  @Test void whenGetOrderForNonExistentOrder_ThenReturnBAD_REQUEST() throws Exception {
+    when( riderService.getOrder( anyLong(), anyLong() ) ).thenThrow(
+      new NonExistentResource( "This rider " + "does not exist at the moment!" ) );
+    
+    
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/delivera/rider/" + - 1 + "/orders/-1" ) )
+               .andExpect( MockMvcResultMatchers.status().isBadRequest() );
+    
+    verify( riderService, times( 1 ) ).getOrder( anyLong(), anyLong() );
+  }
 }

@@ -29,8 +29,6 @@ import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.OrderProfit;
 import ua.tqs.delivera.models.Rider;
 import ua.tqs.delivera.repositories.LocationRepository;
-import ua.tqs.delivera.repositories.OrderProfitRepository;
-import ua.tqs.delivera.repositories.OrderRepository;
 import ua.tqs.delivera.repositories.RiderRepository;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) @Testcontainers
