@@ -54,16 +54,15 @@ function Basic() {
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     console.log("ola");
     axios
       .get(`/admin/${email}`)
       .then((res) => {
-
         console.log("data ", res);
         if (res.status === 200) {
           const data = res.data;
-
           if (password === data.password) {
             const id = data.id;
             const name = data.name;
@@ -78,6 +77,7 @@ function Basic() {
         }
       })
       .catch((err) => {
+        console.log("Err ", err);
         if (err.response.status === 0) {
           setError("No server response");
         } else if (err.response.status === 400) {
@@ -131,7 +131,11 @@ function Basic() {
             <MDBox mb={2}>
               <MDInput
                 ref={errRef}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) =>{
+                                console.log(email);
+                                setEmail(e.target.value);
+                  }
+                }
                 value={email}
                 type="email"
                 label="Email"
