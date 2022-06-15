@@ -57,8 +57,10 @@ function Basic() {
   const handleSubmit = () => {
     console.log("ola");
     axios
-      .get(`admin/${email}`)
+      .get(`/admin/${email}`)
       .then((res) => {
+
+        console.log("data ", res);
         if (res.status === 200) {
           const data = res.data;
 
