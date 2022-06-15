@@ -19,7 +19,11 @@
         "endOfLine": "auto"
       }
     ],
+    "no-param-reassign": 0,
+    "import/no-extraneous-dependencies":0,
+    "no-underscore-dangle": 0,
     "default-param-last": "off",
+    "prefer-regex-literals": 0,
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/jsx-props-no-spreading": [
