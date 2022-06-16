@@ -78,6 +78,9 @@ class AddressControllerIT {
 
     @AfterEach
     void resetDb() {
+    
+        userRepository.deleteAll();
+        userRepository.flush();
         addressRepository.deleteAll();
         addressRepository.flush();
     }
