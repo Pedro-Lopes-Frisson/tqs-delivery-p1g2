@@ -29,6 +29,7 @@ public class AddressService {
         Optional<Address> addressOptional = addressRepository.findByUserAndLatitudeAndLongitude(user, addressDto.getLatitude(), addressDto.getLongitude());
         if ( addressOptional.isEmpty() ) {
             Address a = new Address();
+            a.setUser(user);
             a.setLatitude(addressDto.getLatitude());
             a.setLongitude(addressDto.getLongitude());
 

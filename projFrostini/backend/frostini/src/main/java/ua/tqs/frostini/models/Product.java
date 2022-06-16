@@ -32,10 +32,6 @@ public class Product {
   @Column
   String name;
   
-  
-  @Column(name = "photo_url")
-  String photoUrl;
-  
   @Column
   String description;
   

@@ -45,10 +45,4 @@ public class Order {
   @OneToMany(mappedBy = "order")
   List<OrderedProduct> orderedProductList;
 
-  @Column(name = "order_state")
-  String orderState = "ordered";
-  
-  @Column(name = "order_made_timestamp")
-  Long orderMadeTimeStamp;
-  
 }
