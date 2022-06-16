@@ -12,4 +12,5 @@ public interface RiderRepository extends JpaRepository<Rider, Long>{
 
     Optional<Rider> findByEmail(String email);
     
+    
 }
