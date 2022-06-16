@@ -41,4 +41,14 @@ public class Order {
   Store store;
   
   
+  @Column(name= "order_made_timestamp")
+  Long orderMadeTimestamp;
+  
+  @Column(name= "delivered_timestamp")
+  Long deliveredTimestamp;
+  
+  
+  @Column(name = "order_state")
+  String orderState = "ordered";
+  
 }

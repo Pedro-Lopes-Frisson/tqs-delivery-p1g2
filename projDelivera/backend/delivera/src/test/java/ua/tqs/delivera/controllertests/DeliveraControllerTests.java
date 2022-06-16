@@ -100,7 +100,7 @@ import java.util.List;
     
     when( riderService.saveRider( Mockito.any() ) ).thenReturn( rider );
     
-    mvnForTests.perform( MockMvcRequestBuilders.post( "/api/delivera/rider" ).contentType( MediaType.APPLICATION_JSON )
+    mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider" ).contentType( MediaType.APPLICATION_JSON )
                                                .content( ua.tqs.delivera.JSONUtil.toJson( rider ) ) )
                .andExpect( MockMvcResultMatchers.status().isCreated() )
                .andExpect( MockMvcResultMatchers.jsonPath( "$.name", Matchers.is( rider.getName() ) ) )
@@ -114,7 +114,7 @@ import java.util.List;
     when( riderService.getAllOrdersForRider( rider.getRiderId() ) ).thenReturn( orderList );
     
     
-    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/delivera/rider/" + rider.getRiderId() + "/orders" ) )
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/v1/rider/" + rider.getRiderId() + "/orders" ) )
                .andExpect( MockMvcResultMatchers.status().isOk() )
                .andExpect( MockMvcResultMatchers.jsonPath( "$", Matchers.hasSize( 2 ) ) ).andExpect(
                  MockMvcResultMatchers.jsonPath( "$[0].clientLocation", Matchers.is( order.getClientLocation() ) ) ).andExpect(
@@ -132,7 +132,7 @@ import java.util.List;
       new NonExistentResource( "This rider " + "does not exist at the moment!" ) );
     
     
-    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/delivera/rider/" + - 1 + "/orders" ) )
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/v1/rider/" + - 1 + "/orders" ) )
                .andExpect( MockMvcResultMatchers.status().isBadRequest() );
     
     verify( riderService, times( 1 ) ).getAllOrdersForRider( anyLong() );
@@ -143,7 +143,7 @@ import java.util.List;
     
     
     mvnForTests.perform(
-                 MockMvcRequestBuilders.get( "/api/delivera/rider/" + rider.getRiderId() + "/orders/" + order.getId() ) )
+                 MockMvcRequestBuilders.get( "/api/v1/rider/" + rider.getRiderId() + "/orders/" + order.getId() ) )
                .andExpect( MockMvcResultMatchers.status().isOk() );
     
     verify( riderService, times( 1 ) ).getOrder( rider.getRiderId(), order.getId() );
@@ -154,7 +154,7 @@ import java.util.List;
       new NonExistentResource( "This rider " + "does not exist at the moment!" ) );
     
     
-    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/delivera/rider/" + - 1 + "/orders/-1" ) )
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/v1/rider/" + - 1 + "/orders/-1" ) )
                .andExpect( MockMvcResultMatchers.status().isBadRequest() );
     
     verify( riderService, times( 1 ) ).getOrder( anyLong(), anyLong() );
@@ -165,7 +165,7 @@ import java.util.List;
       new NonExistentResource( "This rider " + "does not exist at the moment!" ) );
     
     
-    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/delivera/rider/" + - 1 + "/orders/-1" ) )
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/v1/rider/" + - 1 + "/orders/-1" ) )
                .andExpect( MockMvcResultMatchers.status().isBadRequest() );
     
     verify( riderService, times( 1 ) ).getOrder( anyLong(), anyLong() );

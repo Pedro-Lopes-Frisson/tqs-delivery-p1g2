@@ -16,7 +16,7 @@ import ua.tqs.delivera.services.RiderService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/delivera")
+@RequestMapping("/api/v1")
 @CrossOrigin
 @Log4j2
 public class DeliveraController {

@@ -19,19 +19,17 @@ public class OrderProfit {
   @Column(name = "id", nullable = false)
    Long id;
   
-  
   @ManyToOne
   @JsonIgnore
   @JoinColumn(name = "rider_rider_id")
    Rider rider;
   
-  
   @OneToOne
   @JsonIgnore
   @JoinColumn(name = "order_id")
-   Order order;
+  Order order;
   
   @Column(name = "order_price")
-   Double orderPrice;
+  Double orderPrice;
   
 }
