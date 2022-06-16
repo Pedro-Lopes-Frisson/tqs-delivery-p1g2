@@ -1,17 +1,17 @@
 package ua.tqs.delivera.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import lombok.*;
 import ua.tqs.delivera.datamodels.LocationDTO;
 
 // @Data
 @Entity
 @Table(name = "location")
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,8 @@ public class Location {
     private double latitude;
     @Column
     private double longitude;
-
+    
+    
     public Location(){}
     
     public Location(double latitude, double longitude){
