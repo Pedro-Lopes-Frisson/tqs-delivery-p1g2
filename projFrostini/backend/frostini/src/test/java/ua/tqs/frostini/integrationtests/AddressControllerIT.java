@@ -69,7 +69,6 @@ class AddressControllerIT {
         userRepository.saveAndFlush( user );
 
         address = new Address();
-        address.setUser(user);
         address.setLatitude(40.640506);
         address.setLongitude(-8.653754);
 

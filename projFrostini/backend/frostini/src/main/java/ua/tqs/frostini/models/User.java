@@ -41,7 +41,7 @@ public class User {
   @Column(name = "`admin`")
   boolean isAdmin;
   
-  @OneToOne
+  @OneToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "address_id")
   Address address;
   
