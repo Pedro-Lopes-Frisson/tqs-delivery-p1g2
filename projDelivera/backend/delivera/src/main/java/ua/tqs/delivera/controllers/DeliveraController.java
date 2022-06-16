@@ -1,5 +1,5 @@
 package ua.tqs.delivera.controllers;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,16 +22,16 @@ import java.util.List;
 public class DeliveraController {
   @Autowired
   private RiderService riderService;
-  
-  
+
+
   @PostMapping("/rider")
   public ResponseEntity<Rider> createRider( @RequestBody RiderDTO riderDTO ) {
     Rider rider = new Rider( riderDTO );
     Rider saved = riderService.saveRider( rider );
     return new ResponseEntity<>( saved, HttpStatus.CREATED );
   }
-  
-  
+
+
   @GetMapping("/rider/{id}/orders")
   public ResponseEntity<List<Order>> getAllOrdersForRider( @PathVariable Long id ) {
     // get rider with Rider service then user order service
@@ -42,12 +42,12 @@ public class DeliveraController {
       log.error( "Error: Rider not Found" );
       return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
     }
-    
+
     log.info( " Response method returned -> {} ", orderList );
     return ResponseEntity.status( HttpStatus.OK ).body( orderList );
   }
-  
-  
+
+
   @GetMapping("/rider/{id}/orders/{orderId}")
   public ResponseEntity<Order> getAllOrdersForRider( @PathVariable Long id, @PathVariable Long orderId ) {
     // get rider with Rider service then user order service
@@ -57,11 +57,11 @@ public class DeliveraController {
     } catch (NonExistentResource e) {
       return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
     }
-    
+
     log.info( " Response method returned -> {} ", order );
     log.info( " Response method returned -> {} ", order.getStore() );
     return ResponseEntity.status( HttpStatus.OK ).body( order );
   }
-  
-  
+
+
 }
