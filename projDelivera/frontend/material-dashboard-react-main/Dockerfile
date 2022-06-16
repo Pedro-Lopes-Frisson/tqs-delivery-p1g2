@@ -1,12 +1,8 @@
 # Stage 1 build app
-FROM node:18 as build
+FROM node:18
 WORKDIR /app
 COPY . /app
+ARG API_HOSTNAME=172.20.200.10
+RUN sed -i "s/localhost/${API_HOSTNAME}/g" /app/src/api/axios.js
 RUN npm install
-RUN npm run build
-
-
-# stage 2 run in nginx
-FROM nginx:stable-alpine
-
-COPY  --from=build /app/build/ /usr/share/nginx/html
+ENTRYPOINT ["npm", "start"]

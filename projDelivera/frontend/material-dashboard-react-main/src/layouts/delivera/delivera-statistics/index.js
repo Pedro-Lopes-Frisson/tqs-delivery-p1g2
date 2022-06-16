@@ -34,9 +34,22 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/delivera/components/Projects";
 // import OrdersOverview from "layouts/delivera/components/OrdersOverview";
+import { useContext, useEffect } from "react";
+import AuthContext from "context/AuthProvider";
+import isAuthenticated from "utils/Authentication";
+import { useNavigate } from "react-router-dom";
 
 function DeliveraStatistics() {
   const { sales, tasks } = reportsLineChartData;
+  const { auth } = useContext(AuthContext);
+  const isAuth = isAuthenticated(auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuth) {
+      navigate("/authentication/sign-in");
+    }
+  }, [isAuth]);
 
   return (
     <DashboardLayout>

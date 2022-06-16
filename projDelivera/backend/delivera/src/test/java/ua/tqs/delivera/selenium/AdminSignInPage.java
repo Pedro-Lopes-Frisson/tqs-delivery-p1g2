@@ -8,13 +8,13 @@ import org.openqa.selenium.support.PageFactory;
 public class AdminSignInPage {
     private WebDriver driver;
 
-    @FindBy(className = "email")
+    @FindBy(id = "email")
     WebElement email;
 
-    @FindBy(className = "password")
+    @FindBy(id = "password")
     WebElement password;
 
-    @FindBy(className = "signin-btn")
+    @FindBy(xpath = "/html/body/div/div/div[3]/div/div/div/div[2]/form/div[4]/button")
     WebElement signInBtn;
 
     public AdminSignInPage(WebDriver driver, String url){

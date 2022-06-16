@@ -9,7 +9,7 @@ public class DashboardPage {
     private WebDriver driver;
 
     //Locators
-    @FindBy(className = "title")
+    @FindBy(xpath = "/html/head/title")
     WebElement title;
 
     //Constructor

@@ -24,6 +24,13 @@
 		<junit-platform-suite.version>1.8.2</junit-platform-suite.version>
 	</properties>
 	<dependencies>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>

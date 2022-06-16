@@ -25,7 +25,7 @@ public class AdminSteps {
     public void cleanUp() {
         driver.close();
     }
-    
+
     // SIGN IN
 
     @When("I access {string}")

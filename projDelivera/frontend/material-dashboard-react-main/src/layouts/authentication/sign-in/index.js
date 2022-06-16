@@ -13,10 +13,10 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useContext, useRef, useState } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -40,11 +40,56 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import AuthContext from "context/AuthProvider";
+import axios from "../../../api/axios";
 
 function Basic() {
+  const { setAuth } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
+  const errRef = useRef();
+  const navigate = useNavigate();
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("ola");
+    axios
+      .get(`/admin/${email}`)
+      .then((res) => {
+        console.log("data ", res);
+        if (res.status === 200) {
+          const data = res.data;
+          if (password === data.password) {
+            const id = data.id;
+            const name = data.name;
+            const address = data.address;
+            const order = data.order;
+            setAuth({ id, email, password, name, address, order });
+            navigate("/dashboard");
+          } else {
+            setError("Invalid login");
+            errRef.current.focus();
+          }
+        }
+      })
+      .catch((err) => {
+        console.log("Err ", err);
+        if (err.response.status === 0) {
+          setError("No server response");
+        } else if (err.response.status === 400) {
+          setError("Wrong email or password");
+        } else if (err.response.status === 401) {
+          setError("Unauthorized");
+        } else {
+          setError("Login failed");
+        }
+        errRef.current.focus();
+      });
+  };
 
   return (
     <BasicLayout image={bgImage}>
@@ -84,10 +129,29 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" className="email" fullWidth />
+              <MDInput
+                ref={errRef}
+                onChange={(e) =>{
+                                console.log(email);
+                                setEmail(e.target.value);
+                  }
+                }
+                value={email}
+                type="email"
+                label="Email"
+                id="email"
+                fullWidth
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" className="password" fullWidth />
+              <MDInput
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                type="password"
+                label="Password"
+                id="password"
+                fullWidth
+              />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -102,7 +166,7 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" className="signin-btn" fullWidth>
+              <MDButton variant="gradient" color="info" onClick={handleSubmit} fullWidth>
                 sign in
               </MDButton>
             </MDBox>
@@ -113,6 +177,7 @@ function Basic() {
                   component={Link}
                   to="/authentication/sign-up"
                   variant="button"
+                  type="submit"
                   color="info"
                   fontWeight="medium"
                   textGradient
