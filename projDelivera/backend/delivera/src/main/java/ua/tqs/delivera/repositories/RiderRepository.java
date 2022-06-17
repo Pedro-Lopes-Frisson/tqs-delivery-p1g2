@@ -16,4 +16,5 @@ public interface RiderRepository extends JpaRepository<Rider, Long>{
     @Query("SELECT AVG(1.0*r.sumOfReviews/r.numberOfReviews) FROM  Rider r WHERE r.numberOfReviews <> 0")
     Double getAverageRiderRating();
     
+    
 }
