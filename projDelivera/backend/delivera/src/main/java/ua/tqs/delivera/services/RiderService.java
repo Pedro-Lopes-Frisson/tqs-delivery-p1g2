@@ -75,11 +75,14 @@ public class RiderService {
     result.put("totalRiderOrders", ordersProfit.isPresent() ? ordersProfit.get().size() : 0);
 
     int totalNumberOfOrdersDelivered = 0;
-    for (OrderProfit profit : ordersProfit.get()) {
-      if (profit.getOrder().getOrderState().equals("delivered")) {
-        totalNumberOfOrdersDelivered++;
+    if(ordersProfit.isPresent()) {
+      for (OrderProfit profit : ordersProfit.get()) {
+        System.out.println("STATE: " + profit.getOrder().getOrderState());
+        if (profit.getOrder().getOrderState().equals("delivered")) {
+          totalNumberOfOrdersDelivered++;
+        }
+        //orderRepo.findByIdAndOrderState(profit.getOrder().getId(), "delivered");
       }
-      //orderRepo.findByIdAndOrderState(profit.getOrder().getId(), "delivered");
     }
     result.put("totalNumberOfOrdersDelivered", totalNumberOfOrdersDelivered);
 

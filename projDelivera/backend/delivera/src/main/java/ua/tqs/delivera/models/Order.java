@@ -1,6 +1,5 @@
 package ua.tqs.delivera.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
