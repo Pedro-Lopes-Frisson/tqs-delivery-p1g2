@@ -213,6 +213,7 @@ public class RiderServiceTest {
 
         assertThat(stats).isEqualTo(expected);
         Mockito.verify(riderRepo, VerificationModeFactory.times(1)).findById(any());
+        Mockito.verify(orderProfitRepo, VerificationModeFactory.times(1)).findByRider(any());
     }
 
     @Test
@@ -232,6 +233,28 @@ public class RiderServiceTest {
 
         assertThat(stats).isEqualTo(expected);
         Mockito.verify(riderRepo, VerificationModeFactory.times(1)).findById(any());
+        Mockito.verify(orderProfitRepo, VerificationModeFactory.times(1)).findByRider(any());
+    }
+
+    @Test
+    void whenGetRiderWithoutOrders_thenReturnMap() throws NonExistentResource {
+        Rider rider1 = new Rider();
+        Mockito.when(riderRepo.findById(Mockito.any())).thenReturn(Optional.of(rider1));
+        Mockito.when(orderProfitRepo.findByRider(Mockito.any())).thenReturn(Optional.of(Arrays.asList()));
+        rider1.setRiderId(2l);
+        rider1.setNumberOfReviews(10);
+        rider1.setSumOfReviews(35);
+        riderService.saveRider(rider1);
+
+        Map<String, Object> stats = riderService.getRiderStatistics(rider1.getRiderId());
+        Map<String, Object> expected = new HashMap<String, Object>();
+        expected.put("averageReviewValue", (double) rider1.getSumOfReviews()/rider1.getNumberOfReviews());
+        expected.put("totalRiderOrders", 0);
+        expected.put("totalNumberOfOrdersDelivered", 0);
+
+        assertThat(stats).isEqualTo(expected);
+        Mockito.verify(riderRepo, VerificationModeFactory.times(1)).findById(any());
+        Mockito.verify(orderProfitRepo, VerificationModeFactory.times(1)).findByRider(any());
     }
 
     @Test
