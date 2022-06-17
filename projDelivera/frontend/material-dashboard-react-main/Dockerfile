@@ -2,6 +2,10 @@
 FROM node:18 as build
 WORKDIR /app
 COPY . /app
+ARG API_HOSTNAME=172.20.0.5
+
+
+
 RUN npm install
 RUN npm run build
 
