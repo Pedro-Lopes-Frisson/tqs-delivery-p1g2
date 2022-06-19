@@ -49,4 +49,8 @@ public class RiderDTO {
         return this.sumOfReviewsdto;
     }
 
+    public void setPassworddto(String pw){
+        this.passworddto = pw;
+    }
+
 }

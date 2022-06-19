@@ -132,4 +132,8 @@ public class RiderService {
     return  orderList.get( 0 );
 
   }
+
+public Object loginRider(Object any) {
+    return null;
+}
 }

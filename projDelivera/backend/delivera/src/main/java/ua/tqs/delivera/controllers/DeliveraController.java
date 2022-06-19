@@ -35,6 +35,13 @@ public class DeliveraController {
     return new ResponseEntity<>( saved, HttpStatus.CREATED );
   }
 
+  // @PostMapping("/rider/login")
+  // public ResponseEntity<Rider> loginRider(@RequestBody RiderDTO riderDTO){
+  //   Rider rider = new Rider( riderDTO );
+  //   Rider saved = riderService.saveRider( rider );
+  //   return new ResponseEntity<>( saved, HttpStatus.OK );
+  // }
+
 
   @GetMapping("/rider/{id}/orders")
   public ResponseEntity<List<Order>> getAllOrdersForRider( @PathVariable Long id ) {
