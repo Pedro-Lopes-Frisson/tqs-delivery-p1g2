@@ -98,7 +98,7 @@ public class AddressControllerTest {
   }
 
   private Address createAddress( int i ) { 
-    return new Address( i, user, null, 40.640506, -8.653754 );
+    return new Address( i,  null, 40.640506, -8.653754 );
   }
 
   private AddressDTO createAddressDTO( int i ) {

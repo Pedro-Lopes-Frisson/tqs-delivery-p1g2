@@ -40,11 +40,11 @@ public class User {
 
   @Column(name = "`admin`")
   boolean isAdmin;
-
-  @JsonIgnore
-  @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
-  Set<Address> address;
-
+  
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "address_id")
+  Address address;
+  
   @JsonIgnore
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   Set<Order> order;

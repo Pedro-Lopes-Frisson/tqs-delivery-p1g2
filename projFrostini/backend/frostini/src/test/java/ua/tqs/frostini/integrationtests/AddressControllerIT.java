@@ -69,7 +69,6 @@ class AddressControllerIT {
         userRepository.saveAndFlush( user );
 
         address = new Address();
-        address.setUser(user);
         address.setLatitude(40.640506);
         address.setLongitude(-8.653754);
 
@@ -79,6 +78,9 @@ class AddressControllerIT {
 
     @AfterEach
     void resetDb() {
+    
+        userRepository.deleteAll();
+        userRepository.flush();
         addressRepository.deleteAll();
         addressRepository.flush();
     }

@@ -64,9 +64,8 @@ class AddressRepositoryTest {
 
   @Test
   void whenFindByValidUserAndAddress_ThenReturnAddress() {
-    Optional<Address> optionalAddress = addressRepository.findByUserAndLatitudeAndLongitude(u1, address1.getLatitude(), address1.getLongitude());
+    Optional<Address> optionalAddress = addressRepository.findById(1L);
     assertThat( optionalAddress ).isPresent();
-    assertThat( optionalAddress.get().getUser() ).isEqualTo( u1 );
     assertThat( optionalAddress.get().getLatitude() ).isEqualTo( address1.getLatitude() );
     assertThat( optionalAddress.get().getLongitude() ).isEqualTo( address1.getLongitude() );
   }
@@ -74,7 +73,7 @@ class AddressRepositoryTest {
   @Test
   void whenFindByInvalidUserAndAddress_ThenReturnAddress() {
     testEntityManager.persist( u2 );
-    Optional<Address> optionalAddress = addressRepository.findByUserAndLatitudeAndLongitude(u2, address1.getLatitude(), address1.getLongitude());
+    Optional<Address> optionalAddress = addressRepository.findById(-1L);
     assertThat( optionalAddress ).isEmpty();
   }
    /* helpers */
@@ -91,7 +90,6 @@ class AddressRepositoryTest {
     testEntityManager.persist( u );
 
     Address address = new Address();
-    address.setUser( u );
     address.setLatitude( 40.640506 );
     address.setLongitude( -8.653754 );
     testEntityManager.persistAndFlush( address );

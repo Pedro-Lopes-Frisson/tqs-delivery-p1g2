@@ -9,5 +9,4 @@ import ua.tqs.frostini.models.User;
 
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    Optional<Address> findByUserAndLatitudeAndLongitude(User user, double latitude, double longitude);
 }
