@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -97,8 +98,7 @@ public class IntegrationTest {
   
   @Test void whenValidInput_thenCreateCar() {
     Rider rider =
-      createTestRider( "ma@gmail.com", "Manuel Antunes", "migant", true, createTestLocation( 40.85, 25.9999 ), 0, 0 );
-    ;
+      createTestRider( "ma@gmail.com", "Manuel Antunes", "migant", true, createTestLocation( 40.85, 25.9999 ), 3, 9 );
     ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/v1/rider", rider, Rider.class );
     
     List<Rider> found = riderRepo.findAll();
@@ -203,6 +203,87 @@ public class IntegrationTest {
     
     //assertThat( orderListResp.get( 0 ).getId() ).isEqualTo( orderList.get( 0 ).getId() );
   }
+
+  @Test
+  void whenGetRiderStats_thenReceiveMap() {
+    Optional<Rider> rider = riderRepo.findById( 1L );
+    assertThat( rider ).isNotEmpty();
+    Rider riderObj = rider.get();
+
+    ParameterizedTypeReference<Map<String, Object>> responseType = 
+               new ParameterizedTypeReference<Map<String, Object>>() {};
+
+    
+    ResponseEntity<Map<String, Object>> response =
+      restTemplate.exchange( "/api/v1/stats/rider/" + riderObj.getRiderId(),
+        HttpMethod.GET, null,
+        responseType
+      );
+    
+    assertEquals( response.getStatusCode(), HttpStatus.OK );
+    
+    Map<String, Object> stats = null;
+    if ( response != null && response.hasBody() ) {
+      stats = response.getBody();
+    }
+    
+    assertNotNull( stats );
+    
+    assertThat( stats )
+      .hasSize( 3 )
+      .containsEntry("averageReviewValue", (double) riderObj.getSumOfReviews()/ riderObj.getNumberOfReviews() )
+      .containsEntry("totalRiderOrders", 2 )
+      .containsEntry("totalNumberOfOrdersDelivered", 0 );
+    
+  }
+
+  @Test
+  void whenInvalidRiderIdgettingStats_ThenReturnBAD_REQUEST() {
+    
+    ParameterizedTypeReference<Map<String, Object>> responseType = 
+               new ParameterizedTypeReference<Map<String, Object>>() {};
+    
+    ResponseEntity<Map<String, Object>> response =
+      restTemplate.exchange( "/api/v1/stats/rider/" + -1l,
+        HttpMethod.GET, null,
+        responseType
+      );
+    
+    assertEquals( response.getStatusCode(), HttpStatus.BAD_REQUEST );
+    
+  }
+
+  @Test
+  void whenRiderWithoutReviewsAndOrders_ThenReturnMapWithValuesAsZero() {
+
+    Rider rider = new Rider();
+    riderRepo.saveAndFlush(rider);
+    
+    ParameterizedTypeReference<Map<String, Object>> responseType = 
+               new ParameterizedTypeReference<Map<String, Object>>() {};
+    
+    ResponseEntity<Map<String, Object>> response =
+      restTemplate.exchange( "/api/v1/stats/rider/" + rider.getRiderId(),
+        HttpMethod.GET, null,
+        responseType
+      );
+    
+      assertEquals( response.getStatusCode(), HttpStatus.OK );
+    
+      Map<String, Object> stats = null;
+      if ( response != null && response.hasBody() ) {
+        stats = response.getBody();
+      }
+      
+      assertNotNull( stats );
+      
+      assertThat( stats )
+        .hasSize( 3 )
+        .containsEntry("averageReviewValue", 0.0 )
+        .containsEntry("totalRiderOrders", 0 )
+        .containsEntry("totalNumberOfOrdersDelivered", 0 );
+    
+  }
   
   
   //-------------------------------- HELPERS ----------------------------------------
@@ -216,6 +297,8 @@ public class IntegrationTest {
                                  Location currentLocation, int numberOfReviews, int sumOfReviews ) {
     Rider rider = new Rider( email, name, password, available, currentLocation, numberOfReviews, sumOfReviews );
     
+    order.setOrderState("delivered");
+
     orderProfit1.setRider( rider );
     orderProfit.setRider( rider );
     

@@ -1,12 +1,16 @@
 package ua.tqs.delivera.controllerTests;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,13 +25,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import ua.tqs.delivera.controllers.DeliveraController;
+import ua.tqs.delivera.datamodels.LocationDTO;
+import ua.tqs.delivera.datamodels.RiderDTO;
+import ua.tqs.delivera.exceptions.NonExistentResource;
 import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.OrderProfit;
-import ua.tqs.delivera.datamodels.LocationDTO;
 import ua.tqs.delivera.models.Rider;
-import ua.tqs.delivera.datamodels.RiderDTO;
-import ua.tqs.delivera.exceptions.NonExistentResource;
 import ua.tqs.delivera.services.OrderService;
 import ua.tqs.delivera.services.RiderService;
 
@@ -74,6 +78,7 @@ class DeliveraControllerTests {
     order.setClientLocation( "Aveiro, Rua da Pega" );
     order.setExternalId( 2l );
     order.setId( 1L );
+    order.setOrderState("delivered"); 
     
     
     order1 = new Order();
@@ -114,6 +119,59 @@ class DeliveraControllerTests {
     verify( riderService, times( 1 ) ).saveRider( Mockito.any() );
   }
 
+  @Test
+  void whenGetRiderStatsWithNoReviews_thenReceiveMap() throws Exception {
+
+    Map<String, Object> expected = new HashMap<String, Object>();
+    expected.put("averageReviewValue", 0.0);
+    expected.put("totalRiderOrders", 2);
+    expected.put("totalNumberOfOrdersDelivered", 1);
+
+    when( riderService.getRiderStatistics( Mockito.anyLong() ) ).thenReturn( expected );
+
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/v1/stats/rider/" + rider.getRiderId() )
+                                              .contentType( MediaType.APPLICATION_JSON ) )
+                .andExpect( MockMvcResultMatchers.status().isOk() )
+                .andExpect( jsonPath("averageReviewValue", is(0.0) ) );
+  
+    verify( riderService, times( 1 ) ).getRiderStatistics( Mockito.anyLong() );
+  
+  }
+
+  @Test
+  void whenGetRiderStats_thenReceiveMap() throws Exception {
+
+    Map<String, Object> expected = new HashMap<String, Object>();
+    rider.setNumberOfReviews(10);
+    rider.setSumOfReviews(30);
+    expected.put("averageReviewValue", 30/10.0);
+    expected.put("totalRiderOrders", 2);
+    expected.put("totalNumberOfOrdersDelivered", 1);
+
+    when( riderService.getRiderStatistics( Mockito.anyLong() ) ).thenReturn( expected );
+
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/v1/stats/rider/" + rider.getRiderId() )
+                                              .contentType( MediaType.APPLICATION_JSON ) )
+                .andExpect( MockMvcResultMatchers.status().isOk() )
+                .andExpect( jsonPath( "averageReviewValue", is(30/10.0) ) )
+                .andExpect( jsonPath( "totalRiderOrders", is(2) ) )
+                .andExpect( jsonPath( "totalNumberOfOrdersDelivered", is(1) ) );
+
+    verify( riderService, times( 1 ) ).getRiderStatistics( Mockito.anyLong() );
+  }
+
+  @Test
+  void whenGetRiderStatsWIthInvalidRider_thenReceiveBadRequest() throws Exception {
+
+    when( riderService.getRiderStatistics( Mockito.anyLong() ) ).thenThrow( new NonExistentResource( "This rider does not exist!" ) );
+
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/v1/stats/rider/" + rider.getRiderId() )
+                                              .contentType( MediaType.APPLICATION_JSON ) )
+                .andExpect( MockMvcResultMatchers.status().isBadRequest() );
+
+    verify( riderService, times( 1 ) ).getRiderStatistics( Mockito.anyLong() );
+  }
+  
   @Test 
   void whenGetAllOrdersForRider_ThenReturnAListOfOrders() throws Exception {
     when( riderService.getAllOrdersForRider( rider.getRiderId() ) ).thenReturn( orderList );
