@@ -99,7 +99,7 @@ public class IntegrationTest {
     Rider rider =
       createTestRider( "ma@gmail.com", "Manuel Antunes", "migant", true, createTestLocation( 40.85, 25.9999 ), 0, 0 );
     ;
-    ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/delivera/rider", rider, Rider.class );
+    ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/v1/rider", rider, Rider.class );
     
     List<Rider> found = riderRepo.findAll();
     assertThat( found ).extracting( Rider::getEmail ).contains( rider.getEmail() );
@@ -111,7 +111,7 @@ public class IntegrationTest {
     assertThat( rider ).isNotEmpty();
     
     ResponseEntity<List<Order>> response =
-      restTemplate.exchange( "/api/delivera/rider/" + 1 + "/orders",
+      restTemplate.exchange( "/api/v1/rider/" + 1 + "/orders",
         HttpMethod.GET, null,
         new ParameterizedTypeReference<>() {}
       );
@@ -140,7 +140,7 @@ public class IntegrationTest {
   void whenInValidRiderIdAndValidOrderId_ThenReturnBAD_REQUEST() {
     
     ResponseEntity<Order> response =
-      restTemplate.exchange( "/api/delivera/rider/" + - 1 + "/orders/" + 2,
+      restTemplate.exchange( "/api/v1/rider/" + - 1 + "/orders/" + 2,
         HttpMethod.GET, null,
         Order.class
       );
@@ -152,7 +152,7 @@ public class IntegrationTest {
   void whenInValidRiderId_ThenReturnBAD_REQUEST() {
     
     ResponseEntity<Order> response =
-      restTemplate.exchange( "/api/delivera/rider/" + - 1 + "/orders",
+      restTemplate.exchange( "/api/v1/rider/" + - 1 + "/orders",
         HttpMethod.GET, null,
         Order.class
       );
@@ -168,7 +168,7 @@ public class IntegrationTest {
     Rider riderObj = rider.get();
     
     ResponseEntity<Order> response =
-      restTemplate.exchange( "/api/delivera/rider/" + riderObj.getRiderId() + "/orders/" +
+      restTemplate.exchange( "/api/v1/rider/" + riderObj.getRiderId() + "/orders/" +
           riderObj.getOrderProfits().get( 0 ).getOrder().getId(),
         HttpMethod.GET, null,
         Order.class
