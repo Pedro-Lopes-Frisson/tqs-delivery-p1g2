@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.exceptions.NonExistentResource;
 import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
@@ -42,6 +43,7 @@ public class RiderServiceTest {
     @InjectMocks
     private RiderService riderService;
 
+    private RiderDTO riderDTO;
     private Rider rider;
     private Rider riderSameEmail;
     private Location location;
@@ -61,6 +63,7 @@ public class RiderServiceTest {
         rider = new Rider("mal@gmail.com","Manuel Antunes", "migant", true, location, 0, 0);
         rider.setLocation(89.5566, 5.333);
         riderSameEmail = new Rider("mal@gmail.com","Maria Alberta", "migant", true, location, 0, 0);
+        riderDTO = new RiderDTO( "ma@gmail.com", "Manuel Antunes", "migant", true, location, 0, 0 );
         
         rider.setRiderId( 1L );
         orderProfitList = new ArrayList<>();
@@ -123,6 +126,38 @@ public class RiderServiceTest {
         Rider foundRider = riderService.saveRider(rider);
         assertThat(foundRider).isEqualTo(rider);
         verifySaveRiderIsCalledOnce();
+
+    }
+
+    @Test
+    @DisplayName("Login: rider correct credentials")
+    void whenLoginRiderCorrectCredentials_thenReturnRider(){
+        Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(Optional.of(rider));
+
+        Rider foundRider = riderService.loginRider(riderDTO);
+        assertThat(foundRider).isEqualTo(rider);
+        assertThat(foundRider.getPassword()).isEqualTo(riderDTO.getPassworddto());
+
+    }
+
+    @Test
+    @DisplayName("Login: rider wrong credentials")
+    void whenLoginRiderWrongCredentials_thenReturnNull(){
+        Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(Optional.of(rider));
+        riderDTO.setPassworddto("password");
+
+        Rider foundRider = riderService.loginRider(riderDTO);
+        assertThat(foundRider).isNull();
+
+    }
+
+    @Test
+    @DisplayName("Login: non existing rider")
+    void whenLoginNonExistingRider_thenReturnNull(){
+        Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(Optional.empty());
+
+        Rider foundRider = riderService.saveRider(rider);
+        assertThat(foundRider).isNull();;
 
     }
 

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.exceptions.NonExistentResource;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.OrderProfit;
@@ -133,7 +134,7 @@ public class RiderService {
 
   }
 
-public Object loginRider(Object any) {
-    return null;
-}
+  public Rider loginRider(RiderDTO riderDTO) {
+      return null;
+  }
 }
