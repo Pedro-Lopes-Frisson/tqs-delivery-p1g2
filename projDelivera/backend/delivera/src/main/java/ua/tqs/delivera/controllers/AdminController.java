@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import ua.tqs.delivera.models.Admin;
 import ua.tqs.delivera.services.AdminService;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1")
 @Validated

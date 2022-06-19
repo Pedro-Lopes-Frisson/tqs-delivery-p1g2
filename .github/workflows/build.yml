@@ -16,6 +16,21 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Build delivera Spring boot Application
+        run: docker-compose build delivera # build delivera docker
+
+      - name: Start delivera Spring boot Application
+        run: docker-compose run -d delivera
+
+      - name: Build delivera pwa react app
+        run: docker-compose build delivera-web # build delivera-web docker with the correct ip for the deliveraSpringBootDocker
+
+      - name: Start delivera pwa react app
+        run: docker-compose run -p 3000:3000 -d delivera-web # run delivera-web and map port 80 to host's port 3000
+
+
+
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:

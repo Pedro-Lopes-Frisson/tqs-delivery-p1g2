@@ -1,8 +1,6 @@
 package ua.tqs.delivera.controllers;
-
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,16 +26,16 @@ import ua.tqs.delivera.services.RiderService;
 public class DeliveraController {
   @Autowired
   private RiderService riderService;
-  
-  
+
+
   @PostMapping("/rider")
   public ResponseEntity<Rider> createRider( @RequestBody RiderDTO riderDTO ) {
     Rider rider = new Rider( riderDTO );
     Rider saved = riderService.saveRider( rider );
     return new ResponseEntity<>( saved, HttpStatus.CREATED );
   }
-  
-  
+
+
   @GetMapping("/rider/{id}/orders")
   public ResponseEntity<List<Order>> getAllOrdersForRider( @PathVariable Long id ) {
     // get rider with Rider service then user order service
@@ -48,12 +46,12 @@ public class DeliveraController {
       log.error( "Error: Rider not Found" );
       return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
     }
-    
+
     log.info( " Response method returned -> {} ", orderList );
     return ResponseEntity.status( HttpStatus.OK ).body( orderList );
   }
-  
-  
+
+
   @GetMapping("/rider/{id}/orders/{orderId}")
   public ResponseEntity<Order> getAllOrdersForRider( @PathVariable Long id, @PathVariable Long orderId ) {
     // get rider with Rider service then user order service
@@ -68,7 +66,6 @@ public class DeliveraController {
     log.info( " Response method returned -> {} ", order.getStore() );
     return ResponseEntity.status( HttpStatus.OK ).body( order );
   }
-  
   @GetMapping("/stats/rider/{id}")
   public ResponseEntity<Map<String, Object>> getRiderStats(@PathVariable Long id) {
       try {
