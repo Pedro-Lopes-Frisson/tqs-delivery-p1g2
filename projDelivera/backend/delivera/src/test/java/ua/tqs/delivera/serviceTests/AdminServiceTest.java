@@ -1,4 +1,4 @@
-package ua.tqs.delivera.ServiceTests;
+package ua.tqs.delivera.serviceTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
