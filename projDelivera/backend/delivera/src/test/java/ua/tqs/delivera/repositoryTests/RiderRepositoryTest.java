@@ -95,4 +95,19 @@ class RiderRepositoryTest {
         Double average = riderRepo.getAverageRiderRating();
         assertThat(average).isNull();
     }
+
+    @Order(6)
+    @Test
+    void whenFindByExistingEmail_thenReturnRider(){
+        entityManager.persistAndFlush(rider);
+        Rider riderByEmail = riderRepo.findByEmail(rider.getEmail());
+        assertThat(riderByEmail).isEqualTo(rider);
+    }
+
+    @Order(7)
+    @Test
+    void whenFindByWrongEmail_thenReturnNull(){
+        Rider riderByEmail = riderRepo.findByEmail("invalid email");
+        assertThat(riderByEmail).isNull();
+    }
 }

@@ -42,6 +42,11 @@ public class DeliveraController {
   //   return new ResponseEntity<>( saved, HttpStatus.OK );
   // }
 
+  // @GetMapping("/riders")
+  // public ResponseEntity<List<Rider>> getAllRiders(){
+  //   List<Rider> riders = riderService.getAllRiders();
+  //   return new ResponseEntity<>(riders, HttpStatus.OK);
+  // }
 
   @GetMapping("/rider/{id}/orders")
   public ResponseEntity<List<Order>> getAllOrdersForRider( @PathVariable Long id ) {

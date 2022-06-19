@@ -132,7 +132,7 @@ public class RiderServiceTest {
     @Test
     @DisplayName("Login: rider correct credentials")
     void whenLoginRiderCorrectCredentials_thenReturnRider(){
-        Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(Optional.of(rider));
+        Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(rider);
 
         Rider foundRider = riderService.loginRider(riderDTO);
         assertThat(foundRider).isEqualTo(rider);
@@ -143,7 +143,7 @@ public class RiderServiceTest {
     @Test
     @DisplayName("Login: rider wrong credentials")
     void whenLoginRiderWrongCredentials_thenReturnNull(){
-        Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(Optional.of(rider));
+        Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(rider);
         riderDTO.setPassworddto("password");
 
         Rider foundRider = riderService.loginRider(riderDTO);
@@ -154,7 +154,7 @@ public class RiderServiceTest {
     @Test
     @DisplayName("Login: non existing rider")
     void whenLoginNonExistingRider_thenReturnNull(){
-        Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(Optional.empty());
+        Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(null);
 
         Rider foundRider = riderService.saveRider(rider);
         assertThat(foundRider).isNull();
