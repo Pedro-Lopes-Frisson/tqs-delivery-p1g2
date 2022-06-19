@@ -2,6 +2,7 @@ package ua.tqs.frostini.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,6 +48,7 @@ public class AddressServiceTest {
   
   @Test
   void whenPostNewAddress_ThenReturnAddress() {
+    u.setAddress( a );
     when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) );
     
     Address address = addressService.getAddress( aDto );
@@ -58,8 +60,18 @@ public class AddressServiceTest {
   }
   
   @Test
+  void whenPostNewAddress_ThenNull() {
+    when( userRepository.findById( any() ) ).thenReturn( Optional.empty() );
+    
+    Address address = addressService.getAddress( aDto );
+    
+    assertNull( address );
+    
+    verify( userRepository, times( 1 ) ).findById( any() );
+  }
+  
+  @Test
   void whenPostNewAddressInvalidUser_ThenReturnSaveAndReturnAddress() {
-    u.setAddress( null );
     when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) );
     when( addressRepository.save( any() ) ).thenReturn( a );
     
@@ -88,6 +100,7 @@ public class AddressServiceTest {
     verify( addressRepository, times( 1 ) ).findById( any() );
     verify( addressRepository, times( 1 ) ).save( any() );
   }
+  
   
   /* helpers */
   private User createUser( int i ) {
