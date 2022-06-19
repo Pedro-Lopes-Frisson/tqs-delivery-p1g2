@@ -39,7 +39,7 @@ public class RiderService {
   //create rider
   public Rider saveRider( Rider rider ) {
     System.out.println( riderRepo.findByEmail( rider.getEmail() ) );
-    if ( ! riderRepo.findByEmail( rider.getEmail() ).isPresent() ) {return riderRepo.save( rider );}
+    if ( riderRepo.findByEmail( rider.getEmail() )==null ) {return riderRepo.save( rider );}
     throw new DuplicateKeyException( "Email already in use" );
   }
 
