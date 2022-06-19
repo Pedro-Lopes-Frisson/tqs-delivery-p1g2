@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,9 +34,16 @@ public class AddressServiceTest {
   @InjectMocks
   private AddressService addressService;
   
-  User u = createUser( 1 );
-  Address a = createAddress( 1 );
-  AddressDTO aDto = createAddressDto( 1 );
+  User u;
+  Address a;
+  AddressDTO aDto;
+  
+  @BeforeEach
+  void setUp() {
+    u = createUser( 1 );
+    a = createAddress( 1 );
+    aDto = createAddressDto( 1 );
+  }
   
   @Test
   void whenPostNewAddress_ThenReturnAddress() {
@@ -49,8 +57,39 @@ public class AddressServiceTest {
     verify( userRepository, times( 1 ) ).findById( any() );
   }
   
-  /* helpers */
+  @Test
+  void whenPostNewAddressInvalidUser_ThenReturnSaveAndReturnAddress() {
+    u.setAddress( null );
+    when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) );
+    when( addressRepository.save( any() ) ).thenReturn( a );
+    
+    Address address = addressService.getAddress( aDto );
+    
+    assertThat( address.getLatitude(), equalTo( a.getLatitude() ) );
+    assertThat( address.getLongitude(), equalTo( a.getLongitude() ) );
+    
+    verify( userRepository, times( 1 ) ).findById( any() );
+    verify( addressRepository, times( 1 ) ).save( any() );
+  }
   
+  @Test
+  void whenPostNewAddressButPreviousAddressNotFound_ThenSaveNewAddressReturnAddress() {
+    u.setAddress( a );
+    when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) );
+    when( addressRepository.findById( any() ) ).thenReturn( Optional.empty() );
+    when( addressRepository.save( any() ) ).thenReturn( a );
+    
+    Address address = addressService.getAddress( aDto );
+    
+    assertThat( address.getLatitude(), equalTo( a.getLatitude() ) );
+    assertThat( address.getLongitude(), equalTo( a.getLongitude() ) );
+    
+    verify( userRepository, times( 1 ) ).findById( any() );
+    verify( addressRepository, times( 1 ) ).findById( any() );
+    verify( addressRepository, times( 1 ) ).save( any() );
+  }
+  
+  /* helpers */
   private User createUser( int i ) {
     User u = new User();
     u.setName( "Pedro" );
