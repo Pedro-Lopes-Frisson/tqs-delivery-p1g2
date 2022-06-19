@@ -1,6 +1,9 @@
 package ua.tqs.frostini.datamodels;
 
+import javax.validation.constraints.NegativeOrZero;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,14 +17,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
-    @NotNull
+    @Positive
     double price;
 
+    @PositiveOrZero
     int stockQuantity;
 
     @NotNull
     String name;
-
+    
+    @NotNull
     String description;
     
 }

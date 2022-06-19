@@ -44,7 +44,7 @@ public class ProductService {
     // look for product with that name
     Optional<Product> optionalProduct = productRepository.findByIdAndName( productId, updatedProductDTO.getName() );
     if ( optionalProduct.isEmpty() ) {
-      throw new PossibleConstraintViolation( "This project might exist with another id or with another name" );
+      throw new PossibleConstraintViolation( "This Product might exist with another id or with another name" );
     }
     
     Product p = optionalProduct.get();

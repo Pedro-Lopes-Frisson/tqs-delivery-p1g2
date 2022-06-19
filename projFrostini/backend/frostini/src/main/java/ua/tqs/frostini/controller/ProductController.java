@@ -66,7 +66,7 @@ public class ProductController {
    */
   @PutMapping("/{productId}")
   public ResponseEntity<Product> editProduct( @Valid @PathVariable long productId,
-                                              @RequestBody ProductDTO updatedProductDTO ) {
+                                              @Valid @RequestBody ProductDTO updatedProductDTO ) {
     Product edited = null;
     try {
       edited = productService.editProduct( productId, updatedProductDTO );
