@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ua.tqs.frostini.datamodels.ProductDTO;
+
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -19,12 +21,12 @@ import java.util.List;
 @Component
 public class Product {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "product_id")
   long id;
   
   @Column
-  double price;
+  Double price;
   
   @Column(name = "stock_quantity")
   int stockQuantity;
@@ -38,5 +40,12 @@ public class Product {
   @JsonIgnore
   @OneToMany(mappedBy = "product")
   List<OrderedProduct> orderedProductList;
+
+  public Product(ProductDTO productDTO){
+    this.price = productDTO.getPrice();
+    this.stockQuantity = productDTO.getStockQuantity();
+    this.name = productDTO.getName();
+    this.description =productDTO.getDescription();
+  }
   
 }
