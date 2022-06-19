@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 
-@CrossOrigin
 @RestController
 @RequestMapping("api/v1")
 @Validated
