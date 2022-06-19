@@ -157,7 +157,7 @@ public class RiderServiceTest {
         Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(Optional.empty());
 
         Rider foundRider = riderService.saveRider(rider);
-        assertThat(foundRider).isNull();;
+        assertThat(foundRider).isNull();
 
     }
 
