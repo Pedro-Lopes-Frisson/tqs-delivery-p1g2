@@ -146,6 +146,9 @@ public class RiderServiceTest {
         Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(rider);
         riderDTO.setPassworddto("password");
 
+        // System.out.println(riderDTO.getEmaildto());
+        // System.out.println(riderDTO.getPassworddto());
+
         Rider foundRider = riderService.loginRider(riderDTO);
         assertThat(foundRider).isNull();
 
@@ -154,10 +157,12 @@ public class RiderServiceTest {
     @Test
     @DisplayName("Login: non existing rider")
     void whenLoginNonExistingRider_thenReturnNull(){
+        riderDTO.setEmail("invalid email");
         Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(null);
 
-        Rider foundRider = riderService.saveRider(rider);
-        assertThat(foundRider).isNull();
+        Rider foundRider = riderService.loginRider(riderDTO);
+        System.out.println("hello\t"+foundRider);
+        assertThat(foundRider).isEqualTo(null);
 
     }
 

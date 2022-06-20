@@ -53,4 +53,8 @@ public class RiderDTO {
         this.passworddto = pw;
     }
 
+    public void setEmail(String email) {
+        this.emaildto = email;
+    }
+
 }
