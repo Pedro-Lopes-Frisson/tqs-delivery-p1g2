@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthProvider';
+import isAuthenticated from '../utils/Authentication';
 import "./HomePage.css";
 import { 
     AppBar, 
@@ -22,6 +24,8 @@ import banner from '../assets/banner.jpg';
 const user = ['Login', 'Register'];
 
 function HomePage() {
+    const { auth } = useContext(AuthContext);
+    const isAuth = isAuthenticated(auth);
     const [anchorElNav, setAnchorElNav] = useState(null);
     const navigate = useNavigate();
 
@@ -33,6 +37,14 @@ function HomePage() {
         navigate('/' + (event.currentTarget.innerText).toLowerCase());
         setAnchorElNav(null);
     };
+
+    useEffect(() => {
+        console.log("HERE");
+        //console.log(auth);
+        if(isAuth) {
+          navigate('/menu');
+        }
+      });
 
     return (<>
         <AppBar position="fixed" sx={{ my: 1, bgcolor: '#ffffff'}}>

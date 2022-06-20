@@ -2,7 +2,7 @@ package ua.tqs.frostini.datamodels;
 
 import lombok.*;
 
-import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -10,13 +10,14 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderedProductDTO {
-  @Min( 1 )
+public class AddressDTO {
+   
   @NotNull
-  long quantity;
+  private long userId;
   
   @NotNull
-  long productId;
-  
-  
+  private double latitude;
+
+  @NotNull
+  private double longitude;
 }

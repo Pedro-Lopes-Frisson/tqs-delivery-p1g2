@@ -85,7 +85,6 @@ public class OrderService {
     if ( userFromDb.isEmpty() ) {
       return new ArrayList<>();
     }
-    
     return orderRepository.findAllByUser( userFromDb.get(), Pageable.unpaged() );
   }
 }
