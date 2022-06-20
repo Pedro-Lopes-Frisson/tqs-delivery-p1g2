@@ -150,7 +150,7 @@ public class RiderServiceTest {
         // System.out.println(riderDTO.getPassworddto());
 
         Rider foundRider = riderService.loginRider(riderDTO);
-        assertThat(foundRider).isNull();
+        assertThat(foundRider.getPassword()).isEqualTo("wrong credentials");
 
     }
 
@@ -162,7 +162,7 @@ public class RiderServiceTest {
 
         Rider foundRider = riderService.loginRider(riderDTO);
         System.out.println("hello\t"+foundRider);
-        assertThat(foundRider).isEqualTo(null);
+        assertThat(foundRider).isNull();
 
     }
 

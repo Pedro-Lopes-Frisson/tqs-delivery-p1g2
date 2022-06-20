@@ -136,8 +136,9 @@ public class RiderService {
 
   public Rider loginRider(RiderDTO riderDTO) {
     Rider foundRider = riderRepo.findByEmail(riderDTO.getEmaildto());
-    if ( foundRider==null || !riderDTO.getPassworddto().equals(foundRider.getPassword()))
-      return null;
+    if ( foundRider!=null && !riderDTO.getPassworddto().equals(foundRider.getPassword())){
+      foundRider.setPassword("wrong credentials");
+    }
     return foundRider;
   }
 }
