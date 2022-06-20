@@ -167,6 +167,18 @@ public class RiderServiceTest {
     }
 
     @Test
+    @DisplayName("Get all riders")
+    void whenGetAllRiders_thenReturnList(){
+        Rider rider2 = new Rider("mf@gmail.com", "Manuel Ferreira", "migferr", true, location, 10, 29);
+        List<Rider> allRiders = Arrays.asList(rider, rider2);
+        Mockito.when(riderRepo.findAll()).thenReturn(allRiders);
+
+        List<Rider> res = riderService.getAllRiders();
+        assertThat(res).isEqualTo(allRiders);
+
+    }
+
+    @Test
     void whenListingAllOrdersForAnExistentRider_ThenReturnCorrectListOfOrders() throws NonExistentResource {
         Mockito.when( riderRepo.findById( anyLong() ) ).thenReturn( Optional.of( rider ) );
         

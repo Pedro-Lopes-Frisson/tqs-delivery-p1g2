@@ -119,20 +119,20 @@ class DeliveraControllerTests {
     verify( riderService, times( 1 ) ).saveRider( Mockito.any() );
   }
 
-  // @Test
-  // void whenPostLoginCorrectRider_thenReturnRider() throws Exception {
+  @Test
+  void whenPostLoginCorrectRider_thenReturnRider() throws Exception {
     
-  //   when( riderService.loginRider( riderDTO ) ).thenReturn( rider );
+    when( riderService.loginRider( riderDTO ) ).thenReturn( rider );
     
-  //   mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )
-  //                                              .contentType( MediaType.APPLICATION_JSON )
-  //                                              .content( ua.tqs.delivera.JSONUtil.toJson( riderDTO ) ) )
-  //              .andExpect( MockMvcResultMatchers.status().isOk() )
-  //              .andExpect( MockMvcResultMatchers.jsonPath( "$.name", Matchers.is( rider.getName() ) ) )
-  //              .andExpect( MockMvcResultMatchers.jsonPath( "$.riderId", Matchers.is( rider.getRiderId().intValue() ) ) )
-  //              .andExpect( MockMvcResultMatchers.jsonPath( "$.email", Matchers.is( rider.getEmail() ) ) );
-  //   verify( riderService, times( 1 ) ).loginRider( Mockito.any() );
-  // }
+    mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )
+                                               .contentType( MediaType.APPLICATION_JSON )
+                                               .content( ua.tqs.delivera.JSONUtil.toJson( riderDTO ) ) )
+               .andExpect( MockMvcResultMatchers.status().isOk() )
+               .andExpect( MockMvcResultMatchers.jsonPath( "$.name", Matchers.is( rider.getName() ) ) )
+               .andExpect( MockMvcResultMatchers.jsonPath( "$.riderId", Matchers.is( rider.getRiderId().intValue() ) ) )
+               .andExpect( MockMvcResultMatchers.jsonPath( "$.email", Matchers.is( rider.getEmail() ) ) );
+    verify( riderService, times( 1 ) ).loginRider( Mockito.any() );
+  }
 
   // @Test
   // void whenPostLoginWrongCredentials_thenReturnUnauthorized() throws Exception {

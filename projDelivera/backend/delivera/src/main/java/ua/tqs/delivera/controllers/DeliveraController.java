@@ -35,12 +35,11 @@ public class DeliveraController {
     return new ResponseEntity<>( saved, HttpStatus.CREATED );
   }
 
-  // @PostMapping("/rider/login")
-  // public ResponseEntity<Rider> loginRider(@RequestBody RiderDTO riderDTO){
-  //   Rider rider = new Rider( riderDTO );
-  //   Rider saved = riderService.saveRider( rider );
-  //   return new ResponseEntity<>( saved, HttpStatus.OK );
-  // }
+  @PostMapping("/rider/login")
+  public ResponseEntity<Rider> loginRider(@RequestBody RiderDTO riderDTO){
+    Rider saved = riderService.loginRider( riderDTO );
+    return new ResponseEntity<>( saved, HttpStatus.OK );
+  }
 
   // @GetMapping("/riders")
   // public ResponseEntity<List<Rider>> getAllRiders(){
