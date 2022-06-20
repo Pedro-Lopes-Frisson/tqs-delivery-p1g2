@@ -30,7 +30,7 @@ public class AddressService {
       a.setLatitude( addressDto.getLatitude() );
       a.setLongitude( addressDto.getLongitude() );
       
-      addressRepository.save( a ); // create entity
+      Address addresSaved = addressRepository.save( a ); // create entity
       
       user.setAddress( a );
       userRepository.save( user ); // update User to include Address

@@ -1,4 +1,4 @@
-package ua.tqs.delivera.RepositoryTests;
+package ua.tqs.delivera.repositoryTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -49,13 +49,13 @@ class RiderRepositoryTest {
     @BeforeEach
     void setup(){
         location = new Location(40.85, 25.9999);
+        entityManager.persistAndFlush(location);
         rider = new Rider("ma@gmail.com", "Manuel Antunes", "migant", true, location, 0, 0);
     }
 
     @Order(1)
     @Test
     void whenSaveRider_thenReturnRider(){
-        entityManager.persistAndFlush(location);
         Rider rider_saved = entityManager.persistAndFlush(rider);
         assertThat(rider_saved).isEqualTo(rider);
     }
@@ -63,7 +63,6 @@ class RiderRepositoryTest {
     @Order(2)
     @Test
     void whenFindRiderByExistingId_thenReturnRider(){
-        entityManager.persistAndFlush(location);
         entityManager.persistAndFlush(rider);
 
         Rider foundRider = riderRepo.findById(rider.getRiderId()).get();
@@ -75,5 +74,25 @@ class RiderRepositoryTest {
     void whenInvalidId_thenReturnNull(){
         Rider rider_saved = riderRepo.findById(-1L).orElse(null);
         assertThat(rider_saved).isNull();
+    }
+
+    @Order(5)
+    @Test
+    void whenGetAverageRidersReview_thenReturnDouble() {
+        Rider rider1 = new Rider("mf@gmail.com", "Manuel Ferreira", "migferr", true, location, 10, 29);
+        entityManager.persistAndFlush(rider1);
+
+        Rider rider2 = new Rider("jt@gmail.com", "Joaquim Tereso", "password", true, location, 2, 6);
+        entityManager.persistAndFlush(rider2); 
+
+        Double average = riderRepo.getAverageRiderRating();
+        assertThat(average).isEqualTo((double) (29/10.0 + 6/2.0)/2);
+    }
+
+    @Order(4)
+    @Test
+    void whenGetAverageRidersReviewWithNoReviews_thenReturnNull() {
+        Double average = riderRepo.getAverageRiderRating();
+        assertThat(average).isNull();
     }
 }
