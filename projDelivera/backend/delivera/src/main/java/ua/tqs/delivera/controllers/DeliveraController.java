@@ -38,14 +38,20 @@ public class DeliveraController {
   @PostMapping("/rider/login")
   public ResponseEntity<Rider> loginRider(@RequestBody RiderDTO riderDTO){
     Rider saved = riderService.loginRider( riderDTO );
+    System.out.println(saved);
+    // System.out.println(saved.getName());
+    if (saved==null)
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    if (saved.getPassword().equals("wrong credentials"))
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     return new ResponseEntity<>( saved, HttpStatus.OK );
   }
 
-  // @GetMapping("/riders")
-  // public ResponseEntity<List<Rider>> getAllRiders(){
-  //   List<Rider> riders = riderService.getAllRiders();
-  //   return new ResponseEntity<>(riders, HttpStatus.OK);
-  // }
+  @GetMapping("/riders")
+  public ResponseEntity<List<Rider>> getAllRiders(){
+    List<Rider> riders = riderService.getAllRiders();
+    return new ResponseEntity<>(riders, HttpStatus.OK);
+  }
 
   @GetMapping("/rider/{id}/orders")
   public ResponseEntity<List<Order>> getAllOrdersForRider( @PathVariable Long id ) {

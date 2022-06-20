@@ -142,7 +142,7 @@ public class RiderService {
     return foundRider;
   }
 
-public List<Rider> getAllRiders() {
-    return riderRepo.findAll();
-}
+  public List<Rider> getAllRiders() {
+      return riderRepo.findAll();
+  }
 }
