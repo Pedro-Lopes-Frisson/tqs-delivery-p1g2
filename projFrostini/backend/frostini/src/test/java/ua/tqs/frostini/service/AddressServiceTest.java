@@ -2,6 +2,7 @@ package ua.tqs.frostini.service;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -47,59 +48,66 @@ public class AddressServiceTest {
   }
   
   @Test
-  void whenPostNewAddress_ThenReturnAddress() {
-    u.setAddress( a );
-    when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) );
-    
-    Address address = addressService.getAddress( aDto );
-    
-    assertThat( address.getLatitude(), equalTo( a.getLatitude() ) );
-    assertThat( address.getLongitude(), equalTo( a.getLongitude() ) );
-    
-    verify( userRepository, times( 1 ) ).findById( any() );
-  }
-  
-  @Test
-  void whenPostNewAddress_ThenNull() {
+  void whenPostNewAddressIfUserDoesNotExistThenReturnNull() {
     when( userRepository.findById( any() ) ).thenReturn( Optional.empty() );
-    
-    Address address = addressService.getAddress( aDto );
-    
-    assertNull( address );
-    
+    assertNull( addressService.getAddress( aDto ) );
     verify( userRepository, times( 1 ) ).findById( any() );
   }
   
   @Test
-  void whenPostNewAddressInvalidUser_ThenReturnSaveAndReturnAddress() {
-    when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) );
+  void whenGetAddressWithValidUserThatHasNoAddressThenCreateAndSaveNewAddress() {
+    u.setAddress( null );
+    assertNull( u.getAddress() );
+    when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) ); // return a user with null address
     when( addressRepository.save( any() ) ).thenReturn( a );
+    
     
     Address address = addressService.getAddress( aDto );
     
     assertThat( address.getLatitude(), equalTo( a.getLatitude() ) );
     assertThat( address.getLongitude(), equalTo( a.getLongitude() ) );
     
-    verify( userRepository, times( 1 ) ).findById( any() );
     verify( addressRepository, times( 1 ) ).save( any() );
+    verify( userRepository, times( 1 ) ).findById( any() );
   }
   
   @Test
-  void whenPostNewAddressButPreviousAddressNotFound_ThenSaveNewAddressReturnAddress() {
+  void whenGetAddressWithExistentUserThatHasAUnsavedAddressCreateANewOneSaveAndReturn() {
+    a.setId( 1L );
     u.setAddress( a );
-    when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) );
-    when( addressRepository.findById( any() ) ).thenReturn( Optional.empty() );
+    assertNotNull( u.getAddress() );
+    when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) ); // return a user with null address
+    when( addressRepository.findById( 1L ) ).thenReturn( Optional.empty() );
     when( addressRepository.save( any() ) ).thenReturn( a );
+    
     
     Address address = addressService.getAddress( aDto );
     
     assertThat( address.getLatitude(), equalTo( a.getLatitude() ) );
     assertThat( address.getLongitude(), equalTo( a.getLongitude() ) );
     
-    verify( userRepository, times( 1 ) ).findById( any() );
-    verify( addressRepository, times( 1 ) ).findById( any() );
+    verify( addressRepository, times( 1 ) ).save( any() );
+    verify( addressRepository, times( 1 ) ).findById( 1L );
     verify( addressRepository, times( 1 ) ).save( any() );
   }
+  
+  
+  @Test
+  void whenGetAddressWithExistentUserThatHasASavedAddressReturn() {
+    a.setId( 1L );
+    u.setAddress( a );
+    when( userRepository.findById( any() ) ).thenReturn( Optional.of( u ) ); // return a user with null address
+    when( addressRepository.findById( 1L ) ).thenReturn( Optional.of( a ) );
+    
+    Address address = addressService.getAddress( aDto );
+    
+    assertThat( address.getLatitude(), equalTo( a.getLatitude() ) );
+    assertThat( address.getLongitude(), equalTo( a.getLongitude() ) );
+    
+    verify( addressRepository, times( 1 ) ).findById( 1L );
+    verify( addressRepository, times( 0 ) ).save( any() );
+  }
+  
   
   
   /* helpers */
