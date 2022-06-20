@@ -71,7 +71,7 @@ class ProductControllerTest {
       .then().assertThat()
       .contentType( ContentType.JSON ).and()
       .status( HttpStatus.CREATED ).and()
-      .body( "size()", is( 5 ) ).and()        // 1 Object with of attributes
+      .body( "size()", is( 6 ) ).and()        // 1 Object with of attributes
       .body( "price", is( product.getPrice().floatValue() ) ).and()
     ;
     
@@ -156,7 +156,7 @@ class ProductControllerTest {
       .then().log().body().assertThat()
       .status( HttpStatus.OK ).and()
       .contentType( ContentType.JSON ).and()
-      .body( "size()", is( 5 ) ).and()
+      .body( "size()", is( 6 ) ).and()
       .body( "stockQuantity", is( product.getStockQuantity() ) );
     
     verify( productService, times( 1 ) ).editProduct( product.getId(), productDTO );
@@ -263,7 +263,7 @@ class ProductControllerTest {
       .then().log().body().assertThat()
       .status( HttpStatus.OK ).and()
       .contentType( ContentType.JSON ).and()
-      .body( "size()", is( 5 ) ).and()
+      .body( "size()", is( 6 ) ).and()
       .body( "name", is( product.getName() ) );
     
     verify( productService, times( 1 ) ).getProductById( product.getId() );
