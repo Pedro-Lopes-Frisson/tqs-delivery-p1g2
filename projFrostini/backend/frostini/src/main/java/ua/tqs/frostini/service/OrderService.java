@@ -89,4 +89,29 @@ public class OrderService {
     }
     return orderRepository.findAllByUser( userFromDb.get(), Pageable.unpaged() );
   }
+
+  public Order updateOrderState( long orderId ) {
+    // se estado for ordered -> in transit
+    // se for in transit -> delivered
+    // any other case -> erro
+    Optional<Order> orderFromDb = orderRepository.findById( orderId );
+    if(orderFromDb.isEmpty()) {
+      return null;
+    }
+
+    Order order = orderFromDb.get();
+
+    switch(order.getOrderState()) {
+      case "ordered":
+        order.setOrderState("in transit");
+        break;
+      case "in transit":
+        order.setOrderState("delivered");
+        break;
+      default:
+        return null;
+    }
+
+    return order;
+  }
 }
