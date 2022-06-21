@@ -1,7 +1,9 @@
 package ua.tqs.delivera.datamodels;
 
+import lombok.Data;
 import ua.tqs.delivera.models.Location;
 
+@Data
 public class RiderDTO {
     private String namedto;
     private String emaildto;
