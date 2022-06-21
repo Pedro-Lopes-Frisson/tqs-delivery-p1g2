@@ -26,18 +26,18 @@ public class User {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "`user_id`")
   long id;
-
+  
   @Column(name = "`name`")
   String name;
-
+  
   @Column(name = "`password`")
-  @Size(min=8)
+  @Size(min = 8)
   String password;
-
+  
   @Column(name = "`email`")
   @Email
   String email;
-
+  
   @Column(name = "`admin`")
   boolean isAdmin;
   

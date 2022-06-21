@@ -54,6 +54,8 @@ public class OrderService {
       productMap.put( product.getId(), product );
       price += product.getPrice() * orderedProductDTO.getQuantity();
     }
+
+    order.setOrderMadeTimeStamp( System.currentTimeMillis() );
     
     order.setTotalPrice( price );
     

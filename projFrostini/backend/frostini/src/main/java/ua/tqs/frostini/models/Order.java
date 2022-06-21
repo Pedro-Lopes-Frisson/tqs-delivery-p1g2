@@ -37,7 +37,6 @@ public class Order {
   @Column(name = "total_price")
   Double totalPrice;
 
-  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "address_id", nullable = false)
   private Address address;
@@ -45,4 +44,10 @@ public class Order {
   @OneToMany(mappedBy = "order")
   List<OrderedProduct> orderedProductList;
 
+  @Column(name = "order_state")
+  String orderState = "ordered";
+  
+  @Column(name = "order_made_timestamp")
+  Long orderMadeTimeStamp;
+  
 }

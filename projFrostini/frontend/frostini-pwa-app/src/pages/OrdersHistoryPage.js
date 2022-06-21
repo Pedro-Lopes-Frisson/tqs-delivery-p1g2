@@ -41,11 +41,21 @@ function OrdersHistoryPage() {
   const [state, setState] = useLocalStorage('state', '');
   const [orderInfo, setOrderInfo] = useState({});
   const [error, setError] = useState('');
+  const [json, setJson] = useState([]);
 
   const viewOrder = (order) => {
-    setState(order.state);
+    setState(order.orderState);
     navigate('/purchase');
   };
+
+  const sortOrders = (a, b) => {
+    return b.id - a.id;
+  }
+
+  const printDate = (timestamp) => {
+    return new Date(timestamp).toLocaleString();
+  }
+  
 
   useEffect(() => {
     if(!isAuth) {
@@ -55,14 +65,16 @@ function OrdersHistoryPage() {
 
   useEffect(() => {
     const userId = auth.id;
-    console.log("HISTORY: " + userId);
     axios.get(`/order/user/${userId}`)
       .then(res => {
-        console.log(res)
+        const orders = res.data;
+        orders.sort(sortOrders);
+        console.log(orders);
+        setJson(orders);
       }).catch(err => {
         setError('User does not have orders');
       })
-  });
+  }, [json]);
 
   return (
     <div className="orders-history-page">
@@ -81,13 +93,13 @@ function OrdersHistoryPage() {
                   <div className="order-date">
                     <CalendarTodayIcon />
                     <Typography variant="body2" color="text.secondary">
-                      {order.date}
+                      {printDate(order.orderMadeTimeStamp)}
                     </Typography>
                   </div>
                   <div className="order-address">
                     <FmdGoodIcon />
                     <Typography variant="body2" color="text.secondary">
-                      {order.address}
+                      {`${order.address.latitude}, ${order.address.longitude}`}
                     </Typography>
                   </div>
                 </div>
@@ -112,7 +124,7 @@ function OrdersHistoryPage() {
                   >
                     Check More About The Order
                   </Button>
-                  {order.state === "delivered" && (
+                  {order.orderState === "delivered" && (
                     <div className="deliver-check">
                       <CheckIcon sx={{ color: "#9cb737" }} />
                       <p>Delivered</p>
