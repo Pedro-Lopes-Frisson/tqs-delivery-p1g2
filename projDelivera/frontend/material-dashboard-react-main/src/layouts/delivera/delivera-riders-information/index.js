@@ -50,8 +50,22 @@ import orderListData from "layouts/delivera/delivera-riders-information/data/ord
 // import team2 from "assets/images/team-2.jpg";
 // import team3 from "assets/images/team-3.jpg";
 // import team4 from "assets/images/team-4.jpg";
+import { useContext, useEffect } from "react";
+import AuthContext from "context/AuthProvider";
+import isAuthenticated from "utils/Authentication";
+import { useNavigate } from "react-router-dom";
 
 function RiderProfile() {
+  const { auth } = useContext(AuthContext);
+  const isAuth = isAuthenticated(auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuth) {
+      navigate("/authentication/sign-in");
+    }
+  }, [isAuth]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />

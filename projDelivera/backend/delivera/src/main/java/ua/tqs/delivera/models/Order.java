@@ -1,6 +1,5 @@
 package ua.tqs.delivera.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -40,5 +39,15 @@ public class Order {
   @JoinColumn(name = "store_id")
   Store store;
   
+  
+  @Column(name= "order_made_timestamp")
+  Long orderMadeTimestamp;
+  
+  @Column(name= "delivered_timestamp")
+  Long deliveredTimestamp;
+  
+  
+  @Column(name = "order_state")
+  String orderState = "ordered";
   
 }

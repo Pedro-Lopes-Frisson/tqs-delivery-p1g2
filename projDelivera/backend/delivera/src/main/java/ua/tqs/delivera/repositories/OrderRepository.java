@@ -5,6 +5,8 @@ import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.Rider;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
+    Optional<Order> findByIdAndOrderState(long id, String state);
 }

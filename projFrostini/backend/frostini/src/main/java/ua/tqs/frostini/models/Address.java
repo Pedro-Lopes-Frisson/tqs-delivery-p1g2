@@ -9,12 +9,12 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Data
 @Table(name = "frostini_address")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Component
 public class Address {
   
@@ -24,17 +24,12 @@ public class Address {
   long id;
 
   @JsonIgnore
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
-  
-  @JsonIgnore
   @OneToMany(mappedBy = "address")
   private List<Order> order;
   
-  @Column
-  String street;
-  
-  @Column(name = "zip_code")
-  String zipCode;
+  @Column(name = "latitude")
+  double latitude;
+
+  @Column(name = "longitude")
+  double longitude;
 }

@@ -26,25 +26,25 @@ public class User {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "`user_id`")
   long id;
-
+  
   @Column(name = "`name`")
   String name;
-
+  
   @Column(name = "`password`")
-  @Size(min=8)
+  @Size(min = 8)
   String password;
-
+  
   @Column(name = "`email`")
   @Email
   String email;
-
+  
   @Column(name = "`admin`")
   boolean isAdmin;
-
-  @JsonIgnore
-  @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
-  Set<Address> address;
-
+  
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "address_id")
+  Address address;
+  
   @JsonIgnore
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "user")
   Set<Order> order;
