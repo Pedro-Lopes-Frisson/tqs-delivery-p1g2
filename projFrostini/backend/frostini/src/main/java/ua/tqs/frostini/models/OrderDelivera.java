@@ -14,9 +14,9 @@ import javax.persistence.*;
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderDelivera {
-  Long id;
+  Long id; // delivera
   
-  Long externalId;
+  Long externalId; // o que nos mandamos
   
   String clientLocation;
   

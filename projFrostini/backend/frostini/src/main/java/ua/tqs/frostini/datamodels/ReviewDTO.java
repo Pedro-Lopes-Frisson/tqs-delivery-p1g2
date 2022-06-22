@@ -12,7 +12,6 @@ import javax.validation.constraints.PositiveOrZero;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewDTO {
-  Long riderId;
   @PositiveOrZero
   Double points;
 }

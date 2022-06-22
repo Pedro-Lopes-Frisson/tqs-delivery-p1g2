@@ -34,6 +34,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import io.restassured.RestAssured;
 import ua.tqs.frostini.datamodels.OrderDTO;
 import ua.tqs.frostini.datamodels.OrderedProductDTO;
+import ua.tqs.frostini.datamodels.ReviewDTO;
 import ua.tqs.frostini.models.*;
 import ua.tqs.frostini.models.Order;
 import ua.tqs.frostini.repositories.*;
@@ -117,7 +118,8 @@ class OrderControllerIT {
     o1 = createOrder( 1, address );
     userOrders.add( o1 );
     userRepository.saveAndFlush( u );
-    orderRepository.saveAndFlush( o1 );
+    o1.setExternalId( 1L );
+    o1 = orderRepository.saveAndFlush( o1 );
     u.setOrder( Set.of( o1 ) );
     userRepository.saveAndFlush( u );
     
@@ -178,6 +180,7 @@ class OrderControllerIT {
     
   }
   
+  
   @Test
   void testMakeAnOrderWithAValidDTOAndDeliverySystemIsOk_ThenReturnOrder() throws JsonProcessingException {
     OrderDelivera orderDelivera = new OrderDelivera();
@@ -201,9 +204,41 @@ class OrderControllerIT {
                .body( "externalId", equalTo( 10 ) );
   }
   
+  @Test
+  void testReviewOrderWithEverythingOkayThenReturnOK() {
+    
+    mockBackEnd.enqueue( new MockResponse().setResponseCode( 200 ).addHeader( "Content-Type", ContentType.JSON ) );
+    
+    RestAssured.given()
+               .contentType( "application/json" )
+               .body( new ReviewDTO( 4.2D ) )
+               .put( createURL() + "/api/v1/order/review/" + o1.getId() )
+               .then().assertThat().statusCode( HttpStatus.OK.value() ).log();
+  }
+  
   
   @Test
-  void testMakeAnOrderWithAValidDTOAndDeliverySystemIsNotOk_ThenReturnNull(){
+  void testReviewOrderNotExistent() {
+    RestAssured.given()
+               .contentType( "application/json" )
+               .body( new ReviewDTO( 4.2D ) )
+               .put( createURL() + "/api/v1/order/review/-1" )
+               .then().assertThat().statusCode( HttpStatus.BAD_REQUEST.value() ).log();
+  }
+  
+  @Test
+  void testReviewOrderWithServerError() {
+    mockBackEnd.enqueue( new MockResponse().setResponseCode( 404 ).addHeader( "Content-Type",
+      ContentType.JSON ) );
+    RestAssured.given()
+               .contentType( "application/json" )
+               .body( new ReviewDTO( 4.2D ) )
+               .put( createURL() + "/api/v1/order/review/" + o1.getId() )
+               .then().assertThat().statusCode( HttpStatus.EXPECTATION_FAILED.value() ).log();
+  }
+  
+  @Test
+  void testMakeAnOrderWithAValidDTOAndDeliverySystemIsNotOk_ThenReturnNull() {
     mockBackEnd.enqueue(
       new MockResponse().setResponseCode( 400 ).addHeader( "Content-Type",
         ContentType.JSON )

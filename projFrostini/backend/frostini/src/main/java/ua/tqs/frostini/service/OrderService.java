@@ -3,12 +3,13 @@ package ua.tqs.frostini.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ua.tqs.frostini.datamodels.OrderDTO;
 import ua.tqs.frostini.datamodels.OrderDTODelivera;
 import ua.tqs.frostini.datamodels.OrderedProductDTO;
-import ua.tqs.frostini.exceptions.FailedToPlaceOrderException;
-import ua.tqs.frostini.exceptions.IncompleteOrderPlacement;
+import ua.tqs.frostini.datamodels.ReviewDTO;
+import ua.tqs.frostini.exceptions.*;
 import ua.tqs.frostini.models.*;
 import ua.tqs.frostini.models.emddedIds.OrderProductEmbeddedId;
 import ua.tqs.frostini.repositories.*;
@@ -93,7 +94,7 @@ public class OrderService {
     try {
       orderDelivera = deliveryService.newOrder( orderDTODelivera );
     } catch (FailedToPlaceOrderException e) {
-      throw new IncompleteOrderPlacement("Order could not be placed due to an error in the delivery system");
+      throw new IncompleteOrderPlacement( "Order could not be placed due to an error in the delivery system" );
     }
     savedOrder.setExternalId( orderDelivera.getId() ); // save delivera id so that i can review it
     
@@ -140,5 +141,23 @@ public class OrderService {
     }
     
     return order;
+  }
+  
+  public int reviewOrder( long orderId, ReviewDTO reviewDTO )
+    throws ResourceNotFoundException, IncompleteOrderReviewException {
+    Optional<Order> optionalOrder = orderRepository.findById( orderId );
+    if ( optionalOrder.isEmpty() ) {
+      throw new ResourceNotFoundException( "This Order Does Not Exist" );
+    }
+    Order order = optionalOrder.get();
+    int status;
+    try {
+      status = deliveryService.reviewOrder( order.getExternalId(), reviewDTO );
+      log.info("ASDFASDFASDF {}", status );
+    } catch (FailedToReviewOrder e) {
+      log.info( "Server Failed To review Order. {}", e.getMessage() );
+      throw new IncompleteOrderReviewException( "Server Failed To review Order" );
+    }
+    return status;
   }
 }
