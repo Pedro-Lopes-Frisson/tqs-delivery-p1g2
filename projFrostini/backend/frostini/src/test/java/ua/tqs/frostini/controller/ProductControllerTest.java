@@ -286,6 +286,7 @@ class ProductControllerTest {
     product.setName( "Kinder Bueno Ice Cream" );
     product.setStockQuantity( 10 );
     product.setDescription( "Sou gostoso" );
+    product.setPhotoUrl( "https://cdn.shopify.com/s/files/1/0375/0867/7769/products/AlmondBrittleFudge02_c6058f23-8c91-41b5-b1a7-8b93705b5a67_1024x1024@2x.jpg?v=1631857159" );
     return product;
   }
   
@@ -295,6 +296,7 @@ class ProductControllerTest {
     product.setName( "Kinder Bueno Ice Cream" );
     product.setStockQuantity( 10 );
     product.setDescription( "Sou gostoso" );
+    product.setPhotoUrl( "https://cdn.shopify.com/s/files/1/0375/0867/7769/products/AlmondBrittleFudge02_c6058f23-8c91-41b5-b1a7-8b93705b5a67_1024x1024@2x.jpg?v=1631857159" );
     product.setId( 1L );
     return product;
   }

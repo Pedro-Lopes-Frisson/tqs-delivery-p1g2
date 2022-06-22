@@ -44,6 +44,16 @@ public class OrderController {
     return ResponseEntity.status( HttpStatus.OK ).body( order );
   }
 
+  @PutMapping("/order/{id}")
+  public ResponseEntity<Object> updateOrderState( @PathVariable long id ) {
+    Order order = orderService.updateOrderState( id );
+    if (order == null){
+      return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body(  null);
+    }
+
+    return ResponseEntity.status( HttpStatus.OK ).body( order );
+  }
+
 
   @PostMapping("/order")
   public ResponseEntity<Order> makeOrder( @Valid @RequestBody OrderDTO orderDTO ) {

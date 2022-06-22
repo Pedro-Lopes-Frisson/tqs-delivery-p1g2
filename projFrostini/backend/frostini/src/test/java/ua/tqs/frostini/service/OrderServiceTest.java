@@ -151,6 +151,48 @@ class OrderServiceTest {
     verify( userRepository, times( 1 ) ).findById( u.getId() );
   }
 
+  @Test
+  void testUpdateOrderStateInvalidOrder_ThenReturnNull() {
+    when( orderRepository.findById( any() ) ).thenReturn( Optional.empty() );
+
+    Order orderUpdated = orderService.updateOrderState( 2012104124L );
+    assertNull( orderUpdated );
+
+    verify( orderRepository, times( 1 ) ).findById( any() );
+  }
+
+  @Test
+  void testUpdateOrderStateOrderedToInTransit_ThenReturnOrderWithUpdatedState() {
+    when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.of( userOrders.get( 0 ) ) );
+
+    Order orderUpdated = orderService.updateOrderState( userOrders.get( 0 ).getId() );
+    assertThat( orderUpdated.getOrderState(), equalTo( "in transit" ) );
+
+    verify( orderRepository, times( 1 ) ).findById( any() );
+  }
+
+  @Test
+  void testUpdateOrderStateInTransitToDelivered_ThenReturnOrderWithUpdatedState() {
+    userOrders.get( 0 ).setOrderState("in transit");
+    when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.of( userOrders.get( 0 ) ) );
+
+    Order orderUpdated = orderService.updateOrderState( userOrders.get( 0 ).getId() );
+    assertThat( orderUpdated.getOrderState(), equalTo( "delivered" ) );
+
+    verify( orderRepository, times( 1 ) ).findById( any() );
+  }
+
+  @Test
+  void testUpdateOrderStateInvalidState_ThenReturnNull() {
+    userOrders.get( 0 ).setOrderState("state");
+    when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.of( userOrders.get( 0 ) ) );
+
+    Order orderUpdated = orderService.updateOrderState( userOrders.get( 0 ).getId() );
+    assertNull( orderUpdated );
+
+    verify( orderRepository, times( 1 ) ).findById( any() );
+  }
+
   /* helpers */
 
   private User createUser( int i ) {

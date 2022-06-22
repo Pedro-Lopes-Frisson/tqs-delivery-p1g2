@@ -47,7 +47,6 @@ import static org.mockito.Mockito.*;
     RestAssuredMockMvc.mockMvc( mvc );
     userOrders = new ArrayList<>();
     userOrders.add( createOrder( 1 ) );
-    System.out.println( userOrders.get( 0 ) );
     userOrders.add( createOrder( 2 ) );
     userOrders.add( createOrder( 3 ) );
     userOrders.add( createOrder( 4 ) );
@@ -136,6 +135,58 @@ import static org.mockito.Mockito.*;
 
 
     verify( orderService, times( 0 ) ).placeOrder( any() );
+  }
+
+  @Test
+  void testUpdateOrderStateInvalidOrder_ThenReturnBadRequest() {
+    when( orderService.updateOrderState( anyLong() ) ).thenReturn( null );
+
+    given().contentType( ContentType.JSON ).put( "/api/v1/order/{orderId}", -1l )
+           .then().log().body().assertThat()
+           .status( HttpStatus.BAD_REQUEST );
+
+
+    verify( orderService, times( 1 ) ).updateOrderState( anyLong() );
+  }
+
+  @Test
+  void testUpdateOrderStateOrderedToInTransit_ThenReturnOk() {
+    userOrders.get( 0 ).setOrderState("in transit");
+    when( orderService.updateOrderState( anyLong() ) ).thenReturn( userOrders.get( 0 ) );
+
+    given().contentType( ContentType.JSON ).put( "/api/v1/order/{orderId}", userOrders.get( 0 ).getId() )
+           .then().log().body().assertThat()
+           .status( HttpStatus.OK ).and()
+           .body("orderState", is("in transit"));
+
+
+    verify( orderService, times( 1 ) ).updateOrderState( anyLong() );
+  }
+
+  @Test
+  void testUpdateOrderStateInTransitToDelivered_ThenReturnOk() {
+    userOrders.get( 0 ).setOrderState("delivered");
+    when( orderService.updateOrderState( anyLong() ) ).thenReturn( userOrders.get( 0 ) );
+
+    given().contentType( ContentType.JSON ).put( "/api/v1/order/{orderId}", userOrders.get( 0 ).getId() )
+           .then().log().body().assertThat()
+           .status( HttpStatus.OK ).and()
+           .body("orderState", is("delivered"));
+
+
+    verify( orderService, times( 1 ) ).updateOrderState( anyLong() );
+  }
+
+  @Test
+  void testUpdateOrderStateInvalidState_ThenReturnBadRequest() {
+    when( orderService.updateOrderState( anyLong() ) ).thenReturn( null );
+
+    given().contentType( ContentType.JSON ).put( "/api/v1/order/{orderId}", userOrders.get( 0 ).getId() )
+           .then().log().body().assertThat()
+           .status( HttpStatus.BAD_REQUEST );
+
+
+    verify( orderService, times( 1 ) ).updateOrderState( anyLong() );
   }
 
   /* helpers */

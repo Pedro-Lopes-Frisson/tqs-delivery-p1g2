@@ -26,7 +26,6 @@ import useLocalStorage from "../hooks/use-local-storage";
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
 import axios from '../api/axios';
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 function PurchasePage() {
   const navigate = useNavigate();
@@ -158,9 +157,9 @@ function PurchasePage() {
               <TableCell className="header-cell" align="right">
                 Price
               </TableCell>
-              <TableCell className="header-cell" align="right">
+              {/* <TableCell className="header-cell" align="right">
                 Tags
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -170,17 +169,17 @@ function PurchasePage() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.title}
+                  {row.name}
                 </TableCell>
                 <TableCell align="right">{row.quantity}</TableCell>
                 <TableCell align="right">{row.price} €</TableCell>
-                <TableCell align="right">
+                {/* <TableCell align="right">
                   <div className="tags">
                     {row.tags.map((tag, key) => (
                       <Chip label={tag} key={key} className="tags-chip" />
                     ))}
                   </div>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>
@@ -193,50 +192,8 @@ function PurchasePage() {
         <form onSubmit={handleSubmit}>
           <div className="address-details">
             <h3>Address Details</h3>
-            <p>{address.length > 0 ? `${address[0]} ${address[2]} ${address[1]}` : auth.address}</p>
+            <p>{address.length > 0 ? `${address[0]}, ${address[1]}` : auth.address}</p>
           </div>
-          {/* <div className="address-details">
-            <h3>Address Details</h3>
-            <FormControl>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="default-address"
-                name="radio-buttons-group"
-              >
-                {auth.address ? 
-                  <FormControlLabel
-                    value="default-address"
-                    control={<Radio />}
-                    label="Default Address"
-                    onClick={() => setNewAddress(false)}
-                  />
-                  : <FormControlLabel
-                    disabled
-                    value="default-address"
-                    control={<Radio />}
-                    label="Default Address"
-                  />
-                }
-                <div className="alternative-address">
-                  <FormControlLabel
-                    value="another-address"
-                    control={<Radio />}
-                    onClick={() => setNewAddress(true)}
-                    label="Another Address"
-                  />
-                  <div>
-                    {newAddress ? (
-                      <div>
-                        <TextField id="address" variant="outlined" label="Address"/>
-                        <TextField id="city" variant="outlined" label="City"/>
-                        <TextField id="zip-code" variant="outlined" label="Zip code"/>
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </div> */}
 
           <div className="payment-details">
             <h3>Payment Details</h3>
