@@ -19,6 +19,6 @@ jobs:
         echo $DOCKER_PASSWORD | sudo docker login ghcr.io -u sophjane --password-stdin
     - name: Run deployment
       run: |
-        docker-compose down
-        docker-compose pull
-        docker-compose up -d --build
+        docker compose down
+        docker compose pull
+        docker compose up -d --build
