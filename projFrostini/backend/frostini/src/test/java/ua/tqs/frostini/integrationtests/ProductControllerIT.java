@@ -68,22 +68,26 @@ public class ProductControllerIT {
     product.setPrice( 12.2D );
     product.setDescription( "Gelado de Nozes Pecã" );
     product.setStockQuantity( 12 );
+    product.setPhotoUrl("SomeUrl");
     
     productDTO.setName( "Gelado de Nozes" );
     productDTO.setPrice( 12.2D );
     productDTO.setDescription( "Gelado de Nozes Pecã" );
     productDTO.setStockQuantity( 12 );
+    productDTO.setPhotoUrl("SomeUrl");
     
     
     product1.setName( "Gelado de Nozes 1" );
     product1.setPrice( 22.2D );
     product1.setDescription( "Gelado de Nozes Pecã 1" );
     product1.setStockQuantity( 120 );
+    product1.setPhotoUrl("SomeUrl");
     
     product2.setName( "Gelado de Nozes 3" );
     product2.setPrice( 32.2D );
     product2.setDescription( "Gelado de Nozes Pecã 3" );
     product2.setStockQuantity( 1200 );
+    product2.setPhotoUrl("SomeUrl");
   }
   
   @AfterEach

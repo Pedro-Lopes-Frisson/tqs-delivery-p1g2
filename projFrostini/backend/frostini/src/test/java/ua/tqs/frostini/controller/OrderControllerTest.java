@@ -47,7 +47,6 @@ import static org.mockito.Mockito.*;
     RestAssuredMockMvc.mockMvc( mvc );
     userOrders = new ArrayList<>();
     userOrders.add( createOrder( 1 ) );
-    System.out.println( userOrders.get( 0 ) );
     userOrders.add( createOrder( 2 ) );
     userOrders.add( createOrder( 3 ) );
     userOrders.add( createOrder( 4 ) );
