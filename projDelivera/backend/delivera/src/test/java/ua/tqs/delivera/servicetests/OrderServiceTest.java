@@ -18,6 +18,7 @@ import ua.tqs.delivera.repositories.OrderRepository;
 import ua.tqs.delivera.repositories.StoreRepository;
 import ua.tqs.delivera.services.OrderService;
 import ua.tqs.delivera.services.RiderService;
+import ua.tqs.delivera.utils.DistanceCalculator;
 
 import java.util.List;
 import java.util.Optional;
@@ -108,19 +109,19 @@ public class OrderServiceTest {
     
     
     orderProfit.setOrder( order );
-    orderProfit.setOrderPrice( distance( store.getAddress(), new Location( orderDTO1.getClientLat(),
+    orderProfit.setOrderPrice( DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
       orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     orderProfit1.setOrder( order1 );
     orderProfit1.setOrderPrice(
-      distance( store.getAddress(), new Location( orderDTO1.getClientLat(), orderDTO.getClientLon() ) ) *
+      DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(), orderDTO.getClientLon() ) ) *
         orderDTO1.getClientLon() * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     
     orderProfitSaved.setOrder( order );
     orderProfitSaved.setRider( sameRiderButUnavailable );
     orderProfitSaved.setOrderPrice( orderProfit.getOrderPrice() );
-    orderProfit.setOrderPrice( distance( store.getAddress(), new Location( orderDTO1.getClientLat(),
+    orderProfit.setOrderPrice( DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
       orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     
@@ -246,50 +247,4 @@ public class OrderServiceTest {
     verify( riderService, times( 1 ) ).findClosestRider( store.getAddress() );
   }
   
-  
-  public double distance( Location l1, Location l2 ) {
-    
-    // The math module contains a function
-    // named toRadians which converts from
-    // degrees to radians.
-    double lon1 = Math.toRadians( l1.getLongitude() );
-    double lon2 = Math.toRadians( l2.getLongitude() );
-    double lat1 = Math.toRadians( l1.getLatitude() );
-    double lat2 = Math.toRadians( l2.getLatitude() );
-    
-    // Haversine formula
-    double dLon = lon2 - lon1;
-    double dLat = lat2 - lat1;
-    double a = Math.pow( Math.sin( dLat / 2 ), 2 )
-      + Math.cos( lat1 ) * Math.cos( lat2 )
-      * Math.pow( Math.sin( dLon / 2 ), 2 );
-    
-    double c = 2 * Math.asin( Math.sqrt( a ) );
-    
-    // Radius of earth in kilometers. Use 3956
-    // for miles
-    double r = 6371;
-    
-    // calculate the result
-    return ( c * r );
-  }
-  
-  @ParameterizedTest
-  @MethodSource("distancesGen")
-  void assertDistances( Location l1, Location l2, double dist ) {
-    assertThat( orderService.distance( l1, l2 ) ).isEqualTo( dist );
-  }
-  
-  
-  public static Stream<Arguments> distancesGen() {
-    return Stream.of(
-      Arguments.arguments( new Location( 53.32, 53.31 ),
-        new Location( - 1.72, - 1.69 ), 7943.096602114035 ),
-      Arguments.arguments( new Location( 13, 14 ),
-        new Location( 4, 14 ), 1000.7543398010286 ),
-      Arguments.arguments( new Location( 14, 0 ),
-        new Location( 10, 14 ), 1585.845077250938 )
-    
-    );
-  }
 }

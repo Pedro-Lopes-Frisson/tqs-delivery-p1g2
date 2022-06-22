@@ -45,7 +45,7 @@ public class Rider {
   private Location currentLocation;
   
   @JsonIgnore
-  @OneToMany(mappedBy = "rider", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "rider", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
   private List<OrderProfit> orderProfits = new ArrayList<>();
   
   

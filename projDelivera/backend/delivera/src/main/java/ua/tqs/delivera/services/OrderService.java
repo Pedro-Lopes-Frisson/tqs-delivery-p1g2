@@ -10,6 +10,7 @@ import ua.tqs.delivera.repositories.LocationRepository;
 import ua.tqs.delivera.repositories.OrderProfitRepository;
 import ua.tqs.delivera.repositories.OrderRepository;
 import ua.tqs.delivera.repositories.StoreRepository;
+import ua.tqs.delivera.utils.DistanceCalculator;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -71,7 +72,7 @@ public class OrderService {
     }
     
     // calculate distance between the 2 locations
-    double distance = distance( clientLocation, storeLocation );
+    double distance = DistanceCalculator.distanceBetweenPointsOnEarth( clientLocation, storeLocation );
     
     // create the OrderProfit
     OrderProfit orderProfit = new OrderProfit();

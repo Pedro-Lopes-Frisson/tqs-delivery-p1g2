@@ -22,7 +22,7 @@ import ua.tqs.delivera.repositories.RiderRepository;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import ua.tqs.delivera.utils.DistanceCalculator;
 import java.util.stream.Collectors;
 
 @Service
@@ -137,40 +137,6 @@ public class RiderService {
 
   }
 
-  /**
-   * Taken from <a href="https://www.geeksforgeeks.org/program-distance-two-points-earth/">Source of this code</a>
-   * Changes were applied to reflect practices defined in our QA Manual
-   *
-   * @param l1 first point
-   * @param l2 second point
-   * @return distance between 2 points in kilometers
-   */
-  private double distance( Location l1, Location l2 ) {
-
-    // The math module contains a function
-    // named toRadians which converts from
-    // degrees to radians.
-    double lon1 = Math.toRadians( l1.getLongitude() );
-    double lon2 = Math.toRadians( l2.getLongitude() );
-    double lat1 = Math.toRadians( l1.getLatitude() );
-    double lat2 = Math.toRadians( l2.getLatitude() );
-
-    // Haversine formula
-    double dLon = lon2 - lon1;
-    double dLat = lat2 - lat1;
-    double a = Math.pow( Math.sin( dLat / 2 ), 2 )
-      + Math.cos( lat1 ) * Math.cos( lat2 )
-      * Math.pow( Math.sin( dLon / 2 ), 2 );
-
-    double c = 2 * Math.asin( Math.sqrt( a ) );
-
-    // Radius of earth in kilometers. Use 3956
-    // for miles
-    double r = 6371;
-
-    // calculate the result
-    return ( c * r );
-  }
 
   public Rider makeRiderUnavailable( Rider rider ) {
     rider.setAvailable( false );
@@ -192,7 +158,7 @@ public class RiderService {
       riderRepo.findAll().stream().filter( Rider::isAvailable ).collect( Collectors.toList() );
 
     List<Double> riderDistances =
-      riders.stream().filter( Rider::isAvailable ).map( r -> distance( r.getlLocation(),
+      riders.stream().filter( Rider::isAvailable ).map( r -> DistanceCalculator.distanceBetweenPointsOnEarth( r.getlLocation(),
               storeLocation ) )
             .collect( Collectors.toList() );
 
