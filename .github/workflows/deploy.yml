@@ -5,6 +5,7 @@ on:
     workflows: ["Push to DockerHub"]
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   build:
