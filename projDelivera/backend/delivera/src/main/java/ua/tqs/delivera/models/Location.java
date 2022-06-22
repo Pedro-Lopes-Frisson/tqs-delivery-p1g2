@@ -5,6 +5,8 @@ import javax.persistence.*;
 import lombok.*;
 import ua.tqs.delivera.datamodels.LocationDTO;
 
+import java.util.Objects;
+
 // @Data
 @Entity
 @Table(name = "location")
@@ -56,5 +58,17 @@ public class Location {
 
     public void setId(Long id){
         this.id=id;
+    }
+    
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+        Location location = (Location) o;
+        return Double.compare( location.latitude, latitude ) == 0 &&
+          Double.compare( location.longitude, longitude ) == 0;
+    }
+    
+    @Override public int hashCode() {
+        return Objects.hash( latitude, longitude );
     }
 }
