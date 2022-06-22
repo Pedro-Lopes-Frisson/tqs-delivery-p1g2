@@ -150,6 +150,8 @@ public class RiderService {
 
   public void addProfitToRider( Rider rider, OrderProfit oProfit ) {
     rider.getOrderProfits().add( oProfit );
+    oProfit.setRider( rider );
+    orderProfitRepo.save( oProfit );
     riderRepo.save( rider );
   }
 
