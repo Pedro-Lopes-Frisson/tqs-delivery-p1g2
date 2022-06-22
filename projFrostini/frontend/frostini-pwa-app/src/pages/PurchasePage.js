@@ -20,7 +20,7 @@ import {
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import useLocalStorage from "../hooks/use-local-storage";
 import AuthContext from '../context/AuthProvider';
@@ -28,6 +28,7 @@ import isAuthenticated from '../utils/Authentication';
 import axios from '../api/axios';
 
 function PurchasePage() {
+  const params = useParams();
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   const isAuth = isAuthenticated(auth);
@@ -41,12 +42,32 @@ function PurchasePage() {
   const [step, setStep] = React.useState(0);
 
   const [state, setState] = useLocalStorage('state', '');
+  console.log("STATE");
   console.log(state);
 
   const totalPrice = order.reduce(
     (sum, item) => item.quantity * item.price + sum,
     0
   );
+
+  useEffect(() => {
+    axios.get(`/order/${params.id}`)
+      .then(
+        res => {
+          if(res.status === 200) {
+            console.log("HEREEE");
+            console.log(res.data);
+            setState(res.data.orderState)
+          }
+
+      }).catch(err => {
+        if (err.response.status === 0) {
+          //setError('No server response');
+        } else {
+          //setError('Register failed');
+        }
+      })
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,23 +79,14 @@ function PurchasePage() {
       cardOwner: e.currentTarget["card-owner"].value,
     };
 
-    console.log(body);
 
-    // TODO: get address id
-    // address.lenght > 0 ?  address : auth.address
-
-
-    /* await axios.post(`${NEW_ORDER_URL}`, {
-      'addressId': 1,
-      'userId': auth.id,
-      'orderedProductsList': order.map(product => {
-        return {"quantity": product.quantity, "productId": product.id };
-      })
-    })
+    await axios.put(`/order/${params.id}`)
       .then(
         res => {
-          if(res.status === 201) {
+          if(res.status === 200) {
             setSuccess(true);
+            console.log("PURCHASE");
+            console.log(res.data);
             setState("in transit");
           }
 
@@ -85,7 +97,7 @@ function PurchasePage() {
           //setError('Register failed');
         }
       })
-    */
+   
   }; 
 
   useEffect(() => {
@@ -95,6 +107,7 @@ function PurchasePage() {
   }, [isAuth]);
 
   useEffect(() => {
+    console.log("AGAIN STATE");
     console.log(state);
     switch(state) {
       case "ordered":

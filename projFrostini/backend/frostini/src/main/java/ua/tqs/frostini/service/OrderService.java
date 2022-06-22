@@ -114,6 +114,8 @@ public class OrderService {
         return null;
     }
 
+    orderRepository.save(order);
+
     return order;
   }
 }
