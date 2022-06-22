@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ua.tqs.frostini.datamodels.OrderDTO;
+import ua.tqs.frostini.exceptions.IncompleteOrderPlacement;
 import ua.tqs.frostini.models.Order;
 import ua.tqs.frostini.service.OrderService;
 
@@ -57,7 +58,12 @@ public class OrderController {
 
   @PostMapping("/order")
   public ResponseEntity<Order> makeOrder( @Valid @RequestBody OrderDTO orderDTO ) {
-    Order orderPlaced = orderService.placeOrder( orderDTO );
+    Order orderPlaced = null;
+    try {
+      orderPlaced = orderService.placeOrder( orderDTO );
+    } catch (IncompleteOrderPlacement e) {
+      return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body(  null);
+    }
     return ResponseEntity.status( HttpStatus.CREATED ).body( orderPlaced );
   }
 

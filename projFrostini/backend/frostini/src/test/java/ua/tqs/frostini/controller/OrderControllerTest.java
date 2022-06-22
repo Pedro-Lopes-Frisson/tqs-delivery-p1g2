@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.tqs.frostini.datamodels.OrderDTO;
 import ua.tqs.frostini.datamodels.OrderedProductDTO;
+import ua.tqs.frostini.exceptions.IncompleteOrderPlacement;
 import ua.tqs.frostini.models.*;
 import ua.tqs.frostini.service.OrderService;
 
@@ -110,7 +111,8 @@ import static org.mockito.Mockito.*;
 
 
   @Test
-  void testMakeOrderWithValidRequestBody_ThenReturnCreatedAndTheOrderThatHasBeenPlaced() {
+  void testMakeOrderWithValidRequestBody_ThenReturnCreatedAndTheOrderThatHasBeenPlaced()
+    throws IncompleteOrderPlacement {
     when( orderService.placeOrder( any() ) ).thenReturn( userOrders.get( 0 ) );
 
     System.out.println(order0DTO);
@@ -126,7 +128,7 @@ import static org.mockito.Mockito.*;
 
 
   @Test
-  void testMakeOrderWithInvalidRequestBody_ThenReturnBADREQUEST() {
+  void testMakeOrderWithInvalidRequestBody_ThenReturnBADREQUEST() throws IncompleteOrderPlacement {
     when( orderService.placeOrder( any() ) ).thenReturn( null );
 
     given().contentType( ContentType.JSON ).body( "IncorrectBody" ).post( "/api/v1/order" )
