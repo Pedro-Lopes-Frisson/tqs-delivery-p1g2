@@ -60,17 +60,19 @@ public class OrderService {
     //Finally Save order
     Order savedOrder = orderRepository.save( order );
     
-    
+    List<OrderedProduct> orderedProductList = new ArrayList<>();
     for (OrderedProductDTO orderedProductDTO : orderDTO.getOrderedProductsList()) {
       // Retrieve from cache
       Product product = productMap.get( orderedProductDTO.getProductId() );
       
       //save orderedProduct in db
-      orderedProductRepository.save( new OrderedProduct( orderedProductDTO.getQuantity(), product.getPrice(),
-        new OrderProductEmbeddedId( savedOrder.getId(), product.getId() ), savedOrder, product ) );
+      orderedProductList.add( orderedProductRepository.save( new OrderedProduct( orderedProductDTO.getQuantity(),
+        product.getPrice(),
+        new OrderProductEmbeddedId( savedOrder.getId(), product.getId() ), savedOrder, product ) ) );
     }
-    
-    return savedOrder;
+    savedOrder.setOrderedProductList( orderedProductList );
+    savedOrder.setOrderMadeTimeStamp( System.currentTimeMillis() / 1000L );
+    return orderRepository.save( savedOrder );
   }
   
   public Order trackOrder( long orderId ) {
