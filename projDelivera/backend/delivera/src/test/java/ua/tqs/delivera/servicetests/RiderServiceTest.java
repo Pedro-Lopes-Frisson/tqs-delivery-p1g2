@@ -1,4 +1,4 @@
-package ua.tqs.delivera.serviceTests;
+package ua.tqs.delivera.servicetests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
