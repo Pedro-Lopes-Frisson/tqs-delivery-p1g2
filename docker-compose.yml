@@ -7,6 +7,7 @@ services:
     # Configuration for building the docker image for the backend service
     container_name: frostiniSpring
     hostname: frostiniSpring
+    image: ghcr.io/sophjane/tqs-delivery-p1g2/frostini:latest
     build:
       context:  projFrostini/backend/frostini  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
@@ -49,7 +50,7 @@ services:
 
   # Database Service (PostGres)
   frostini-web:
-    image: frostini-web-app-tqs
+    image: ghcr.io/sophjane/tqs-delivery-p1g2/frostini_web:latest
     build:
       context:  projFrostini/frontend/frostini-pwa-app  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
@@ -67,6 +68,7 @@ services:
     # Configuration for building the docker image for the backend service
     container_name: deliveraSpring
     hostname: deliveraSpring
+    image: ghcr.io/sophjane/tqs-delivery-p1g2/delivera:latest
     build:
       context: projDelivera/backend/delivera  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
@@ -108,7 +110,7 @@ services:
 
 
   delivera-web:
-    image: delivera-web-app-tqs
+    image: ghcr.io/sophjane/tqs-delivery-p1g2/delivera_web:latest
     build:
       context: projDelivera/frontend/material-dashboard-react-main  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
