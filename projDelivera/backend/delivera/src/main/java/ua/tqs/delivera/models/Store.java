@@ -20,7 +20,7 @@ public class Store {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   long id;
   
-  @Column(name = "name")
+  @Column(name = "name", unique = true)
   String name;
   
   @OneToOne(fetch = FetchType.EAGER)

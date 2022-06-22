@@ -7,24 +7,22 @@ import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-public class OrderDTO {
-  private String storeName; // StoreName
-  private Long orderStoreId; // id do order na specific
+@Data @AllArgsConstructor @NoArgsConstructor @Getter @Setter public class OrderDTO {
+  @NotEmpty private String storeName; // StoreName
+  
+  @Positive private Long orderStoreId; // id do order na specific
   // lat and lon da store
-  private double storeLat;
-  private double storeLon;
+  
+  @Min(- 90) @Max(90) private double storeLat;
+  @Min(- 180) @Max(180) private double storeLon;
   
   // lat and lon do client
-  private double clientLat;
-  private double clientLon;
+  @Min(- 90) @Max(90) private double clientLat;
+  @Min(- 180) @Max(180) private double clientLon;
   
   // original price with no transportation
-  private double orderPrice;
+  @Positive private double orderPrice;
   
 }
