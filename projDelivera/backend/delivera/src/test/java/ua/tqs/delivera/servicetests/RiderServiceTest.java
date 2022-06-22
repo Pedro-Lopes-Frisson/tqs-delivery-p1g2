@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -285,14 +284,14 @@ public class RiderServiceTest {
   
   @Test
   void testMakeRiderAvailableSetsRiderAsAvailable() {
-    Rider sameRiderButAvailable = new Rider( "mal@gmail.com", "Manuel Antunes", "migant", false, location, 0, 0 );
+    Rider sameRiderButUnavailable = new Rider( "mal@gmail.com", "Manuel Antunes", "migant", false, location, 0, 0 );
     
-    when( riderRepo.save( sameRiderButAvailable ) ).thenReturn( rider );
+    when( riderRepo.save( sameRiderButUnavailable ) ).thenReturn( rider );
     
-    Rider riderRet = riderService.makeRiderAvailable( sameRiderButAvailable );
+    Rider riderRet = riderService.makeRiderAvailable( sameRiderButUnavailable );
     assertThat( riderRet.isAvailable() ).isTrue();
     
-    verify( riderRepo, times( 1 ) ).save( sameRiderButAvailable );
+    verify( riderRepo, times( 1 ) ).save( sameRiderButUnavailable );
   }
   
   @Test
