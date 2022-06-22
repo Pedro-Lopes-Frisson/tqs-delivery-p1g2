@@ -289,7 +289,7 @@ public class RiderServiceTest {
     
     when( riderRepo.save( sameRiderButAvailable ) ).thenReturn( rider );
     
-    Rider riderRet = riderService.makeRiderUnavailable( sameRiderButAvailable );
+    Rider riderRet = riderService.makeRiderAvailable( sameRiderButAvailable );
     assertThat( riderRet.isAvailable() ).isTrue();
     
     verify( riderRepo, times( 1 ) ).save( sameRiderButAvailable );
