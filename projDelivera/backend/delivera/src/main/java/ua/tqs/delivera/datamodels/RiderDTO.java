@@ -1,7 +1,9 @@
 package ua.tqs.delivera.datamodels;
 
+import lombok.Data;
 import ua.tqs.delivera.models.Location;
 
+@Data
 public class RiderDTO {
     private String namedto;
     private String emaildto;
@@ -47,6 +49,14 @@ public class RiderDTO {
 
     public int getSumOfReviewsdto(){
         return this.sumOfReviewsdto;
+    }
+
+    public void setPassworddto(String pw){
+        this.passworddto = pw;
+    }
+
+    public void setEmail(String email) {
+        this.emaildto = email;
     }
 
 }

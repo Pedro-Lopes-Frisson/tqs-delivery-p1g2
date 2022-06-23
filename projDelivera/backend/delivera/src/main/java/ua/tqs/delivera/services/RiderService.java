@@ -10,6 +10,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import ua.tqs.delivera.exceptions.NoRidersAvailable;
+import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.exceptions.NonExistentResource;
 import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
@@ -40,7 +41,7 @@ public class RiderService {
   //create rider
   public Rider saveRider( Rider rider ) {
     System.out.println( riderRepo.findByEmail( rider.getEmail() ) );
-    if ( ! riderRepo.findByEmail( rider.getEmail() ).isPresent() ) {return riderRepo.save( rider );}
+    if ( riderRepo.findByEmail( rider.getEmail() )==null ) {return riderRepo.save( rider );}
     throw new DuplicateKeyException( "Email already in use" );
   }
 
@@ -136,8 +137,6 @@ public class RiderService {
     return orderList.get( 0 );
 
   }
-
-
   public Rider makeRiderUnavailable( Rider rider ) {
     rider.setAvailable( false );
     return riderRepo.save( rider );
@@ -171,5 +170,18 @@ public class RiderService {
     Double smallestDist = smallestDistOpt.get();
 
     return riders.get( riderDistances.indexOf( smallestDist ) );
+
+  }
+
+  public Rider loginRider(RiderDTO riderDTO) {
+    Rider foundRider = riderRepo.findByEmail(riderDTO.getEmaildto());
+    if ( foundRider!=null && !riderDTO.getPassworddto().equals(foundRider.getPassword())){
+      foundRider.setPassword("wrong credentials");
+    }
+    return foundRider;
+  }
+
+  public List<Rider> getAllRiders() {
+      return riderRepo.findAll();
   }
 }
