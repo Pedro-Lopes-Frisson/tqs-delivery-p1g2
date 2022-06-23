@@ -98,8 +98,23 @@ public class OrderControllerIT {
                .post( createURL() ).then().assertThat().statusCode( 201 )
                .and().log().body()
                .body( "externalId", is( 2 ) )
-               .and().body( "clientLocation", is( "12,11" ) )
+               .and().body( "clientLocation", is( "40.98,-8.2345" ) )
                .and().body( "store.id", is( 1 ) );
+  }
+  
+  @Test
+  void whenMakeOrderWithEverythingOkayAndANewStoreThenReturnOrder200() {
+    orderDto.setStoreName( "Frostini 2" );
+    orderDto.setOrderStoreId( 3L );
+    RestAssured.given()
+               .contentType( "application/json" )
+               .when()
+               .body( orderDto )
+               .post( createURL() ).then().assertThat().statusCode( 201 )
+               .and().log().body()
+               .body( "externalId", is( 3 ) )
+               .and().body( "clientLocation", is( "40.98,-8.2345" ) )
+               .and().body( "store.id", is( 2 ) );
   }
   
   String createURL() {

@@ -54,21 +54,22 @@ public class OrderService {
     
     // create Store Location of the order
     Location storeLocation = new Location( orderDTO.getStoreLat(), orderDTO.getStoreLon() );
-    
+  
+    storeLocation = locationRepository.save( storeLocation );
     // create Client Location of the order
     Location clientLocation = new Location( orderDTO.getClientLat(), orderDTO.getClientLon() );
+    clientLocation = locationRepository.save( clientLocation );
     
     Optional<Store> storeOPT = storeRepository.findByName( storeName );
     Store store = null;
     
     if ( storeOPT.isEmpty() ) {
       Store storeToSave = new Store();
-      
+  
       storeToSave.setName( storeName );
       storeToSave.setAddress( storeLocation );
       
       store = storeRepository.save( storeToSave );
-      locationRepository.save( storeLocation );
     }
     
     // Store exists
@@ -86,13 +87,13 @@ public class OrderService {
     
     // create the OrderProfit
     OrderProfit orderProfit = new OrderProfit();
+    orderProfit = orderProfitRepository.save( orderProfit );
     
     // distance * avg_motorcycle fuel consumption spent in 100 km / 100 km *
     // price of the gas * a percentage of the price of the order so that it is lucrative for the rider
     orderProfit.setOrderPrice( distance * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     Order order = new Order();
-    order.setOrderProfit( orderProfit );
     
     Rider riderToAssign = null;
     // get free riders and determine who is closer of the store
@@ -103,8 +104,12 @@ public class OrderService {
       notAttributedOrders.add( order );
       return null;
     }
-    order.setStore( store );
+  
+    order.setClientLocation( clientLocation.getLatitude() + "," + clientLocation.getLongitude() );
     order.setExternalId( orderDTO.getOrderStoreId() );
+    order = orderRepository.save( order );
+    order.setOrderProfit( orderProfit );
+    order.setStore( store );
     
     orderProfit.setOrder( order );
     orderProfit.setRider( riderToAssign );
