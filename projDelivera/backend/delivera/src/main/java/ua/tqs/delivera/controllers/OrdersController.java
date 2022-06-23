@@ -18,6 +18,7 @@ import ua.tqs.delivera.models.Order;
 public class OrdersController {
     @PostMapping
     public ResponseEntity<Order> createOrder( @RequestBody Order orderDTO){
+        // verificar se store existe
         return null;
     }
 

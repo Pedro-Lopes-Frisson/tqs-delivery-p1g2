@@ -56,8 +56,8 @@ class RiderRepositoryTest {
     @Order(1)
     @Test
     void whenSaveRider_thenReturnRider(){
-        Rider rider_saved = entityManager.persistAndFlush(rider);
-        assertThat(rider_saved).isEqualTo(rider);
+        Rider riderSaved = entityManager.persistAndFlush(rider);
+        assertThat(riderSaved).isEqualTo(rider);
     }
 
     @Order(2)
@@ -72,8 +72,8 @@ class RiderRepositoryTest {
     @Order(3)
     @Test
     void whenInvalidId_thenReturnNull(){
-        Rider rider_saved = riderRepo.findById(-1L).orElse(null);
-        assertThat(rider_saved).isNull();
+        Rider riderSaved = riderRepo.findById(-1L).orElse(null);
+        assertThat(riderSaved).isNull();
     }
 
     @Order(5)
