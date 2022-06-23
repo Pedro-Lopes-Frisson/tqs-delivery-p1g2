@@ -141,7 +141,7 @@ class DeliveraControllerTests {
   void whenPostLoginWrongCredentials_thenReturnUnauthorized() throws Exception, RiderLoginWrongPasswordException {
     rider.setPassword("wrong credentials");
 
-    when( riderService.loginRider( Mockito.any() ) ).thenReturn( rider );
+    when( riderService.loginRider( Mockito.any() ) ).thenThrow(RiderLoginWrongPasswordException.class);
     
     mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )
                                                .contentType( MediaType.APPLICATION_JSON )
@@ -154,7 +154,7 @@ class DeliveraControllerTests {
   @Test
   void whenPostLoginNonExistingRider_thenReturnNotFound() throws Exception, RiderLoginWrongPasswordException {
     
-    when( riderService.loginRider( Mockito.any() ) ).thenReturn( null );
+    when( riderService.loginRider( Mockito.any() ) ).thenThrow(NonExistentResource.class);
     riderDTO.setEmail("invalid email");
     
     mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )
