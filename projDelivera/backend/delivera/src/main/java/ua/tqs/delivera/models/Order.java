@@ -1,6 +1,7 @@
 package ua.tqs.delivera.models;
 
 import lombok.*;
+import ua.tqs.delivera.datamodels.OrderDTO;
 
 import javax.persistence.*;
 
@@ -49,5 +50,12 @@ public class Order {
   
   @Column(name = "order_state")
   String orderState = "ordered";
+
+  public Order(OrderDTO orderDto) {
+    this.externalId = orderDto.getExternalId();
+    this.clientLocation = orderDto.getClientLocation();
+    this.store = orderDto.getStore();
+    this.orderMadeTimestamp = orderDto.getOrderMadeTimestamp();
+  }
   
 }
