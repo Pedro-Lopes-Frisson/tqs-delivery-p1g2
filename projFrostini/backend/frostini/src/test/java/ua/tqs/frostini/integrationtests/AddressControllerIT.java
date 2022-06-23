@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -21,7 +20,6 @@ import ua.tqs.frostini.models.User;
 import ua.tqs.frostini.repositories.AddressRepository;
 import ua.tqs.frostini.repositories.UserRepository;
 
-import static org.hamcrest.Matchers.equalTo;
 
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -37,11 +35,8 @@ class AddressControllerIT {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
 
     private User user;
-    private Address address;
     private AddressDTO addressDTO;
 
 
@@ -67,8 +62,8 @@ class AddressControllerIT {
         user.setEmail( "joaquim@ua.pt" );
 
         userRepository.saveAndFlush( user );
-
-        address = new Address();
+    
+        Address address = new Address();
         address.setLatitude(40.640506);
         address.setLongitude(-8.653754);
 

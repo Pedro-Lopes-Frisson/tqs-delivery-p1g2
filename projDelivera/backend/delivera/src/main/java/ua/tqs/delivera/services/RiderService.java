@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import ua.tqs.delivera.exceptions.NoRidersAvailable;
 import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.exceptions.NonExistentResource;
+import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.OrderProfit;
 import ua.tqs.delivera.models.Rider;
@@ -18,11 +20,11 @@ import ua.tqs.delivera.repositories.OrderProfitRepository;
 import ua.tqs.delivera.repositories.OrderRepository;
 import ua.tqs.delivera.repositories.RiderRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import ua.tqs.delivera.utils.DistanceCalculator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Log4j2
@@ -99,18 +101,20 @@ public class RiderService {
     //log.info( "Id rider : {}", riderID );
     Rider rider = findById( riderID );
 
-    /* log.info( "Rider was found compiling a list of Orders. {}",
+    log.info( "Rider was found compiling a list of Orders. {}",
       rider.getOrderProfits().stream().map( OrderProfit::getOrder )
-           .collect( Collectors.toList() ) ); */
+           .collect( Collectors.toList() ) );
+
+
 
     return rider.getOrderProfits().stream().map( OrderProfit::getOrder ).collect( Collectors.toList() );
   }
 
   public Order getOrder( Long id, Long orderId ) throws NonExistentResource {
     Rider rider = findById( id );
-    /* log.info( "Rider was found compiling a list of Orders. {}",
+     log.info( "Rider was found compiling a list of Orders. {}",
       rider.getOrderProfits().stream().map( OrderProfit::getOrder ).map( Order::getId )
-           .collect( Collectors.toList() ) ); */
+           .collect( Collectors.toList() ) );
 
     List<Order> orderList = rider.getOrderProfits().stream().map( OrderProfit::getOrder ).filter( ( o ) -> {
         return Objects.equals(
@@ -130,7 +134,42 @@ public class RiderService {
       // this only happens if an orderID is not of that rider or if it does not exist
     }
 
-    return  orderList.get( 0 );
+    return orderList.get( 0 );
+
+  }
+  public Rider makeRiderUnavailable( Rider rider ) {
+    rider.setAvailable( false );
+    return riderRepo.save( rider );
+  }
+
+  public Rider makeRiderAvailable( Rider rider ) {
+    rider.setAvailable( true );
+    return riderRepo.save( rider );
+  }
+
+  public void addProfitToRider( Rider rider, OrderProfit oProfit ) {
+    rider.getOrderProfits().add( oProfit );
+    oProfit.setRider( rider );
+    orderProfitRepo.save( oProfit );
+    riderRepo.save( rider );
+  }
+
+  public Rider findClosestRider( Location storeLocation ) throws NoRidersAvailable {
+    List<Rider> riders =
+      riderRepo.findAll().stream().filter( Rider::isAvailable ).collect( Collectors.toList() );
+
+    List<Double> riderDistances =
+      riders.stream().filter( Rider::isAvailable ).map( r -> DistanceCalculator.distanceBetweenPointsOnEarth( r.getlLocation(),
+              storeLocation ) )
+            .collect( Collectors.toList() );
+
+    Optional<Double> smallestDistOpt = riderDistances.stream().min( Comparator.naturalOrder() );
+    if ( smallestDistOpt.isEmpty() ) {
+      throw new NoRidersAvailable( "There are no riders Available at this point in time" );
+    }
+    Double smallestDist = smallestDistOpt.get();
+
+    return riders.get( riderDistances.indexOf( smallestDist ) );
 
   }
 

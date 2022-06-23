@@ -7,8 +7,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useState, useContext, useEffect } from "react";
 import AuthContext from "../context/AuthProvider";
 import isAuthenticated from "../utils/Authentication";
+import axios from '../api/axios';
 
-const data = [
+const PRODUCTS_URL = '/products/available';
+
+/* const data = [
   {
     id: "1",
     title: "Almond Brittle Fudge",
@@ -27,14 +30,16 @@ const data = [
     img: "https://cdn.shopify.com/s/files/1/0375/0867/7769/products/AlmondBrittleFudge02_c6058f23-8c91-41b5-b1a7-8b93705b5a67_1024x1024@2x.jpg?v=1631857159",
     tags: [],
   },
-];
+]; */
 
 function MenuPage() {
   const { auth } = useContext(AuthContext);
   const isAuth = isAuthenticated(auth);
   const navigate = useNavigate();
-  const [order, setOrder] = useLocalStorage("order", []);
-  const [search, setSearch] = useState("");
+  const [order, setOrder] = useLocalStorage('order', []);
+  const [search, setSearch] = useState('');
+  const [error, setError] = useState('');
+  const [data, setData] = useState([]);
 
   const handleOrderChange = (product) => {
     const productIndex = order.findIndex((p) => p.id === product.id);
@@ -64,7 +69,7 @@ function MenuPage() {
   };
 
   const filteredData = data.filter((item) =>
-    item.title.match(new RegExp(search, "i"))
+    item.name.match(new RegExp(search, "i"))
   );
 
   useEffect(() => {
@@ -72,6 +77,20 @@ function MenuPage() {
       navigate("/login");
     }
   }, [isAuth]);
+
+  useEffect(() => {
+    axios.get(`${PRODUCTS_URL}`)
+        .then(
+          res => {
+            if(res.status == 200) {
+              //const data = res.data;
+              setData(res.data);
+            }
+
+        }).catch(err => {
+          setError('Something went wrong');
+        })
+  }, [data]);
 
   return (
     <div className="order-page">
@@ -95,20 +114,20 @@ function MenuPage() {
           />
         </div>
         <div className="products">
-          {filteredData.map(({ id, title, description, price, img, tags }) => {
+          {filteredData.map(({ id, name, description, price, photoUrl/* , tags */ }) => {
             const quantity = order.find((p) => p.id === id)?.quantity;
 
             return (
               <div key={id} className="product">
-                <img src={img} alt="icecream" />
+                <img src={photoUrl} alt="icecream" />
                 <div className="product-info">
                   <div className="product-title-tags">
-                    <p className="product-title">{title}</p>
-                    <div className="tags">
+                    <p className="product-title">{name}</p>
+                    {/* <div className="tags">
                       {tags.map((tag, i) => (
                         <Chip key={i} label={tag} className="tags-chip" />
                       ))}
-                    </div>
+                    </div> */}
                   </div>
                   <p className="product-description">{description}</p>
                   <div className="product-actions">
@@ -116,7 +135,7 @@ function MenuPage() {
 
                     <QuantityPicker
                       onChange={(quantity) =>
-                        handleOrderChange({ id, title, price, tags, quantity })
+                        handleOrderChange({ id, name, price, /* tags, */ quantity })
                       }
                       quantity={quantity}
                     />

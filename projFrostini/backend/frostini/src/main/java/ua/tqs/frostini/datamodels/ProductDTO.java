@@ -28,5 +28,8 @@ public class ProductDTO {
     
     @NotNull
     String description;
+
+    @NotNull
+    String photoUrl;
     
 }

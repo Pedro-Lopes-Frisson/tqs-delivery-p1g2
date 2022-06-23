@@ -1,5 +1,8 @@
 .order-page {
   display: flex;
+  background-color: cornsilk;
+  border-radius: 10px;
+  padding: 5% 0;
 }
 
 .menu-section {
@@ -53,7 +56,7 @@
 }
 
 .menu-section .products .product .product-description {
-  color: lightgrey;
+  color: darkgrey;
 }
 
 .menu-section .products .product .product-actions {

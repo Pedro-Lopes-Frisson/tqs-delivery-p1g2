@@ -14,7 +14,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Data
 @Table(name = "frostini_order")
 @Getter
 @Setter
@@ -29,6 +28,8 @@ public class Order {
   @Column(name = "order_id")
   long id;
 
+  @Column(name = "delivery_service_id")
+  Long externalId;
   @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
@@ -37,7 +38,6 @@ public class Order {
   @Column(name = "total_price")
   Double totalPrice;
 
-  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "address_id", nullable = false)
   private Address address;
@@ -51,4 +51,15 @@ public class Order {
   @Column(name = "order_made_timestamp")
   Long orderMadeTimeStamp;
   
+  @Override public boolean equals( Object o ) {
+    if ( this == o ) return true;
+    if ( o == null || getClass() != o.getClass() ) return false;
+    Order order = (Order) o;
+    return id == order.id && user.equals( order.user ) && totalPrice.equals( order.totalPrice ) &&
+      orderState.equals( order.orderState ) && orderMadeTimeStamp.equals( order.orderMadeTimeStamp );
+  }
+  
+  @Override public int hashCode() {
+    return Objects.hash( id, user, totalPrice, orderState, orderMadeTimeStamp );
+  }
 }
