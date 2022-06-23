@@ -1,8 +1,9 @@
 package ua.tqs.delivera.datamodels;
 
-import ua.tqs.delivera.models.Store;
+import java.io.Serializable;
 
-public class OrderDTO {
+import ua.tqs.delivera.models.Store;
+public class OrderDTO implements Serializable {
     private Long externalId;
     private String clientLocation;
     private Store store;
@@ -15,5 +16,11 @@ public class OrderDTO {
         this.orderMadeTimestamp = orderMadeTimestamp;
     }
     
-    //public Long getExternalId() {}
+    public Long getExternalId() { return externalId; }
+
+    public String getClientLocation() { return clientLocation; }
+
+    public Store getStore() { return store; }
+
+    public Long getOrderMadeTimestamp() { return orderMadeTimestamp; }
 }
