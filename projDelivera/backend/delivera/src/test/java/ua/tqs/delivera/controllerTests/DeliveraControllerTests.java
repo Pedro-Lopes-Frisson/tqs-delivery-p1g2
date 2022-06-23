@@ -31,6 +31,7 @@ import ua.tqs.delivera.controllers.DeliveraController;
 import ua.tqs.delivera.datamodels.LocationDTO;
 import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.exceptions.NonExistentResource;
+import ua.tqs.delivera.exceptions.RiderLoginWrongPasswordException;
 import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.OrderProfit;
@@ -123,7 +124,7 @@ class DeliveraControllerTests {
   }
 
   @Test
-  void whenPostLoginCorrectRider_thenReturnRider() throws Exception {
+  void whenPostLoginCorrectRider_thenReturnRider() throws Exception, RiderLoginWrongPasswordException {
     when( riderService.loginRider( Mockito.any() ) ).thenReturn( rider );
     
     mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )
@@ -137,10 +138,10 @@ class DeliveraControllerTests {
   }
 
   @Test
-  void whenPostLoginWrongCredentials_thenReturnUnauthorized() throws Exception {
+  void whenPostLoginWrongCredentials_thenReturnUnauthorized() throws Exception, RiderLoginWrongPasswordException {
     rider.setPassword("wrong credentials");
 
-    when( riderService.loginRider( Mockito.any() ) ).thenReturn( rider );
+    when( riderService.loginRider( Mockito.any() ) ).thenThrow(RiderLoginWrongPasswordException.class);
     
     mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )
                                                .contentType( MediaType.APPLICATION_JSON )
@@ -151,9 +152,9 @@ class DeliveraControllerTests {
   }
 
   @Test
-  void whenPostLoginNonExistingRider_thenReturnNotFound() throws Exception {
+  void whenPostLoginNonExistingRider_thenReturnNotFound() throws Exception, RiderLoginWrongPasswordException {
     
-    when( riderService.loginRider( Mockito.any() ) ).thenReturn( null );
+    when( riderService.loginRider( Mockito.any() ) ).thenThrow(NonExistentResource.class);
     riderDTO.setEmail("invalid email");
     
     mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )

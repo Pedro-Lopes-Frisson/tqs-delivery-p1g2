@@ -1,10 +1,7 @@
 package ua.tqs.delivera.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -32,4 +29,11 @@ public class OrderProfit {
   @Column(name = "order_price")
   Double orderPrice;
   
+  @Override public String toString() {
+    return "OrderProfit{" +
+      "id=" + id +
+      ", rider=" + rider +
+      ", orderPrice=" + orderPrice +
+      '}';
+  }
 }

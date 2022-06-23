@@ -3,14 +3,15 @@ package ua.tqs.delivera.servicetests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.tqs.delivera.datamodels.OrderDTO;
+import ua.tqs.delivera.datamodels.ReviewDTO;
 import ua.tqs.delivera.exceptions.NoRidersAvailable;
+import ua.tqs.delivera.exceptions.NonExistentResource;
+import ua.tqs.delivera.exceptions.OrderDoesnotExistException;
 import ua.tqs.delivera.models.*;
 import ua.tqs.delivera.repositories.LocationRepository;
 import ua.tqs.delivera.repositories.OrderProfitRepository;
@@ -22,16 +23,21 @@ import ua.tqs.delivera.utils.DistanceCalculator;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
   
-  @Mock
+  
+  private static final String ORDERED = "ordered";
+  private static final String IN_TRANSIT = "in transit";
+  private static final String DELIVERED = "delivered";
+  @Mock(lenient = true)
   OrderRepository orderRepository; // create and manage Orders
   
   @Mock
@@ -61,6 +67,8 @@ public class OrderServiceTest {
   Store store;
   Rider rider;
   Rider sameRiderButUnavailable;
+  private OrderDTO orderDto;
+  private Location location;
   
   @BeforeEach
   void setUp() {
@@ -71,6 +79,7 @@ public class OrderServiceTest {
     orderToSave = new Order();
     order1ToSave = new Order();
     rider = new Rider( "pdfl@ua.pt", "Pedro", "pedro", true, new Location( 12, 33.11111 ), 1, 5 );
+    rider.setRiderId( 1L );
     sameRiderButUnavailable = new Rider( "pdfl@ua.pt", "Pedro", "pedro", false,
       new Location( 12, 33.11111 ), 1, 5 );
     orderProfit = new OrderProfit();
@@ -82,8 +91,8 @@ public class OrderServiceTest {
     orderDTO.setOrderPrice( 192.199D );
     orderDTO.setClientLat( 11 );
     orderDTO.setClientLon( 22 );
-    orderDTO.setStoreLat( 12 );
-    orderDTO.setStoreLon( 33 );
+    orderDTO.setStoreLat( 40.85 );
+    orderDTO.setStoreLon( 25.9999 );
     orderDTO.setStoreName( "Frostini" );
     orderDTO.setOrderStoreId( 2L );
     
@@ -97,7 +106,7 @@ public class OrderServiceTest {
     
     store = new Store();
     store.setName( "Frostini" );
-    store.setAddress( new Location( 12, 33 ) );
+    store.setAddress( new Location( 40.85, 25.9999 ) );
     
     order.setExternalId( 2L );
     order.setClientLocation( "11,22" );
@@ -109,20 +118,25 @@ public class OrderServiceTest {
     
     
     orderProfit.setOrder( order );
-    orderProfit.setOrderPrice( DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
-      orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
+    orderProfit.setOrderPrice(
+      DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
+        orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     orderProfit1.setOrder( order1 );
     orderProfit1.setOrderPrice(
-      DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(), orderDTO.getClientLon() ) ) *
+      DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(),
+        new Location( orderDTO1.getClientLat(), orderDTO.getClientLon() ) ) *
         orderDTO1.getClientLon() * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     
     orderProfitSaved.setOrder( order );
+    sameRiderButUnavailable.setRiderId( 1L );
+    sameRiderButUnavailable.setAvailable( false );
     orderProfitSaved.setRider( sameRiderButUnavailable );
     orderProfitSaved.setOrderPrice( orderProfit.getOrderPrice() );
-    orderProfit.setOrderPrice( DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
-      orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
+    orderProfit.setOrderPrice(
+      DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
+        orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     
     orderToSave.setExternalId( 2L );
@@ -137,13 +151,37 @@ public class OrderServiceTest {
     order1ToSave.setOrderProfit( orderProfit1 );
     order1ToSave.setClientLocation( "11,22" );
     
+    location = new Location( 40.85, 25.9999 );
+    
+    store = new Store();
+    store.setName( "Frostini" );
+    store.setAddress( location );
+    
+    Long orderMadeTimestamp = System.currentTimeMillis();
+    
+    orderDto = new OrderDTO();
+    orderDTO.setOrderStoreId( 2L );
+    orderDTO.setClientLat( 40.98 );
+    orderDTO.setClientLon( - 8.2345 );
+    orderDTO.setStoreLat( 4.98 );
+    orderDTO.setStoreLon( - 2.2345 );
+    orderDTO.setStoreName( store.getName() );
+    orderDTO.setOrderPrice( 143D );
+    order = new Order();
+    order.setClientLocation( "40.9800,-8.2345" );
+    order.setExternalId( 2L );
+    order.setId( 1L );
+    order.setOrderMadeTimestamp( orderMadeTimestamp );
+    order.setStore( store );
+    //order.setOrderState("delivered");
     
     store.setOrders( List.of( order, order1 ) );
   }
   
   @Test
   void testStoreIsFoundWithCorrectAddressAndRiderIsAvailableThenReturnCreatedOrder() throws NoRidersAvailable {
-    
+  
+    sameRiderButUnavailable.setAvailable( false );
     when( storeRepository.findByName( "Frostini" ) ).thenReturn( Optional.of( store ) );
     when( riderService.findClosestRider( store.getAddress() ) ).thenReturn( rider );
     when( riderService.makeRiderUnavailable( rider ) ).thenReturn( sameRiderButUnavailable );
@@ -152,18 +190,19 @@ public class OrderServiceTest {
       orderProfitRepository.save( any() )
     ).thenReturn( orderProfitSaved );
     
+    when( locationRepository.save( any() ) ).thenReturn( store.getAddress() );
     Order finalOrder = orderService.assignOrder( orderDTO );
     assertThat( finalOrder.getOrderProfit() ).isEqualTo( orderProfitSaved );
-    assertThat( finalOrder.getStore() ).isEqualTo( store );
-    assertThat( finalOrder.getOrderProfit().getRider() ).isEqualTo( sameRiderButUnavailable );
+    assertThat( finalOrder.getStore().getAddress().getLongitude() ).isEqualTo( store.getAddress().getLongitude() );
+    assertThat( finalOrder.getStore().getAddress().getLatitude() ).isEqualTo( store.getAddress().getLatitude() );
     assertThat( finalOrder.getExternalId() ).isEqualTo( orderDTO.getOrderStoreId() );
     
     
     verify( storeRepository, times( 1 ) ).findByName( "Frostini" );
     verify( riderService, times( 1 ) ).findClosestRider( store.getAddress() );
     verify( riderService, times( 1 ) ).makeRiderUnavailable( rider );
-    verify( orderRepository, times( 1 ) ).save( any() );
-    verify( orderProfitRepository, times( 1 ) ).save( any() );
+    verify( orderRepository, times( 2 ) ).save( any() );
+    verify( orderProfitRepository, times( 2 ) ).save( any() );
   }
   
   /*
@@ -172,6 +211,7 @@ public class OrderServiceTest {
   
   @Test
   void testStoreIsFoundButAddressIsIncorrectAndRiderIsAvailableThenReturnCreatedOrder() throws NoRidersAvailable {
+    sameRiderButUnavailable.setAvailable( false );
     Location tempLocation = store.getAddress();
     when( storeRepository.findByName( "Frostini" ) ).thenReturn( Optional.of( store ) );
     when( riderService.findClosestRider( store.getAddress() ) ).thenReturn( rider );
@@ -181,6 +221,7 @@ public class OrderServiceTest {
       orderProfitRepository.save( any() )
     ).thenReturn( orderProfitSaved );
     
+    when( locationRepository.save( any() ) ).thenReturn( tempLocation );
     orderDTO.setStoreLat( tempLocation.getLatitude() );
     orderDTO.setStoreLon( tempLocation.getLongitude() );
     
@@ -188,16 +229,16 @@ public class OrderServiceTest {
     
     Order finalOrder = orderService.assignOrder( orderDTO );
     assertThat( finalOrder.getOrderProfit() ).isEqualTo( orderProfitSaved );
-    assertThat( finalOrder.getStore() ).isEqualTo( store );
-    assertThat( finalOrder.getOrderProfit().getRider() ).isEqualTo( sameRiderButUnavailable );
+    assertThat( finalOrder.getStore().getAddress().getLongitude() ).isEqualTo( store.getAddress().getLongitude() );
+    assertThat( finalOrder.getStore().getAddress().getLatitude() ).isEqualTo( store.getAddress().getLatitude() );
     assertThat( finalOrder.getExternalId() ).isEqualTo( orderDTO.getOrderStoreId() );
     
     
     verify( storeRepository, times( 1 ) ).findByName( "Frostini" );
     verify( riderService, times( 1 ) ).findClosestRider( store.getAddress() );
     verify( riderService, times( 1 ) ).makeRiderUnavailable( rider );
-    verify( orderRepository, times( 1 ) ).save( any() );
-    verify( orderProfitRepository, times( 1 ) ).save( any() );
+    verify( orderRepository, times( 2 ) ).save( any() );
+    verify( orderProfitRepository, times( 2 ) ).save( any() );
   }
   
   /*
@@ -209,16 +250,19 @@ public class OrderServiceTest {
     when( storeRepository.findByName( "Frostini" ) ).thenReturn( Optional.empty() );
     when( storeRepository.save( any() ) ).thenReturn( store );
     when( riderService.findClosestRider( store.getAddress() ) ).thenReturn( rider );
+    sameRiderButUnavailable.setAvailable( false );
     when( riderService.makeRiderUnavailable( rider ) ).thenReturn( sameRiderButUnavailable );
     when( orderRepository.save( any() ) ).thenReturn( orderToSave );
     when(
       orderProfitRepository.save( any() )
     ).thenReturn( orderProfitSaved );
     
+    when( locationRepository.save( any() ) ).thenReturn( store.getAddress() );
+    
     Order finalOrder = orderService.assignOrder( orderDTO );
     assertThat( finalOrder.getOrderProfit() ).isEqualTo( orderProfitSaved );
-    assertThat( finalOrder.getStore() ).isEqualTo( store );
-    assertThat( finalOrder.getOrderProfit().getRider() ).isEqualTo( sameRiderButUnavailable );
+    assertThat( finalOrder.getStore().getAddress().getLongitude() ).isEqualTo( store.getAddress().getLongitude() );
+    assertThat( finalOrder.getStore().getAddress().getLatitude() ).isEqualTo( store.getAddress().getLatitude() );
     assertThat( finalOrder.getExternalId() ).isEqualTo( orderDTO.getOrderStoreId() );
     
     
@@ -226,8 +270,9 @@ public class OrderServiceTest {
     verify( riderService, times( 1 ) ).findClosestRider( store.getAddress() );
     verify( storeRepository, times( 1 ) ).save( any() );
     verify( riderService, times( 1 ) ).makeRiderUnavailable( rider );
-    verify( orderRepository, times( 1 ) ).save( any() );
-    verify( orderProfitRepository, times( 1 ) ).save( any() );
+    verify( orderRepository, times( 2 ) ).save( any() );
+    verify( orderProfitRepository, times( 2 ) ).save( any() );
+    verify( locationRepository, times( 2 ) ).save( any() );
   }
   
   /*
@@ -238,7 +283,8 @@ public class OrderServiceTest {
   void testNoRidersAvailable() throws NoRidersAvailable {
     when( storeRepository.findByName( "Frostini" ) ).thenReturn( Optional.of( store ) );
     when( riderService.findClosestRider( store.getAddress() ) ).thenThrow( NoRidersAvailable.class );
-    
+    when( locationRepository.save( any() ) ).thenReturn( store.getAddress() );
+    when(orderProfitRepository.save( any() )).thenReturn( orderProfitSaved );
     Order finalOrder = orderService.assignOrder( orderDTO );
     assertNull( finalOrder );
     
@@ -246,5 +292,73 @@ public class OrderServiceTest {
     verify( storeRepository, times( 1 ) ).findByName( "Frostini" );
     verify( riderService, times( 1 ) ).findClosestRider( store.getAddress() );
   }
+  
+  @Test
+  void whenReviewOrderAndEverythingOkay_ThenReturnTrue() throws NonExistentResource, OrderDoesnotExistException {
+    Mockito.when( orderRepository.findById( Mockito.anyLong() ) ).thenReturn( Optional.ofNullable( orderToSave ) );
+    Mockito.when( riderService.reviewRider( Mockito.anyLong(), Mockito.anyDouble() ) ).thenReturn( rider );
+    
+    assertTrue( orderService.reviewOrder( order.getId(), new ReviewDTO( 1.0 ) ) );
+    
+    Mockito.verify( riderService, Mockito.times( 1 ) ).reviewRider( Mockito.anyLong(), Mockito.anyDouble() );
+    Mockito.verify( orderRepository, Mockito.times( 1 ) ).findById( Mockito.anyLong() );
+  }
+  
+  @Test
+  void whenReviewOrderAndRiderDoesNoExist_ThenPropagateException() throws NonExistentResource {
+    Mockito.when( orderRepository.findById( Mockito.anyLong() ) ).thenReturn( Optional.ofNullable( orderToSave ) );
+    Mockito.when( riderService.reviewRider( Mockito.anyLong(), Mockito.anyDouble() ) )
+           .thenThrow( NonExistentResource.class );
+    
+    assertThrows( NonExistentResource.class, () -> orderService.reviewOrder( order.getId(), new ReviewDTO( 3D ) ) );
+    
+    Mockito.verify( riderService, Mockito.times( 1 ) ).reviewRider( Mockito.anyLong(), Mockito.anyDouble() );
+    Mockito.verify( orderRepository, Mockito.times( 1 ) ).findById( Mockito.anyLong() );
+  }
+  
+  @Test
+  void whenReviewOrderAndOrderDoesNoExist_ThenThrowExeption() throws OrderDoesnotExistException, NonExistentResource {
+    Mockito.when( orderRepository.findById( Mockito.anyLong() ) ).thenReturn( Optional.empty() );
+    
+    assertThrows( OrderDoesnotExistException.class,
+      () -> orderService.reviewOrder( order.getId(), new ReviewDTO( 3D ) ) );
+    
+    Mockito.verify( orderRepository, Mockito.times( 1 ) ).findById( Mockito.anyLong() );
+  }
+  
+  @Test
+  void whenUpdateOrderStateWithExistentId_ThenReturnTrue() throws NonExistentResource {
+    Mockito.when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.of( order ) );
+    
+    boolean statusUpdated = orderService.updateOrderState( order.getId() );
+    assertTrue( statusUpdated );
+    verifyFindByIdIsCalledOnce();
+  }
+  
+  @Test
+  void whenUpdateOrderStateWithInvalidIdOrInexistenId_ThenReturnTrue() throws NonExistentResource {
+    Mockito.when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.empty() );
+    
+    assertThrows( NonExistentResource.class, () ->
+      orderService.updateOrderState( - 1L )
+    );
+    
+    verifyFindByIdIsCalledOnce();
+  }
+  
+  @Test
+  void testChangeState() throws Exception {
+    assertEquals( ORDERED, orderService.changeState( null ) );
+    assertEquals( IN_TRANSIT, orderService.changeState( ORDERED ) );
+    assertEquals( DELIVERED, orderService.changeState( IN_TRANSIT ) );
+    assertEquals( DELIVERED, orderService.changeState( DELIVERED ) );
+    assertEquals( ORDERED, orderService.changeState( null ) );
+    assertThrows( Exception.class, () -> orderService.changeState( "anyString" ) );
+  }
+  
+  private void verifyFindByIdIsCalledOnce() {
+    Mockito.verify( orderRepository, times( 1 ) ).findById( any() );
+  }
+  
   
 }

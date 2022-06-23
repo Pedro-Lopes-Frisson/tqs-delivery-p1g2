@@ -115,7 +115,7 @@ curl -X 'POST' \
 #           Product
 #################################
 curl -X 'POST' 'http://localhost:8083/api/v1/products' \
-  -H 'accept: */*' -H 'Content-Type: application/json' \
+  -H 'Accept: */*' -H 'Content-Type: application/json' \
   -d '{
   "price": 4.5,
   "stockQuantity": 1000,
@@ -125,7 +125,7 @@ curl -X 'POST' 'http://localhost:8083/api/v1/products' \
 }'
 
 curl -X 'POST' 'http://localhost:8083/api/v1/products' \
-  -H 'accept: */*' -H 'Content-Type: application/json' \
+  -H 'Accept: */*' -H 'Content-Type: application/json' \
   -d '{
   "price": 4,
   "stockQuantity": 1000,
@@ -135,7 +135,7 @@ curl -X 'POST' 'http://localhost:8083/api/v1/products' \
 }'
 
 curl -X 'POST' 'http://localhost:8083/api/v1/products' \
-  -H 'accept: */*' -H 'Content-Type: application/json' \
+  -H 'Accept: */*' -H 'Content-Type: application/json' \
   -d '{
   "price": 5,
   "stockQuantity": 1000,

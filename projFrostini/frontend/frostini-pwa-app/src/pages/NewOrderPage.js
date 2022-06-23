@@ -94,7 +94,7 @@ function NewOrderPage() {
     let idAddress = '';
 
     if(newAddress) {
-      console.log(address[0]);
+      //console.log(address[0]);
       await axios.post(`${ADDRESS_URL}`, {
         "userId": auth.id,
         "latitude": address[0],

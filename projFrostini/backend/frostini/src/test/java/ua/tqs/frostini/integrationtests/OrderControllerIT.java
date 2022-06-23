@@ -213,7 +213,7 @@ class OrderControllerIT {
                .contentType( "application/json" )
                .body( new ReviewDTO( 4.2D ) )
                .put( createURL() + "/api/v1/order/review/" + o1.getId() )
-               .then().assertThat().statusCode( HttpStatus.OK.value() ).log();
+               .then().log().body().assertThat().statusCode( HttpStatus.OK.value() ).log();
   }
   
   
@@ -277,7 +277,7 @@ class OrderControllerIT {
                  userOrders.get( 0 ).getId() )
                .then().log().body().assertThat()
                .statusCode( HttpStatus.OK.value() ).and()
-               .body( "orderState", is( "in transit" ) );
+               .body( "orderState", is( "delivered" ) );
     
   }
   

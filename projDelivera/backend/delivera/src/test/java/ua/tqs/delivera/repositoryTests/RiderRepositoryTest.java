@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -59,8 +60,8 @@ class RiderRepositoryTest {
     @Order(1)
     @Test
     void whenSaveRider_thenReturnRider(){
-        Rider rider_saved = entityManager.persistAndFlush(rider);
-        assertThat(rider_saved).isEqualTo(rider);
+        Rider riderSaved = entityManager.persistAndFlush(rider);
+        assertThat(riderSaved).isEqualTo(rider);
     }
 
     @Order(2)
@@ -75,8 +76,8 @@ class RiderRepositoryTest {
     @Order(3)
     @Test
     void whenInvalidId_thenReturnNull(){
-        Rider rider_saved = riderRepo.findById(-1L).orElse(null);
-        assertThat(rider_saved).isNull();
+        Rider riderSaved = riderRepo.findById(-1L).orElse(null);
+        assertThat(riderSaved).isNull();
     }
 
     @Order(5)
@@ -103,15 +104,16 @@ class RiderRepositoryTest {
     @Test
     void whenFindByExistingEmail_thenReturnRider(){
         entityManager.persistAndFlush(rider);
-        Rider riderByEmail = riderRepo.findByEmail(rider.getEmail());
-        assertThat(riderByEmail).isEqualTo(rider);
+        Optional<Rider> riderByEmail = riderRepo.findByEmail(rider.getEmail());
+        assertThat(riderByEmail).isPresent();
+        assertThat(riderByEmail.get()).isEqualTo(rider);
     }
 
     @Order(7)
     @Test
     void whenFindByWrongEmail_thenReturnNull(){
-        Rider riderByEmail = riderRepo.findByEmail("invalid email");
-        assertThat(riderByEmail).isNull();
+        Optional<Rider> riderByEmail = riderRepo.findByEmail("invalid email");
+        assertThat(riderByEmail).isEmpty();
     }
 
     @Order(8)

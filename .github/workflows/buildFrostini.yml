@@ -21,18 +21,19 @@ jobs:
         run: docker-compose build frostini # build frostini docker
 
       - name: Start frostini Spring boot Application
-        run: export FROSTINI_ID=$(docker-compose run -d frostini) ; docker network inspect tqs-delivery-p1g2_backend-frostini # start frostini docker
+        run: export FROSTINI_ID=$(docker-compose run -p 8083:8083 -d frostini) ; docker network inspect tqs-delivery-p1g2_backend-frostini # start frostini docker
 
       - name: Build frostini pwa react app
-        run: export FROSTINI_ID=$(docker ps -a --format "{{.ID}} {{.Names}}" | grep "frostini_run" | awk -F " " '// {printf $1 "\n"}' | head -n1); docker-compose build --build-arg API_HOSTNAME=$(docker inspect $FROSTINI_ID | grep IPAddress | awk -v RS='([0-9]+\\.){3}[0-9]+' 'RT{print RT}' | tail -n1) frostini-web # build frostini-web docker with the correct ip for the frostiniSpringBootDocker
+        run: docker-compose build --build-arg API_HOSTNAME=localhost frostini-web # build frostini-web docker with the correct ip for the frostiniSpringBootDocker
 
       - name: Start frostini pwa react app
         run: docker-compose run -p 3000:80 -d frostini-web # run frostini-web and map port 80 to host's port 3000
 
+
       - name: Curl in localhost3000 to assert that seb service is running
         run: |
-              sleep 5
-              curl localhost:3000
+          sleep 5
+          curl localhost:3000
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v1

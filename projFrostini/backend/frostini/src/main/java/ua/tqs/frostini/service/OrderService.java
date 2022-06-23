@@ -19,7 +19,7 @@ import java.util.*;
 @Service
 @Log4j2
 public class OrderService {
-  
+
   @Autowired OrderRepository orderRepository;
   @Autowired UserRepository userRepository;
   @Autowired ProductRepository productRepository;
@@ -27,7 +27,7 @@ public class OrderService {
   @Autowired OrderedProductRepository orderedProductRepository;
   @Autowired
   DeliverySystemService deliveryService;
-  
+
   public Order placeOrder( OrderDTO orderDTO ) throws IncompleteOrderPlacement {
     // We need to first save the order than retrieve it's id and the we save the orderProductList
     Order order = new Order();
@@ -37,15 +37,15 @@ public class OrderService {
       return null;
     }
     order.setAddress( addressOptional.get() );
-    
-    
+
+
     // Get User and make sure the user exists
     Optional<User> userOptional = userRepository.findById( orderDTO.getUserId() );
     if ( userOptional.isEmpty() ) {
       return null;
     }
     order.setUser( userOptional.get() );
-    
+
     // cache products
     Map<Long, Product> productMap = new HashMap<>();
     //Calculate total price
@@ -60,20 +60,20 @@ public class OrderService {
       productMap.put( product.getId(), product );
       price += product.getPrice() * orderedProductDTO.getQuantity();
     }
-    
+
     order.setOrderMadeTimeStamp( System.currentTimeMillis() );
-    
+
     order.setTotalPrice( price );
-    
+
     //Finally Save order
     Order savedOrder = orderRepository.save( order );
-    
+
     List<OrderedProduct> orderedProductList = new ArrayList<>();
-    
+
     for (OrderedProductDTO orderedProductDTO : orderDTO.getOrderedProductsList()) {
       // Retrieve from cache
       Product product = productMap.get( orderedProductDTO.getProductId() );
-      
+
       //save orderedProduct in db
       orderedProductList.add( orderedProductRepository.save( new OrderedProduct( orderedProductDTO.getQuantity(),
         product.getPrice(),
@@ -81,7 +81,7 @@ public class OrderService {
     }
     savedOrder.setOrderedProductList( orderedProductList );
     savedOrder.setOrderMadeTimeStamp( System.currentTimeMillis() / 1000L );
-    
+
     OrderDTODelivera orderDTODelivera = new OrderDTODelivera();
     orderDTODelivera.setOrderPrice( savedOrder.getTotalPrice() );
     orderDTODelivera.setOrderStoreId( 1L );
@@ -89,7 +89,7 @@ public class OrderService {
     orderDTODelivera.setClientLon( orderDTODelivera.getClientLon() );
     orderDTODelivera.setStoreLat( orderDTODelivera.getStoreLat() );
     orderDTODelivera.setStoreLon( orderDTODelivera.getStoreLon() );
-    
+
     OrderDelivera orderDelivera;
     try {
       orderDelivera = deliveryService.newOrder( orderDTODelivera );
@@ -97,19 +97,19 @@ public class OrderService {
       throw new IncompleteOrderPlacement( "Order could not be placed due to an error in the delivery system" );
     }
     savedOrder.setExternalId( orderDelivera.getId() ); // save delivera id so that i can review it
-    
+
     savedOrder.setOrderedProductList( orderedProductList );
     savedOrder.setOrderMadeTimeStamp( System.currentTimeMillis() / 1000L );
     return orderRepository.save( savedOrder );
   }
-  
+
   public Order trackOrder( long orderId ) {
-    
+
     Optional<Order> orderFromDb = orderRepository.findById( orderId );
     return orderFromDb.isEmpty() ? null : orderFromDb.get();
-    
+
   }
-  
+
   public List<Order> getAllOrdersByUser( long id ) {
     Optional<User> userFromDb = userRepository.findById( id );
     if ( userFromDb.isEmpty() ) {
@@ -117,7 +117,7 @@ public class OrderService {
     }
     return orderRepository.findAllByUser( userFromDb.get(), Pageable.unpaged() );
   }
-  
+
   public Order updateOrderState( long orderId ) {
     // se estado for ordered -> in transit
     // se for in transit -> delivered
@@ -126,9 +126,9 @@ public class OrderService {
     if ( orderFromDb.isEmpty() ) {
       return null;
     }
-    
+
     Order order = orderFromDb.get();
-    
+
     switch (order.getOrderState()) {
       case "ordered":
         order.setOrderState( "in transit" );
@@ -139,10 +139,11 @@ public class OrderService {
       default:
         return null;
     }
-    
+    orderRepository.save(order);
+
     return order;
   }
-  
+
   public int reviewOrder( long orderId, ReviewDTO reviewDTO )
     throws ResourceNotFoundException, IncompleteOrderReviewException {
     Optional<Order> optionalOrder = orderRepository.findById( orderId );

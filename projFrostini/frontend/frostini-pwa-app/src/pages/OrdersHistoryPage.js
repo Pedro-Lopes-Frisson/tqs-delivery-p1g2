@@ -44,8 +44,10 @@ function OrdersHistoryPage() {
   const [json, setJson] = useState([]);
 
   const viewOrder = (order) => {
+    //console.log(order.id)
     setState(order.orderState);
-    navigate('/purchase');
+    navigate(`/purchase/${order.id}`)
+    //navigate('/purchase');
   };
 
   const sortOrders = (a, b) => {
