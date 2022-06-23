@@ -2,6 +2,7 @@ package ua.tqs.delivera.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,11 @@ import ua.tqs.delivera.models.Order;
 public class OrdersController {
     @PostMapping
     public ResponseEntity<Order> createOrder( @RequestBody Order orderDTO){
+        return null;
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<String> updateOrderStatus(@PathVariable Long id){
         return null;
     }
 }
