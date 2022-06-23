@@ -149,4 +149,17 @@ public class Rider {
   public void setCurrentLocation( Location currentLocation ) {
     this.currentLocation = currentLocation;
   }
+  
+  @Override public String toString() {
+    return "Rider{" +
+      "riderId=" + riderId +
+      ", name='" + name + '\'' +
+      ", email='" + email + '\'' +
+      ", password='" + password + '\'' +
+      ", available=" + available +
+      ", numberOfReviews=" + numberOfReviews +
+      ", sumOfReviews=" + sumOfReviews +
+      ", currentLocation=" + currentLocation +
+      '}';
+  }
 }

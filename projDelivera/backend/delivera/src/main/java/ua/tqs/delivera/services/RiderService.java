@@ -28,20 +28,20 @@ import java.util.stream.Stream;
 public class RiderService {
   @Autowired
   private RiderRepository riderRepo;
-
+  
   @Autowired
   private OrderProfitRepository orderProfitRepo;
-
+  
   @Autowired
   private OrderRepository orderRepo;
-
+  
   //create rider
   public Rider saveRider( Rider rider ) {
     System.out.println( riderRepo.findByEmail( rider.getEmail() ) );
     if ( ! riderRepo.findByEmail( rider.getEmail() ).isPresent() ) {return riderRepo.save( rider );}
     throw new DuplicateKeyException( "Email already in use" );
   }
-
+  
   public Rider findById( long id ) throws NonExistentResource {
     Optional<Rider> optionalRider = riderRepo.findById( id );
     if ( optionalRider.isEmpty() ) {
@@ -49,46 +49,47 @@ public class RiderService {
     }
     return optionalRider.get();
   }
-
-  public Map<String, Object> getRiderStatistics(long riderId) throws NonExistentResource {
+  
+  public Map<String, Object> getRiderStatistics( long riderId ) throws NonExistentResource {
     // check if rider exists
-    Optional<Rider> rider = riderRepo.findById(riderId);
-    if (rider.isEmpty()) {
-        throw new NonExistentResource( "This rider does not exist!" );
+    Optional<Rider> rider = riderRepo.findById( riderId );
+    if ( rider.isEmpty() ) {
+      throw new NonExistentResource( "This rider does not exist!" );
     }
-
+    
     Rider currentRider = rider.get();
-
+    
     Map<String, Object> result = new HashMap<>();
-
-    if(currentRider.getNumberOfReviews() != 0) {
-
-        double average = (double) currentRider.getSumOfReviews()/currentRider.getNumberOfReviews();
-        result.put("averageReviewValue", average);
-
-    } else {
-      result.put("averageReviewValue", 0.0);
+    
+    if ( currentRider.getNumberOfReviews() != 0 ) {
+      
+      double average = (double) currentRider.getSumOfReviews() / currentRider.getNumberOfReviews();
+      result.put( "averageReviewValue", average );
+      
     }
-
-    Optional<List<OrderProfit>> ordersProfit = orderProfitRepo.findByRider(currentRider);
-
-    result.put("totalRiderOrders", ordersProfit.isPresent() ? ordersProfit.get().size() : 0);
-
+    else {
+      result.put( "averageReviewValue", 0.0 );
+    }
+    
+    Optional<List<OrderProfit>> ordersProfit = orderProfitRepo.findByRider( currentRider );
+    
+    result.put( "totalRiderOrders", ordersProfit.isPresent() ? ordersProfit.get().size() : 0 );
+    
     int totalNumberOfOrdersDelivered = 0;
-    if(ordersProfit.isPresent()) {
+    if ( ordersProfit.isPresent() ) {
       for (OrderProfit profit : ordersProfit.get()) {
-        System.out.println("STATE: " + profit.getOrder().getOrderState());
-        if (profit.getOrder().getOrderState().equals("delivered")) {
+        System.out.println( "STATE: " + profit.getOrder().getOrderState() );
+        if ( profit.getOrder().getOrderState().equals( "delivered" ) ) {
           totalNumberOfOrdersDelivered++;
         }
         //orderRepo.findByIdAndOrderState(profit.getOrder().getId(), "delivered");
       }
     }
-    result.put("totalNumberOfOrdersDelivered", totalNumberOfOrdersDelivered);
-
+    result.put( "totalNumberOfOrdersDelivered", totalNumberOfOrdersDelivered );
+    
     return result;
   }
-
+  
   /*
    * Get All orders for rider with id = riderID
    * return a List of orders
@@ -101,35 +102,49 @@ public class RiderService {
     /* log.info( "Rider was found compiling a list of Orders. {}",
       rider.getOrderProfits().stream().map( OrderProfit::getOrder )
            .collect( Collectors.toList() ) ); */
-
+    
     return rider.getOrderProfits().stream().map( OrderProfit::getOrder ).collect( Collectors.toList() );
   }
-
+  
   public Order getOrder( Long id, Long orderId ) throws NonExistentResource {
     Rider rider = findById( id );
     /* log.info( "Rider was found compiling a list of Orders. {}",
       rider.getOrderProfits().stream().map( OrderProfit::getOrder ).map( Order::getId )
            .collect( Collectors.toList() ) ); */
-
+    
     List<Order> orderList = rider.getOrderProfits().stream().map( OrderProfit::getOrder ).filter( ( o ) -> {
         return Objects.equals(
           o.getId(), orderId
         );
       }
     ).collect( Collectors.toList() );
-
+    
     if ( orderList.size() > 1 ) {
       //log.info( orderList );
       throw new RuntimeException( "Multiple Values detected" );
       // this should never happen because orderId is a primary key
     }
-
+    
     if ( orderList.isEmpty() ) {
       throw new NonExistentResource( "This Order id is not of this rider" );
       // this only happens if an orderID is not of that rider or if it does not exist
     }
-
-    return  orderList.get( 0 );
-
+    
+    return orderList.get( 0 );
+    
+  }
+  
+  public Rider reviewRider( long riderId, double points ) throws NonExistentResource {
+    Optional<Rider> optionalRider = riderRepo.findById( riderId );
+    if ( optionalRider.isEmpty() ) {
+      log.error("Rider Does Not Exist");
+      throw new NonExistentResource( "Rider Does Not Exist" );
+    }
+    Rider rider = optionalRider.get();
+    rider.setSumOfReviews( (int) ( rider.getSumOfReviews() + points ) );
+    rider.setNumberOfReviews( rider.getNumberOfReviews() + 1 );
+    log.info("Rider Updated, {}", rider);
+    return riderRepo.save( rider );
+    
   }
 }
