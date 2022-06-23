@@ -52,7 +52,6 @@ public class StoreRepositoryTest {
         store = new Store();
         store.setName("Frostini");
         store.setAddress(location);
-        //entityManager.persistAndFlush(store);
     }
 
     @Test

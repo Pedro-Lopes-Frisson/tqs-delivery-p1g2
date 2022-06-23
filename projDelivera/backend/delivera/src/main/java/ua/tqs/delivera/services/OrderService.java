@@ -13,5 +13,9 @@ public class OrderService {
   
   @Autowired
   OrderRepository orderRepository;
+
+  public Order createOrder(Order order) {
+    return null;
+  }
   
 }

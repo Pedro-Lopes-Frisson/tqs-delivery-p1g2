@@ -11,11 +11,12 @@ import lombok.extern.log4j.Log4j2;
 import ua.tqs.delivera.models.Order;
 
 @RestController
-@RequestMapping("/api/v1/orders")
+@RequestMapping("/api/v1/order")
 @CrossOrigin
 @Log4j2
 public class OrdersController {
-    @PostMapping
+
+    @PostMapping()
     public ResponseEntity<Order> createOrder( @RequestBody Order orderDTO){
         // verificar se store existe
         return null;
