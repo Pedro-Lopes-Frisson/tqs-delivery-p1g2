@@ -76,6 +76,10 @@ public class OrderControllerIT {
                .contentType( ContentType.JSON ).and().statusCode( HttpStatus.BAD_REQUEST.value() );
   }
   
+  @Test
+  void whenMakeOrderWithEverythingOkayThenReturnOrder200(){
+    
+  }
   
   String createURL() {
     return "http://localhost:" + randomServerPort + "/api/v1/order";
