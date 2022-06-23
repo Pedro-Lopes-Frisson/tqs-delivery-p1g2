@@ -3,7 +3,6 @@ FROM node:18 as build
 WORKDIR /app
 COPY . /app
 # Replace localhost with correct hostname
-
 #ARG API_HOSTNAME=13.81.83.209
 ARG API_HOSTNAME=192.168.160.223
 #172.20.202.10

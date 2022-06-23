@@ -11,74 +11,116 @@ import {
   Button,
   Chip,
   TextField,
-  RadioGroup,
+  /* RadioGroup,
   Radio,
   FormControl,
-  FormControlLabel,
+  FormControlLabel, */
   Rating,
 } from "@mui/material";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
+import useLocalStorage from "../hooks/use-local-storage";
 import AuthContext from '../context/AuthProvider';
 import isAuthenticated from '../utils/Authentication';
-
-const json = {
-  id: 4,
-  products: [
-    { icecream: "Frozen yoghurt", quantity: 2, price: 6.0, tags: ["GF", "NF"] },
-    { icecream: "Black Forest", quantity: 1, price: 2.3, tags: [] },
-  ],
-};
-
-// function getTotal() {
-//   var total = 0;
-
-//   json.map((row) => (total += row.price));
-
-//   return total;
-// }
+import axios from '../api/axios';
 
 function PurchasePage() {
+  const params = useParams();
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   const isAuth = isAuthenticated(auth);
 
+  const [order, setOrder] = useLocalStorage("order", []);
+  const [success, setSuccess] = React.useState(false);
+
   const [rating, setRating] = React.useState(0);
-  const [newAddress, setNewAddress] = React.useState(false);
+  const [address, setAddress] = useLocalStorage('address', []);
 
   const [step, setStep] = React.useState(0);
 
-  // const [order, setOrder] = useLocalStorage("order", []);
+  const [state, setState] = useLocalStorage('state', '');
+  console.log("STATE");
+  console.log(state);
 
-  const totalPrice = json.reduce(
+  const totalPrice = order.reduce(
     (sum, item) => item.quantity * item.price + sum,
     0
   );
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    axios.get(`/order/${params.id}`)
+      .then(
+        res => {
+          if(res.status === 200) {
+            console.log("HEREEE");
+            console.log(res.data);
+            setState(res.data.orderState)
+          }
+
+      }).catch(err => {
+        if (err.response.status === 0) {
+          //setError('No server response');
+        } else {
+          //setError('Register failed');
+        }
+      })
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const body = {
-      // "address": e.currentTarget["newAddress"]?.value,
       cardNumber: e.currentTarget["card-number"].value,
       expirationDate: e.currentTarget["expiration-date"].value,
       cvCode: e.currentTarget["cv-code"].value,
       cardOwner: e.currentTarget["card-owner"].value,
     };
 
-    console.log(body);
 
-    setStep(3);
-  };
+    await axios.put(`/order/${params.id}`)
+      .then(
+        res => {
+          if(res.status === 200) {
+            setSuccess(true);
+            console.log("PURCHASE");
+            console.log(res.data);
+            setState("in transit");
+          }
+
+      }).catch(err => {
+        if (err.response.status === 0) {
+          //setError('No server response');
+        } else {
+          //setError('Register failed');
+        }
+      })
+   
+  }; 
 
   useEffect(() => {
     if(!isAuth) {
       navigate('/login');
     }
   }, [isAuth]);
+
+  useEffect(() => {
+    console.log("AGAIN STATE");
+    console.log(state);
+    switch(state) {
+      case "ordered":
+        setStep(1);
+        break;
+      case "in transit":
+        setStep(2);
+        break;
+      case "delivered":
+        setStep(3);
+        break;
+    }
+  });
 
   return (
     <div className="purchase-page">
@@ -116,6 +158,7 @@ function PurchasePage() {
           <p>Delivered</p>
         </div>
       </div>
+
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           <TableHead className="order-table-header">
@@ -127,69 +170,42 @@ function PurchasePage() {
               <TableCell className="header-cell" align="right">
                 Price
               </TableCell>
-              <TableCell className="header-cell" align="right">
+              {/* <TableCell className="header-cell" align="right">
                 Tags
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
-            {json.products.map((row, key) => (
+            {order.map((row, key) => (
               <TableRow
                 key={key}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.icecream}
+                  {row.name}
                 </TableCell>
                 <TableCell align="right">{row.quantity}</TableCell>
                 <TableCell align="right">{row.price} €</TableCell>
-                <TableCell align="right">
+                {/* <TableCell align="right">
                   <div className="tags">
                     {row.tags.map((tag, key) => (
                       <Chip label={tag} key={key} className="tags-chip" />
                     ))}
                   </div>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <div className="total-price">
-        {/* TODO: get sum of product prices */}
         <Chip label={`Total: ${totalPrice}€`} className="total-price-chip" />
       </div>
-      {step === 0 && (
+      {step === 1 && (
         <form onSubmit={handleSubmit}>
           <div className="address-details">
             <h3>Address Details</h3>
-            <FormControl>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="default-address"
-                name="radio-buttons-group"
-              >
-                <FormControlLabel
-                  value="default-address"
-                  control={<Radio />}
-                  label="Default Address"
-                  onClick={() => setNewAddress(false)}
-                />
-                <div className="alternative-address">
-                  <FormControlLabel
-                    value="another-address"
-                    control={<Radio />}
-                    onClick={() => setNewAddress(true)}
-                    label="Another Address"
-                  />
-                  <div>
-                    {newAddress ? (
-                      <TextField id="new-address" variant="outlined" />
-                    ) : null}
-                  </div>
-                </div>
-              </RadioGroup>
-            </FormControl>
+            <p>{address.length > 0 ? `${address[0]}, ${address[1]}` : auth.address}</p>
           </div>
 
           <div className="payment-details">
@@ -200,6 +216,7 @@ function PurchasePage() {
                 label="Card Number"
                 multiline
                 maxRows={4}
+                required
               />
               <div className="sensitive-fields">
                 <TextField
@@ -207,14 +224,16 @@ function PurchasePage() {
                   label="Expiration Date"
                   multiline
                   maxRows={4}
+                  required
                 />
-                <TextField id="cv-code" label="CV code" multiline maxRows={4} />
+                <TextField id="cv-code" label="CV code" multiline maxRows={4} required/>
               </div>
               <TextField
                 id="card-owner"
                 label="Card Owner"
                 multiline
                 maxRows={4}
+                required
               />
             </div>
           </div>

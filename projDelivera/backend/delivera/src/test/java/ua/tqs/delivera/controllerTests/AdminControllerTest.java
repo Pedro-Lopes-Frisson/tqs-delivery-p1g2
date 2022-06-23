@@ -1,5 +1,4 @@
-package ua.tqs.delivera.controllertests;
-
+package ua.tqs.delivera.controllerTests;
 
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;

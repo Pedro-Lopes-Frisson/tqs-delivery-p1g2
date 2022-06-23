@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.OrderProfit;
@@ -95,15 +97,41 @@ public class IntegrationTest {
   }
   
   
-  @Test void whenValidInput_thenCreateCar() {
+  @Test void whenValidInput_thenCreateRider() {
     Rider rider =
-      createTestRider( "ma@gmail.com", "Manuel Antunes", "migant", true, createTestLocation( 40.85, 25.9999 ), 0, 0 );
-    ;
-    ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/delivera/rider", rider, Rider.class );
+      createTestRider( "ma@gmail.com", "Manuel Antunes", "migant", true, createTestLocation( 40.85, 25.9999 ), 3, 9 );
+    ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/v1/rider", rider, Rider.class );
     
     List<Rider> found = riderRepo.findAll();
     assertThat( found ).extracting( Rider::getEmail ).contains( rider.getEmail() );
   }
+
+  // @Test 
+  // void whenCorrectRider_thenLoginRider() {
+    
+  //   RiderDTO rider =
+  //     createTestRiderDTO( "ma@gmail.com", "Manuel Antunes", "migant", true, createTestLocation( 40.85, 25.9999 ), 3, 9 );
+  //   System.out.println("iuytrdfgcvhjkop+oiuygfdxcvbnjk");
+  //   Rider r = riderRepo.findByEmail(rider.getEmaildto());
+  //   System.out.println("\n\n\n\nHEREEEE:\t"+r.getEmail()+"\n\n\n\n\n");
+  //   assertThat( r ).isNotNull();
+
+  //   ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/v1/rider/login", rider, Rider.class );
+  //   assertEquals(HttpStatus.OK,entity.getStatusCode());
+  // }
+
+  // @Test 
+  // void whenWrongRider_thenReturnUnauthorized() {
+    
+  //   RiderDTO rider =
+  //     createTestRiderDTO( "ma@gmail.com", "Manuel Antunes", "password", true, createTestLocation( 40.85, 25.9999 ), 3, 9 );
+    
+  //   Rider r = riderRepo.findByEmail(rider.getEmaildto());
+  //   assertThat( r ).isNotNull();
+
+  //   ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/v1/rider/login", rider, Rider.class );
+  //   assertEquals(HttpStatus.UNAUTHORIZED,entity.getStatusCode());
+  // }
   
   @Test
   void whenValidRiderId_ThenReturnListOfOrders() {
@@ -111,7 +139,7 @@ public class IntegrationTest {
     assertThat( rider ).isNotEmpty();
     
     ResponseEntity<List<Order>> response =
-      restTemplate.exchange( "/api/delivera/rider/" + 1 + "/orders",
+      restTemplate.exchange( "/api/v1/rider/" + 1 + "/orders",
         HttpMethod.GET, null,
         new ParameterizedTypeReference<>() {}
       );
@@ -140,7 +168,7 @@ public class IntegrationTest {
   void whenInValidRiderIdAndValidOrderId_ThenReturnBAD_REQUEST() {
     
     ResponseEntity<Order> response =
-      restTemplate.exchange( "/api/delivera/rider/" + - 1 + "/orders/" + 2,
+      restTemplate.exchange( "/api/v1/rider/" + - 1 + "/orders/" + 2,
         HttpMethod.GET, null,
         Order.class
       );
@@ -152,7 +180,7 @@ public class IntegrationTest {
   void whenInValidRiderId_ThenReturnBAD_REQUEST() {
     
     ResponseEntity<Order> response =
-      restTemplate.exchange( "/api/delivera/rider/" + - 1 + "/orders",
+      restTemplate.exchange( "/api/v1/rider/" + - 1 + "/orders",
         HttpMethod.GET, null,
         Order.class
       );
@@ -168,7 +196,7 @@ public class IntegrationTest {
     Rider riderObj = rider.get();
     
     ResponseEntity<Order> response =
-      restTemplate.exchange( "/api/delivera/rider/" + riderObj.getRiderId() + "/orders/" +
+      restTemplate.exchange( "/api/v1/rider/" + riderObj.getRiderId() + "/orders/" +
           riderObj.getOrderProfits().get( 0 ).getOrder().getId(),
         HttpMethod.GET, null,
         Order.class
@@ -203,6 +231,87 @@ public class IntegrationTest {
     
     //assertThat( orderListResp.get( 0 ).getId() ).isEqualTo( orderList.get( 0 ).getId() );
   }
+
+  @Test
+  void whenGetRiderStats_thenReceiveMap() {
+    Optional<Rider> rider = riderRepo.findById( 1L );
+    assertThat( rider ).isNotEmpty();
+    Rider riderObj = rider.get();
+
+    ParameterizedTypeReference<Map<String, Object>> responseType = 
+               new ParameterizedTypeReference<Map<String, Object>>() {};
+
+    
+    ResponseEntity<Map<String, Object>> response =
+      restTemplate.exchange( "/api/v1/stats/rider/" + riderObj.getRiderId(),
+        HttpMethod.GET, null,
+        responseType
+      );
+    
+    assertEquals( response.getStatusCode(), HttpStatus.OK );
+    
+    Map<String, Object> stats = null;
+    if ( response != null && response.hasBody() ) {
+      stats = response.getBody();
+    }
+    
+    assertNotNull( stats );
+    
+    assertThat( stats )
+      .hasSize( 3 )
+      .containsEntry("averageReviewValue", (double) riderObj.getSumOfReviews()/ riderObj.getNumberOfReviews() )
+      .containsEntry("totalRiderOrders", 2 )
+      .containsEntry("totalNumberOfOrdersDelivered", 0 );
+    
+  }
+
+  @Test
+  void whenInvalidRiderIdgettingStats_ThenReturnBAD_REQUEST() {
+    
+    ParameterizedTypeReference<Map<String, Object>> responseType = 
+               new ParameterizedTypeReference<Map<String, Object>>() {};
+    
+    ResponseEntity<Map<String, Object>> response =
+      restTemplate.exchange( "/api/v1/stats/rider/" + -1l,
+        HttpMethod.GET, null,
+        responseType
+      );
+    
+    assertEquals( response.getStatusCode(), HttpStatus.BAD_REQUEST );
+    
+  }
+
+  @Test
+  void whenRiderWithoutReviewsAndOrders_ThenReturnMapWithValuesAsZero() {
+
+    Rider rider = new Rider();
+    riderRepo.saveAndFlush(rider);
+    
+    ParameterizedTypeReference<Map<String, Object>> responseType = 
+               new ParameterizedTypeReference<Map<String, Object>>() {};
+    
+    ResponseEntity<Map<String, Object>> response =
+      restTemplate.exchange( "/api/v1/stats/rider/" + rider.getRiderId(),
+        HttpMethod.GET, null,
+        responseType
+      );
+    
+      assertEquals( response.getStatusCode(), HttpStatus.OK );
+    
+      Map<String, Object> stats = null;
+      if ( response != null && response.hasBody() ) {
+        stats = response.getBody();
+      }
+      
+      assertNotNull( stats );
+      
+      assertThat( stats )
+        .hasSize( 3 )
+        .containsEntry("averageReviewValue", 0.0 )
+        .containsEntry("totalRiderOrders", 0 )
+        .containsEntry("totalNumberOfOrdersDelivered", 0 );
+    
+  }
   
   
   //-------------------------------- HELPERS ----------------------------------------
@@ -216,12 +325,21 @@ public class IntegrationTest {
                                  Location currentLocation, int numberOfReviews, int sumOfReviews ) {
     Rider rider = new Rider( email, name, password, available, currentLocation, numberOfReviews, sumOfReviews );
     
+    order.setOrderState("delivered");
+
     orderProfit1.setRider( rider );
     orderProfit.setRider( rider );
     
     rider.setOrderProfits( orderProfitList );
     
     rider = riderRepo.saveAndFlush( rider );
+    
+    return rider;
+  }
+
+  private RiderDTO createTestRiderDTO( String email, String name, String password, boolean available,
+                                 Location currentLocation, int numberOfReviews, int sumOfReviews ) {
+    RiderDTO rider = new RiderDTO( email, name, password, available, currentLocation, numberOfReviews, sumOfReviews );
     
     return rider;
   }

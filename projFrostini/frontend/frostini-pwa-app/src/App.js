@@ -9,6 +9,7 @@ import MenuPage from "./pages/MenuPage";
 import PurchasePage from "./pages/PurchasePage";
 import Layout from "./pages/Layout";
 import OrdersHistoryPage from "./pages/OrdersHistoryPage";
+import NewOrderPage from "./pages/NewOrderPage";
 
 function App() {
   return (
@@ -20,8 +21,9 @@ function App() {
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/orders" element={<OrdersHistoryPage />} />
         {/* <Route path="/menu/:filter" element={<OrderPage />} /> */}
-        <Route path="/purchase" element={<PurchasePage />} />
+        <Route path="/purchase/:id" element={<PurchasePage />} />
         {/* <Route path="/purchase" element={<PurchasePage />} /> */}
+        <Route path="/order" element={<NewOrderPage />} />
       </Routes>
     </Layout>
   );

@@ -39,10 +39,10 @@ function LoginPage() {
       await axios.get(`${LOGIN_URL}/${email}`)
         .then(
           res => {
-            if(res.status == 200) {
+            if(res.status === 200) {
               const data = res.data;
 
-              if(password == data.password) {
+              if(password === data.password) {
                 const id = data.id;
                 const name = data.name;
                 const address = data.address;
@@ -62,18 +62,18 @@ function LoginPage() {
             }
 
         }).catch(err => {
-          if(err.response.status == 0) {
+          if(err.response.status === 0) {
             setError('No server response');
-          } else if (err.response.status == 400) {
+          } else if (err.response.status === 400) {
             setError('Wrong email or password');
-          } else if (err.response.status == 401) {
+          } else if (err.response.status === 401) {
             setError('Unauthorized');
           } else {
             setError('Login failed');
           }
           errRef.current.focus();
         })
-        
+
 
     }
 
