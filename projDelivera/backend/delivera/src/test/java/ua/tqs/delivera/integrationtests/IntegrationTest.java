@@ -26,6 +26,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.OrderProfit;
@@ -96,7 +97,7 @@ public class IntegrationTest {
   }
   
   
-  @Test void whenValidInput_thenCreateCar() {
+  @Test void whenValidInput_thenCreateRider() {
     Rider rider =
       createTestRider( "ma@gmail.com", "Manuel Antunes", "migant", true, createTestLocation( 40.85, 25.9999 ), 3, 9 );
     ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/v1/rider", rider, Rider.class );
@@ -104,6 +105,33 @@ public class IntegrationTest {
     List<Rider> found = riderRepo.findAll();
     assertThat( found ).extracting( Rider::getEmail ).contains( rider.getEmail() );
   }
+
+  // @Test 
+  // void whenCorrectRider_thenLoginRider() {
+    
+  //   RiderDTO rider =
+  //     createTestRiderDTO( "ma@gmail.com", "Manuel Antunes", "migant", true, createTestLocation( 40.85, 25.9999 ), 3, 9 );
+  //   System.out.println("iuytrdfgcvhjkop+oiuygfdxcvbnjk");
+  //   Rider r = riderRepo.findByEmail(rider.getEmaildto());
+  //   System.out.println("\n\n\n\nHEREEEE:\t"+r.getEmail()+"\n\n\n\n\n");
+  //   assertThat( r ).isNotNull();
+
+  //   ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/v1/rider/login", rider, Rider.class );
+  //   assertEquals(HttpStatus.OK,entity.getStatusCode());
+  // }
+
+  // @Test 
+  // void whenWrongRider_thenReturnUnauthorized() {
+    
+  //   RiderDTO rider =
+  //     createTestRiderDTO( "ma@gmail.com", "Manuel Antunes", "password", true, createTestLocation( 40.85, 25.9999 ), 3, 9 );
+    
+  //   Rider r = riderRepo.findByEmail(rider.getEmaildto());
+  //   assertThat( r ).isNotNull();
+
+  //   ResponseEntity<Rider> entity = restTemplate.postForEntity( "/api/v1/rider/login", rider, Rider.class );
+  //   assertEquals(HttpStatus.UNAUTHORIZED,entity.getStatusCode());
+  // }
   
   @Test
   void whenValidRiderId_ThenReturnListOfOrders() {
@@ -305,6 +333,13 @@ public class IntegrationTest {
     rider.setOrderProfits( orderProfitList );
     
     rider = riderRepo.saveAndFlush( rider );
+    
+    return rider;
+  }
+
+  private RiderDTO createTestRiderDTO( String email, String name, String password, boolean available,
+                                 Location currentLocation, int numberOfReviews, int sumOfReviews ) {
+    RiderDTO rider = new RiderDTO( email, name, password, available, currentLocation, numberOfReviews, sumOfReviews );
     
     return rider;
   }

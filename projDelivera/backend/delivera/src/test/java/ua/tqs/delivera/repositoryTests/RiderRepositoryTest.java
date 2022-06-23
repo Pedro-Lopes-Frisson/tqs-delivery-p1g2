@@ -16,6 +16,9 @@ import ua.tqs.delivera.repositories.RiderRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -94,5 +97,32 @@ class RiderRepositoryTest {
     void whenGetAverageRidersReviewWithNoReviews_thenReturnNull() {
         Double average = riderRepo.getAverageRiderRating();
         assertThat(average).isNull();
+    }
+
+    @Order(6)
+    @Test
+    void whenFindByExistingEmail_thenReturnRider(){
+        entityManager.persistAndFlush(rider);
+        Rider riderByEmail = riderRepo.findByEmail(rider.getEmail());
+        assertThat(riderByEmail).isEqualTo(rider);
+    }
+
+    @Order(7)
+    @Test
+    void whenFindByWrongEmail_thenReturnNull(){
+        Rider riderByEmail = riderRepo.findByEmail("invalid email");
+        assertThat(riderByEmail).isNull();
+    }
+
+    @Order(8)
+    @Test
+    void whenFindAll_thenReturnList(){
+        Rider rider2 = new Rider("mf@gmail.com", "Manuel Ferreira", "migferr", true, location, 10, 29);
+        entityManager.persistAndFlush(rider);
+        entityManager.persistAndFlush(rider2);
+        List<Rider> allRiders = Arrays.asList(rider, rider2);
+        List<Rider> resultAllRiders = riderRepo.findAll();
+        assertThat(resultAllRiders).isEqualTo(allRiders);
+        
     }
 }

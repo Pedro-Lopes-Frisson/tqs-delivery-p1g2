@@ -28,6 +28,8 @@ public class Order {
   @Column(name = "order_id")
   long id;
 
+  @Column(name = "delivery_service_id")
+  Long externalId;
   @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
