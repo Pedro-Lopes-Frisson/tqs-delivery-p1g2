@@ -19,3 +19,6 @@ Delivera
 - [Static analysis Delivera](https://sonarcloud.io/project/overview?id=sophjane_tqs-delivery-p1g2)
 - [Static analysis Frostini](https://sonarcloud.io/project/overview?id=sophjane_tqs-delivery-p1g2_frostini)
 - [CI/CD pipeline](https://github.com/sophjane/tqs-delivery-p1g2/actions)
+- [Reports](https://github.com/sophjane/tqs-delivery-p1g2/tree/main/Reports)
+- [Frostini Open API Documentation](https://app.swaggerhub.com/apis/Pedro-Lopes-Frisson/Frostini/v1)
+- [Delivera Open API Documentation](https://app.swaggerhub.com/apis/Pedro-Lopes-Frisson/Delivera/v1)
