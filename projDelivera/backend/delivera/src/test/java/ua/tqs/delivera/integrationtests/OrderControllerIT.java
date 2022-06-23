@@ -14,15 +14,19 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import ua.tqs.delivera.datamodels.OrderDTO;
 import ua.tqs.delivera.datamodels.ReviewDTO;
 import ua.tqs.delivera.models.Order;
+import ua.tqs.delivera.models.Store;
 import ua.tqs.delivera.repositories.LocationRepository;
 import ua.tqs.delivera.repositories.OrderRepository;
 import ua.tqs.delivera.repositories.RiderRepository;
+import ua.tqs.delivera.repositories.StoreRepository;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.is;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) @Testcontainers
 @DirtiesContext
@@ -42,6 +46,7 @@ public class OrderControllerIT {
   
   @Autowired private RiderRepository riderRepo;
   @Autowired private OrderRepository orderRepository;
+  @Autowired private StoreRepository storeRepository;
   
   @Autowired private LocationRepository locationRepo;
   
@@ -58,7 +63,7 @@ public class OrderControllerIT {
     System.out.println( o.getOrderProfit().getRider() );
     RestAssured.given()
                .contentType( "application/json" )
-               .when().body( new ReviewDTO(4D) )
+               .when().body( new ReviewDTO( 4D ) )
                .put( createURL() + "/{id}/review", o.getId() )
                .then().assertThat()
                .log().body()
@@ -77,11 +82,22 @@ public class OrderControllerIT {
   }
   
   @Test
-  void whenMakeOrderWithEverythingOkayThenReturnOrder200(){
-    
+  void whenMakeOrderWithEverythingOkayThenReturnOrder200() {
+    OrderDTO orderDTO = new OrderDTO( 2L, "12,11", storeRepository.findAll().get( 0 ),
+      System.currentTimeMillis() / 1000 );
+    RestAssured.given()
+               .contentType( "application/json" )
+               .when()
+               .body( orderDTO )
+               .post( createURL() ).then().assertThat().statusCode( 201 )
+               .and().log().body()
+               .body( "externalId", is( 2 ) )
+               .and().body( "clientLocation", is( "12,11" ) )
+               .and().body( "store.id", is( 1 ) );
   }
   
   String createURL() {
     return "http://localhost:" + randomServerPort + "/api/v1/order";
   }
+  
 }
