@@ -1,5 +1,8 @@
 package ua.tqs.delivera.services;
 
+import java.lang.StackWalker.Option;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +18,11 @@ public class OrderService {
   @Autowired
   OrderRepository orderRepository;
 
-  public boolean updateOrderStatus(long anyLong) throws NonExistentResource {
-
-    //throw new NonExistentResource("Order not existent");
-    return false;
+  public boolean updateOrderStatus(long id) throws NonExistentResource {
+    Optional<Order> res = orderRepository.findById(id);
+    if (res.isEmpty())
+      throw new NonExistentResource("Order not existent");
+    return true;
   }
 
   public Order createOrder(OrderDTO order) {
