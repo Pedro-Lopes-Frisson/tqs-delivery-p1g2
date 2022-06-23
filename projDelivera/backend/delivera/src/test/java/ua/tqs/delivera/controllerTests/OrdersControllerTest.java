@@ -50,10 +50,9 @@ public class OrdersControllerTest {
         order = new Order();
         order.setClientLocation( "40.9800,-8.2345" );
         order.setExternalId( 2l );
-        order.setId( 1L );
+        order.setId( 1l );
         order.setOrderMadeTimestamp(orderMadeTimestamp);
         order.setStore(store);
-        //order.setOrderState("delivered"); 
     }
 
     @Test
@@ -64,7 +63,12 @@ public class OrdersControllerTest {
                                                .contentType( MediaType.APPLICATION_JSON )
                                                .content( ua.tqs.delivera.JSONUtil.toJson( orderDto ) ) )
                .andExpect( MockMvcResultMatchers.status().isCreated() )
-               .andExpect( MockMvcResultMatchers.jsonPath("$.orderMadeTimestamp", Matchers.is( order.getOrderMadeTimestamp() )) );
+               .andExpect( MockMvcResultMatchers.jsonPath("$.id", Matchers.is( order.getId().intValue() )) )
+               .andExpect( MockMvcResultMatchers.jsonPath("$.externalId", Matchers.is( order.getExternalId().intValue() )) )
+               .andExpect( MockMvcResultMatchers.jsonPath("$.currentLocation", Matchers.is( order.getCurrentLocation() )) )
+               .andExpect( MockMvcResultMatchers.jsonPath("$.clientLocation", Matchers.is( order.getClientLocation() )) )
+               .andExpect( MockMvcResultMatchers.jsonPath("$.orderMadeTimestamp", Matchers.is( order.getOrderMadeTimestamp() )) )
+               .andExpect( MockMvcResultMatchers.jsonPath("$.orderState", Matchers.is( order.getOrderState() )) );
         verify( orderService, times( 1 ) ).createOrder( Mockito.any() );
     }
 
