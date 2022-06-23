@@ -1,10 +1,5 @@
 package ua.tqs.delivera.controllerTests;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import ua.tqs.delivera.controllers.OrdersController;
 import ua.tqs.delivera.datamodels.OrderDTO;
 import ua.tqs.delivera.datamodels.ReviewDTO;
@@ -26,6 +20,8 @@ import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.Store;
 import ua.tqs.delivera.services.OrderService;
+
+import static org.mockito.Mockito.*;
 
 @WebMvcTest(OrdersController.class)
 public class OrdersControllerTest {

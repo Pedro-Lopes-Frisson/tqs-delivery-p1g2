@@ -3,9 +3,6 @@ package ua.tqs.delivera.servicetests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -26,17 +23,21 @@ import ua.tqs.delivera.utils.DistanceCalculator;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
   
-  @Mock
+  
+  private static final String ORDERED = "ordered";
+  private static final String IN_TRANSIT = "in transit";
+  private static final String DELIVERED = "delivered";
+  @Mock(lenient = true)
   OrderRepository orderRepository; // create and manage Orders
   
   @Mock
@@ -66,6 +67,8 @@ public class OrderServiceTest {
   Store store;
   Rider rider;
   Rider sameRiderButUnavailable;
+  private OrderDTO orderDto;
+  private Location location;
   
   @BeforeEach
   void setUp() {
@@ -114,20 +117,23 @@ public class OrderServiceTest {
     
     
     orderProfit.setOrder( order );
-    orderProfit.setOrderPrice( DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
-      orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
+    orderProfit.setOrderPrice(
+      DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
+        orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     orderProfit1.setOrder( order1 );
     orderProfit1.setOrderPrice(
-      DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(), orderDTO.getClientLon() ) ) *
+      DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(),
+        new Location( orderDTO1.getClientLat(), orderDTO.getClientLon() ) ) *
         orderDTO1.getClientLon() * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     
     orderProfitSaved.setOrder( order );
     orderProfitSaved.setRider( sameRiderButUnavailable );
     orderProfitSaved.setOrderPrice( orderProfit.getOrderPrice() );
-    orderProfit.setOrderPrice( DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
-      orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
+    orderProfit.setOrderPrice(
+      DistanceCalculator.distanceBetweenPointsOnEarth( store.getAddress(), new Location( orderDTO1.getClientLat(),
+        orderDTO.getClientLon() ) ) * 5 / 100 * 2 * .15 * orderDTO.getOrderPrice() );
     
     
     orderToSave.setExternalId( 2L );
@@ -142,6 +148,27 @@ public class OrderServiceTest {
     order1ToSave.setOrderProfit( orderProfit1 );
     order1ToSave.setClientLocation( "11,22" );
     
+    location = new Location( 40.85, 25.9999 );
+    
+    store = new Store();
+    store.setName( "Frostini" );
+    store.setAddress( location );
+    
+    Long orderMadeTimestamp = System.currentTimeMillis();
+    
+    orderDto = new OrderDTO();
+    orderDTO.setOrderStoreId( 2L );
+    orderDTO.setClientLat( 40.98 );
+    orderDTO.setClientLon( - 8.2345 );
+    orderDTO.setStoreName( store.getName() );
+    orderDTO.setOrderPrice( 143D );
+    order = new Order();
+    order.setClientLocation( "40.9800,-8.2345" );
+    order.setExternalId( 2L );
+    order.setId( 1L );
+    order.setOrderMadeTimestamp( orderMadeTimestamp );
+    order.setStore( store );
+    //order.setOrderState("delivered");
     
     store.setOrders( List.of( order, order1 ) );
   }
@@ -284,4 +311,40 @@ public class OrderServiceTest {
     
     Mockito.verify( orderRepository, Mockito.times( 1 ) ).findById( Mockito.anyLong() );
   }
+  
+  @Test
+  void whenUpdateOrderStateWithExistentId_ThenReturnTrue() throws NonExistentResource {
+    Mockito.when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.of( order ) );
+    
+    boolean statusUpdated = orderService.updateOrderState( order.getId() );
+    assertTrue( statusUpdated );
+    verifyFindByIdIsCalledOnce();
+  }
+  
+  @Test
+  void whenUpdateOrderStateWithInvalidIdOrInexistenId_ThenReturnTrue() throws NonExistentResource {
+    Mockito.when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.empty() );
+    
+    assertThrows( NonExistentResource.class, () ->
+      orderService.updateOrderState( - 1L )
+    );
+    
+    verifyFindByIdIsCalledOnce();
+  }
+  
+  @Test
+  void testChangeState() throws Exception {
+    assertEquals( ORDERED, orderService.changeState( null ) );
+    assertEquals( IN_TRANSIT, orderService.changeState( ORDERED ) );
+    assertEquals( DELIVERED, orderService.changeState( IN_TRANSIT ) );
+    assertEquals( DELIVERED, orderService.changeState( DELIVERED ) );
+    assertEquals( ORDERED, orderService.changeState( null ) );
+    assertThrows( Exception.class, () -> orderService.changeState( "anyString" ) );
+  }
+  
+  private void verifyFindByIdIsCalledOnce() {
+    Mockito.verify( orderRepository, times( 1 ) ).findById( any() );
+  }
+  
+  
 }

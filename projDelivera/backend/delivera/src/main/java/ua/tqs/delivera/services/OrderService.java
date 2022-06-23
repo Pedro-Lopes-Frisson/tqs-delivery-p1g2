@@ -1,9 +1,14 @@
 package ua.tqs.delivera.services;
 
-import lombok.extern.log4j.Log4j2;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import lombok.extern.log4j.Log4j2;
+import ua.tqs.delivera.exceptions.NonExistentResource;
 import ua.tqs.delivera.datamodels.OrderDTO;
 import ua.tqs.delivera.datamodels.ReviewDTO;
 import ua.tqs.delivera.exceptions.NoRidersAvailable;
@@ -17,7 +22,7 @@ import ua.tqs.delivera.repositories.StoreRepository;
 import ua.tqs.delivera.utils.DistanceCalculator;
 
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @Log4j2
@@ -25,7 +30,7 @@ public class OrderService {
   
   
   @Autowired
-  OrderRepository orderRepository; // create and manage Orders
+  OrderRepository orderRepository;
   
   @Autowired
   RiderService riderService;  // manageRiders
@@ -128,6 +133,36 @@ public class OrderService {
     riderService.reviewRider( orderOptional.get().getOrderProfit().getRider().getRiderId(), 4D );
     // call riderService
     // return True if a rider is returned false otherwise
+    return true;
+    
+  }
+  
+  // ordered > in transit > delived
+  private static final String ORDERED = "ordered";
+  private static final String IN_TRANSIT = "in transit";
+  private static final String DELIVERED = "delivered";
+  
+  public String changeState( String state ) throws Exception {
+    String newState;
+    if ( state == null ) {newState = ORDERED;}
+    else if ( state.equals( ORDERED ) ) {newState = IN_TRANSIT;}
+    else if ( state.equals( IN_TRANSIT ) ) {newState = DELIVERED;}
+    else if ( state.equals( DELIVERED ) ) {return state;}
+    else {throw new Exception( "Can't assign a state." );}
+    return newState;
+  }
+  
+  
+  public boolean updateOrderState( long id ) throws NonExistentResource {
+    Optional<Order> res = orderRepository.findById( id );
+    if ( res.isEmpty() ) {throw new NonExistentResource( "Order not existent" );}
+    Order order = res.get();
+    try {
+      order.setOrderState( changeState( order.getOrderState() ) );
+    } catch (Exception e) {
+      log.info( e.getMessage() );
+      return false;
+    }
     return true;
   }
   

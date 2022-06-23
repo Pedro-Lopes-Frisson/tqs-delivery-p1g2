@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.log4j.Log4j2;
 import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.exceptions.NonExistentResource;
+import ua.tqs.delivera.exceptions.RiderLoginWrongPasswordException;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.Rider;
 import ua.tqs.delivera.services.RiderService;
@@ -37,12 +38,16 @@ public class DeliveraController {
 
   @PostMapping("/rider/login")
   public ResponseEntity<Rider> loginRider(@RequestBody RiderDTO riderDTO){
-    Rider saved = riderService.loginRider( riderDTO );
-    
-    if (saved==null)
+    Rider saved = null;
+    try {
+      saved = riderService.loginRider( riderDTO );
+    } catch (NonExistentResource e) {
+      log.info( "Rider With email {} does not exist!", riderDTO.getEmaildto() );
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    if (saved.getPassword().equals("wrong credentials"))
+    } catch (RiderLoginWrongPasswordException e) {
+      log.info( "Rider With email {} provided the wrong password!", riderDTO.getEmaildto() );
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
     return new ResponseEntity<>( saved, HttpStatus.OK );
   }
 

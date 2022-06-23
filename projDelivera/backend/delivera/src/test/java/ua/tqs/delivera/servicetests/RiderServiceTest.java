@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ua.tqs.delivera.datamodels.RiderDTO;
 import ua.tqs.delivera.exceptions.NoRidersAvailable;
 import ua.tqs.delivera.exceptions.NonExistentResource;
+import ua.tqs.delivera.exceptions.RiderLoginWrongPasswordException;
 import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.models.OrderProfit;
@@ -69,8 +70,8 @@ public class RiderServiceTest {
     rider.setRiderId( 1L );
     orderProfitList = new ArrayList<>();
     orderList = new ArrayList<>();
-  
-  
+    
+    
     riderDTO = new RiderDTO( "ma@gmail.com", "Manuel Antunes", "migant", true, location, 0, 0 );
     order = new Order();
     order.setClientLocation( "Aveiro, Rua da Pega" );
@@ -298,11 +299,12 @@ public class RiderServiceTest {
   @Test
   void testWhenMultipleRidersAvailableReturnClosestOne() throws NoRidersAvailable {
     
-    Rider riderAvailable1 = new Rider( "mal@gmail.com", "Manuel Antunes", "migant", true, new Location(11,0), 0, 0 );
-    Rider riderAvailable2 = new Rider( "mal@gmail.com", "Manuel Antunes 1", "migant", true, new Location(11.999, 10.999)
-      , 0, 0 );
+    Rider riderAvailable1 = new Rider( "mal@gmail.com", "Manuel Antunes", "migant", true, new Location( 11, 0 ), 0, 0 );
+    Rider riderAvailable2 =
+      new Rider( "mal@gmail.com", "Manuel Antunes 1", "migant", true, new Location( 11.999, 10.999 )
+        , 0, 0 );
     when( riderRepo.findAll() ).thenReturn( List.of( riderAvailable1, riderAvailable2 ) );
-  
+    
     assertThat( riderService.findClosestRider( new Location( 12, 11 ) ) ).isEqualTo( riderAvailable2 );
   }
   
@@ -319,77 +321,77 @@ public class RiderServiceTest {
   
   @Test
   @DisplayName("Login: rider correct credentials")
-  void whenLoginRiderCorrectCredentials_thenReturnRider(){
-    Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(rider);
+  void whenLoginRiderCorrectCredentials_thenReturnRider() throws RiderLoginWrongPasswordException, NonExistentResource {
+    Mockito.when( riderRepo.findByEmail( riderDTO.getEmaildto() ) ).thenReturn( Optional.of( rider ) );
     
-    Rider foundRider = riderService.loginRider(riderDTO);
-    assertThat(foundRider).isEqualTo(rider);
-    assertThat(foundRider.getPassword()).isEqualTo(riderDTO.getPassworddto());
+    
+    Rider foundRider = riderService.loginRider( riderDTO );
+    assertThat( foundRider ).isEqualTo( rider );
+    assertThat( foundRider.getPassword() ).isEqualTo( riderDTO.getPassworddto() );
     
   }
   
   
   @Test
   @DisplayName("Login: rider wrong credentials")
-  void whenLoginRiderWrongCredentials_thenReturnNull(){
-    Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(rider);
-    riderDTO.setPassworddto("password");
+  void whenLoginRiderWrongCredentials_thenReturnNull() throws RiderLoginWrongPasswordException, NonExistentResource {
+    Mockito.when( riderRepo.findByEmail( riderDTO.getEmaildto() ) ).thenReturn( Optional.of( rider ) );
+    riderDTO.setPassworddto( "password" );
     
     // System.out.println(riderDTO.getEmaildto());
     // System.out.println(riderDTO.getPassworddto());
     
-    Rider foundRider = riderService.loginRider(riderDTO);
-    assertThat(foundRider.getPassword()).isEqualTo("wrong credentials");
+    Rider foundRider = riderService.loginRider( riderDTO );
+    assertThat( foundRider.getPassword() ).isEqualTo( "wrong credentials" );
     
   }
   
   
   @Test
   @DisplayName("Get all riders")
-  void whenGetAllRiders_thenReturnList(){
-    Rider rider2 = new Rider("mf@gmail.com", "Manuel Ferreira", "migferr", true, location, 10, 29);
-    List<Rider> allRiders = Arrays.asList(rider, rider2);
-    Mockito.when(riderRepo.findAll()).thenReturn(allRiders);
+  void whenGetAllRiders_thenReturnList() {
+    Rider rider2 = new Rider( "mf@gmail.com", "Manuel Ferreira", "migferr", true, location, 10, 29 );
+    List<Rider> allRiders = Arrays.asList( rider, rider2 );
+    Mockito.when( riderRepo.findAll() ).thenReturn( allRiders );
     
     List<Rider> res = riderService.getAllRiders();
-    assertThat(res).isEqualTo(allRiders);
+    assertThat( res ).isEqualTo( allRiders );
     
   }
   
   
   @Test
   @DisplayName("Register: valid rider")
-  void whenCreateValidRider_thenReturnRider(){
+  void whenCreateValidRider_thenReturnRider() {
     
-    Rider foundRider = riderService.saveRider(rider);
-    assertThat(foundRider).isEqualTo(rider);
+    Rider foundRider = riderService.saveRider( rider );
+    assertThat( foundRider ).isEqualTo( rider );
     verifySaveRiderIsCalledOnce();
     
   }
   
   @Test
   @DisplayName("Register: email provided already used")
-  void whenCreateRiderWithAlreadyUsedEmail_thenReturnRider(){
-    Mockito.when(riderRepo.save(riderSameEmail)).thenReturn(rider);
+  void whenCreateRiderWithAlreadyUsedEmail_thenReturnRider() {
+    Mockito.when( riderRepo.save( riderSameEmail ) ).thenReturn( rider );
     
     // assertThrows(expectedThrowable, runnable)
-    Rider foundRider = riderService.saveRider(rider);
-    assertThat(foundRider).isEqualTo(rider);
+    Rider foundRider = riderService.saveRider( rider );
+    assertThat( foundRider ).isEqualTo( rider );
     verifySaveRiderIsCalledOnce();
     
   }
   
   
-  
   @Test
   @DisplayName("Login: non existing rider")
-  void whenLoginNonExistingRider_thenReturnNull(){
-    riderDTO.setEmail("invalid email");
-    Mockito.when(riderRepo.findByEmail(riderDTO.getEmaildto())).thenReturn(null);
+  void whenLoginNonExistingRider_thenReturnNull() throws RiderLoginWrongPasswordException, NonExistentResource {
+    riderDTO.setEmail( "invalid email" );
+    Mockito.when( riderRepo.findByEmail( riderDTO.getEmaildto() ) ).thenReturn( null );
     
-    Rider foundRider = riderService.loginRider(riderDTO);
-    System.out.println("hello\t"+foundRider);
-    assertThat(foundRider).isNull();
+    Rider foundRider = riderService.loginRider( riderDTO );
+    System.out.println( "hello\t" + foundRider );
+    assertThat( foundRider ).isNull();
     
   }
   

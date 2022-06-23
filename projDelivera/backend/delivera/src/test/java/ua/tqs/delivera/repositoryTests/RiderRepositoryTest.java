@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -103,15 +104,16 @@ class RiderRepositoryTest {
     @Test
     void whenFindByExistingEmail_thenReturnRider(){
         entityManager.persistAndFlush(rider);
-        Rider riderByEmail = riderRepo.findByEmail(rider.getEmail());
-        assertThat(riderByEmail).isEqualTo(rider);
+        Optional<Rider> riderByEmail = riderRepo.findByEmail(rider.getEmail());
+        assertThat(riderByEmail).isPresent();
+        assertThat(riderByEmail.get()).isEqualTo(rider);
     }
 
     @Order(7)
     @Test
     void whenFindByWrongEmail_thenReturnNull(){
-        Rider riderByEmail = riderRepo.findByEmail("invalid email");
-        assertThat(riderByEmail).isNull();
+        Optional<Rider> riderByEmail = riderRepo.findByEmail("invalid email");
+        assertThat(riderByEmail).isEmpty();
     }
 
     @Order(8)
