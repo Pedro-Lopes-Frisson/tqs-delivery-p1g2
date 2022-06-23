@@ -189,7 +189,7 @@ public class RiderService {
   public Rider loginRider(RiderDTO riderDTO) throws NonExistentResource, RiderLoginWrongPasswordException {
     Optional<Rider> foundRider = riderRepo.findByEmail(riderDTO.getEmaildto());
     if(foundRider.isEmpty()){
-      throw  new NonExistentResource( "RiderDoes Not Exist" );
+      throw new NonExistentResource( "RiderDoes Not Exist" );
     }
     if ( !riderDTO.getPassworddto().equals(foundRider.get().getPassword())){
       throw new RiderLoginWrongPasswordException("Rider login failed");

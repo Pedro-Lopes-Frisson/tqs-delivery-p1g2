@@ -308,7 +308,7 @@ public class RiderServiceTest {
     assertThat( riderService.findClosestRider( new Location( 12, 11 ) ) ).isEqualTo( riderAvailable2 );
   }
   
-  // test no riders throw exc
+  //test no riders throw exc
   @Test
   void testWhenNoRidersAvailableThrowException() throws NoRidersAvailable {
     
@@ -336,13 +336,9 @@ public class RiderServiceTest {
   @DisplayName("Login: rider wrong credentials")
   void whenLoginRiderWrongCredentials_thenReturnNull() throws RiderLoginWrongPasswordException, NonExistentResource {
     Mockito.when( riderRepo.findByEmail( riderDTO.getEmaildto() ) ).thenReturn( Optional.of( rider ) );
-    riderDTO.setPassworddto( "password" );
-    
-    // System.out.println(riderDTO.getEmaildto());
-    // System.out.println(riderDTO.getPassworddto());
-    
-    Rider foundRider = riderService.loginRider( riderDTO );
-    assertThat( foundRider.getPassword() ).isEqualTo( "wrong credentials" );
+    riderDTO.setPassworddto( "wrong password" );
+
+    assertThrows(RiderLoginWrongPasswordException.class, () -> riderService.loginRider( riderDTO ));
     
   }
   
@@ -375,7 +371,6 @@ public class RiderServiceTest {
   void whenCreateRiderWithAlreadyUsedEmail_thenReturnRider() {
     Mockito.when( riderRepo.save( riderSameEmail ) ).thenReturn( rider );
     
-    // assertThrows(expectedThrowable, runnable)
     Rider foundRider = riderService.saveRider( rider );
     assertThat( foundRider ).isEqualTo( rider );
     verifySaveRiderIsCalledOnce();
@@ -387,11 +382,10 @@ public class RiderServiceTest {
   @DisplayName("Login: non existing rider")
   void whenLoginNonExistingRider_thenReturnNull() throws RiderLoginWrongPasswordException, NonExistentResource {
     riderDTO.setEmail( "invalid email" );
-    Mockito.when( riderRepo.findByEmail( riderDTO.getEmaildto() ) ).thenReturn( null );
+    Mockito.when( riderRepo.findByEmail( riderDTO.getEmaildto() ) ).thenReturn( Optional.empty() );
+
+    assertThrows(NonExistentResource.class, () -> riderService.loginRider( riderDTO ));
     
-    Rider foundRider = riderService.loginRider( riderDTO );
-    System.out.println( "hello\t" + foundRider );
-    assertThat( foundRider ).isNull();
     
   }
   
