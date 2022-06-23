@@ -30,6 +30,7 @@ public class ProductService {
     p.setDescription( productDTO.getDescription() );
     p.setPrice( productDTO.getPrice() );
     p.setStockQuantity( productDTO.getStockQuantity() );
+    p.setPhotoUrl( productDTO.getPhotoUrl() );
     return productRepository.save( p );
   }
   

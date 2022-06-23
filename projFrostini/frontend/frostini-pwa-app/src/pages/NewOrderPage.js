@@ -35,7 +35,7 @@ function NewOrderPage() {
   const navigate = useNavigate();
   const { auth } = useContext(AuthContext);
   const isAuth = isAuthenticated(auth);
-  const [order, setOrder] = useLocalStorage("order", []);
+  const [order, setOrder] = useLocalStorage('order', []);
   const [newAddress, setNewAddress] = useState(false);
   const [address, setAddress] = useLocalStorage('address', []);
   const [state, setState] = useLocalStorage('state', '');
@@ -43,8 +43,8 @@ function NewOrderPage() {
   const [error, setError] = useState('');
   const [open, setOpen] = useState(false);
 
-  /* console.log(auth);
-  console.log(order); */
+  /* console.log(auth); */
+  console.log(order); 
 
   useEffect(() => {
     if(!auth.address) {
@@ -94,11 +94,11 @@ function NewOrderPage() {
     let idAddress = '';
 
     if(newAddress) {
+      console.log(address[0]);
       await axios.post(`${ADDRESS_URL}`, {
         "userId": auth.id,
-        "street": address[0],
-        "city": address[1],
-        "zipCode": address[2]
+        "latitude": address[0],
+        "longitude": address[1]
       })
         .then(
           res => {
@@ -133,6 +133,7 @@ function NewOrderPage() {
           res => {
             if(res.status === 201) {
               console.log("NEW ORDER");
+              console.log(res.data);
               setSuccess(true);
               setState('ordered');
             }
@@ -164,9 +165,9 @@ function NewOrderPage() {
               <TableCell className="header-cell" align="right">
                 Price
               </TableCell>
-              <TableCell className="header-cell" align="right">
+              {/* <TableCell className="header-cell" align="right">
                 Tags
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -176,17 +177,17 @@ function NewOrderPage() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.title}
+                  {row.name}
                 </TableCell>
                 <TableCell align="right">{row.quantity}</TableCell>
                 <TableCell align="right">{row.price} €</TableCell>
-                <TableCell align="right">
+                {/* <TableCell align="right">
                   <div className="tags">
                     {row.tags.map((tag, key) => (
                       <Chip label={tag} key={key} className="tags-chip" />
                     ))}
                   </div>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>

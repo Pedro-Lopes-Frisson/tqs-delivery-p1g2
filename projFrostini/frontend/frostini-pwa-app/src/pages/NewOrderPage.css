@@ -1,3 +1,9 @@
+.new-order-page {
+  background-color: cornsilk;
+  border-radius: 10px;
+  padding: 5%;
+}
+
 .new-order-page h1 {
     margin-bottom: 48px;
   }

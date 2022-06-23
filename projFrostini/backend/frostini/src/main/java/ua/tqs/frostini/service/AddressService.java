@@ -27,6 +27,7 @@ public class AddressService {
     // Get address and check if exists
     if ( user.getAddress() == null ) {
       Address a = new Address();
+      
       a.setLatitude( addressDto.getLatitude() );
       a.setLongitude( addressDto.getLongitude() );
       
@@ -35,7 +36,7 @@ public class AddressService {
       user.setAddress( a );
       userRepository.save( user ); // update User to include Address
       
-      return a;
+      return addresSaved;
     }
     
     Optional<Address> addressOptional = addressRepository.findById( user.getAddress().getId() );
@@ -44,8 +45,8 @@ public class AddressService {
       a.setLatitude( addressDto.getLatitude() );
       a.setLongitude( addressDto.getLongitude() );
       
-      addressRepository.save( a );
-      return a;
+      Address addresSaved = addressRepository.save( a );
+      return addresSaved;
     }
     
     return addressOptional.get();

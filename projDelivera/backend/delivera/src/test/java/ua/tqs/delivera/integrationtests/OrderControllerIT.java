@@ -50,9 +50,17 @@ public class OrderControllerIT {
   
   @Autowired private LocationRepository locationRepo;
   
+  OrderDTO orderDto;
   
   @BeforeEach public void setUp() {
-  
+    orderDto = new OrderDTO();
+    orderDto.setOrderPrice( 12.2D );
+    orderDto.setStoreLat( 12 );
+    orderDto.setStoreLon( 12 );
+    orderDto.setStoreName( "Frostini" );
+    orderDto.setClientLat( 40.9800 );
+    orderDto.setClientLon( - 8.2345 );
+    orderDto.setOrderStoreId( 2L );
   }
   
   @Test
@@ -83,12 +91,10 @@ public class OrderControllerIT {
   
   @Test
   void whenMakeOrderWithEverythingOkayThenReturnOrder200() {
-    OrderDTO orderDTO = new OrderDTO( 2L, "12,11", storeRepository.findAll().get( 0 ),
-      System.currentTimeMillis() / 1000 );
     RestAssured.given()
                .contentType( "application/json" )
                .when()
-               .body( orderDTO )
+               .body( orderDto )
                .post( createURL() ).then().assertThat().statusCode( 201 )
                .and().log().body()
                .body( "externalId", is( 2 ) )

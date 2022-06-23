@@ -1,3 +1,9 @@
+.orders-history-page {
+  background-color: cornsilk;
+  border-radius: 10px;
+  padding: 5%;
+}
+
 .orders-history-page h1 {
   margin-bottom: 30px;
 }

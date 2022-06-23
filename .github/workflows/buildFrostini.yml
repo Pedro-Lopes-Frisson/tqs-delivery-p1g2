@@ -31,8 +31,13 @@ jobs:
 
       - name: Curl in localhost3000 to assert that seb service is running
         run: |
+<<<<<<< HEAD
           sleep 5
           curl localhost:3000
+=======
+              sleep 5
+              curl localhost:3000
+>>>>>>> origin/dev
 
       - name: Cache SonarCloud packages
         uses: actions/cache@v1

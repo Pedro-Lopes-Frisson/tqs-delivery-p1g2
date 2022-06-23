@@ -1,6 +1,4 @@
-package ua.tqs.delivera.datamodels;
-
-import java.io.Serializable;
+package ua.tqs.frostini.datamodels;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 
-@Data @AllArgsConstructor @NoArgsConstructor @Getter @Setter public class OrderDTO implements Serializable {
+@Data @AllArgsConstructor @NoArgsConstructor @Getter @Setter public class OrderDTODelivera {
   @NotEmpty private String storeName; // StoreName
   
   @Positive private Long orderStoreId; // id do order na specific

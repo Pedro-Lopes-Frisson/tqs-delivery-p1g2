@@ -50,7 +50,15 @@ public class OrdersControllerTest {
     
     Long orderMadeTimestamp = System.currentTimeMillis();
     
-    orderDto = new OrderDTO( 2L, "40.9800,-8.2345", store, orderMadeTimestamp );
+    orderDto = new OrderDTO();
+    orderDto.setOrderPrice( 12.2D );
+    orderDto.setStoreLat( 12 );
+    orderDto.setStoreLon( 12 );
+    orderDto.setStoreName( "Frostini" );
+    orderDto.setClientLat( 40.9800 );
+    orderDto.setClientLon( - 8.2345 );
+    orderDto.setOrderStoreId( 2L );
+    
     order = new Order();
     order.setClientLocation( "40.9800,-8.2345" );
     order.setExternalId( 2l );
@@ -62,7 +70,7 @@ public class OrdersControllerTest {
   
   @Test
   public void whenPostOrder_thenCreateOrder() throws Exception {
-    when( orderService.createOrder( Mockito.any() ) ).thenReturn( order );
+    when( orderService.assignOrder( Mockito.any() ) ).thenReturn( order );
     
     mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/order" )
                                                .contentType( MediaType.APPLICATION_JSON )
@@ -70,28 +78,28 @@ public class OrdersControllerTest {
                .andExpect( MockMvcResultMatchers.status().isCreated() )
                .andExpect( MockMvcResultMatchers.jsonPath( "$.orderMadeTimestamp",
                  Matchers.is( order.getOrderMadeTimestamp() ) ) );
-    verify( orderService, times( 1 ) ).createOrder( Mockito.any() );
+    verify( orderService, times( 1 ) ).assignOrder( Mockito.any() );
   }
   
   @Test
   public void whenPostOrderWithInvalidStore_thenReturnBadRequest() throws Exception {
-    when( orderService.createOrder( Mockito.any() ) ).thenReturn( null );
+    when( orderService.assignOrder( Mockito.any() ) ).thenReturn( null );
     
     mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/order" )
                                                .contentType( MediaType.APPLICATION_JSON )
                                                .content( ua.tqs.delivera.JSONUtil.toJson( orderDto ) ) )
                .andExpect( MockMvcResultMatchers.status().isBadRequest() );
-    verify( orderService, times( 1 ) ).createOrder( Mockito.any() );
+    verify( orderService, times( 1 ) ).assignOrder( Mockito.any() );
   }
   
   @Test
   public void whenReviewOrderWithEverythingOkay_ThenReturn200()
     throws Exception {
     when( orderService.reviewOrder( Mockito.anyLong(), Mockito.any() ) ).thenReturn( true );
-  
+    
     mvnForTests.perform( MockMvcRequestBuilders.put( "/api/v1/order/1/review" )
                                                .contentType( MediaType.APPLICATION_JSON )
-                                               .content( ua.tqs.delivera.JSONUtil.toJson( new ReviewDTO(4D) ) ) )
+                                               .content( ua.tqs.delivera.JSONUtil.toJson( new ReviewDTO( 4D ) ) ) )
                .andExpect( MockMvcResultMatchers.status().isOk() );
     
     
@@ -106,7 +114,7 @@ public class OrdersControllerTest {
     
     mvnForTests.perform( MockMvcRequestBuilders.put( "/api/v1/order/-1/review" )
                                                .contentType( MediaType.APPLICATION_JSON )
-                                               .content( ua.tqs.delivera.JSONUtil.toJson( new ReviewDTO(4D) ) ) )
+                                               .content( ua.tqs.delivera.JSONUtil.toJson( new ReviewDTO( 4D ) ) ) )
                .andExpect( MockMvcResultMatchers.status().isBadRequest() );
     
     
@@ -120,7 +128,7 @@ public class OrdersControllerTest {
     
     mvnForTests.perform( MockMvcRequestBuilders.put( "/api/v1/order/-1/review" )
                                                .contentType( MediaType.APPLICATION_JSON )
-                                               .content( ua.tqs.delivera.JSONUtil.toJson( new ReviewDTO(4D) ) ) )
+                                               .content( ua.tqs.delivera.JSONUtil.toJson( new ReviewDTO( 4D ) ) ) )
                .andExpect( MockMvcResultMatchers.status().isBadRequest() );
     
     

@@ -41,7 +41,7 @@ function RegisterPage() {
     const handleSubmit = async (e) => {
       e.preventDefault();
 
-      if(password == confirmPassword) {
+      if(password === confirmPassword) {
 
         const v1 = EMAIL_REGEX.test(email);
         const v2 = password.length >= 8;
@@ -55,14 +55,14 @@ function RegisterPage() {
           })
             .then(
               res => {
-                if(res.status == 201) {
+                if(res.status === 201) {
                   setSuccess(true);
                 }
 
             }).catch(err => {
-              if (err.response.status == 0) {
+              if (err.response.status === 0) {
                 setError('No server response');
-              } else if (err.response.status == 409) {
+              } else if (err.response.status === 409) {
                 setError('User already exists');
               } else {
                 setError('Register failed');

@@ -8,11 +8,14 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
+import static org.hamcrest.Matchers.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -117,6 +120,63 @@ class DeliveraControllerTests {
                .andExpect( MockMvcResultMatchers.jsonPath( "$.riderId", Matchers.is( rider.getRiderId().intValue() ) ) )
                .andExpect( MockMvcResultMatchers.jsonPath( "$.email", Matchers.is( rider.getEmail() ) ) );
     verify( riderService, times( 1 ) ).saveRider( Mockito.any() );
+  }
+
+  @Test
+  void whenPostLoginCorrectRider_thenReturnRider() throws Exception {
+    when( riderService.loginRider( Mockito.any() ) ).thenReturn( rider );
+    
+    mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )
+                                               .contentType( MediaType.APPLICATION_JSON )
+                                               .content( ua.tqs.delivera.JSONUtil.toJson( riderDTO ) ) )
+               .andExpect( MockMvcResultMatchers.status().isOk() )
+               .andExpect( MockMvcResultMatchers.jsonPath( "$.name", Matchers.is( rider.getName() ) ) )
+               .andExpect( MockMvcResultMatchers.jsonPath( "$.riderId", Matchers.is( rider.getRiderId().intValue() ) ) )
+               .andExpect( MockMvcResultMatchers.jsonPath( "$.email", Matchers.is( rider.getEmail() ) ) );
+    verify( riderService, times( 1 ) ).loginRider( Mockito.any() );
+  }
+
+  @Test
+  void whenPostLoginWrongCredentials_thenReturnUnauthorized() throws Exception {
+    rider.setPassword("wrong credentials");
+
+    when( riderService.loginRider( Mockito.any() ) ).thenReturn( rider );
+    
+    mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )
+                                               .contentType( MediaType.APPLICATION_JSON )
+                                               .content( ua.tqs.delivera.JSONUtil.toJson( riderDTO ) ) )
+               .andExpect( MockMvcResultMatchers.status().isUnauthorized() );
+   
+    verify( riderService, times( 1 ) ).loginRider( Mockito.any() );
+  }
+
+  @Test
+  void whenPostLoginNonExistingRider_thenReturnNotFound() throws Exception {
+    
+    when( riderService.loginRider( Mockito.any() ) ).thenReturn( null );
+    riderDTO.setEmail("invalid email");
+    
+    mvnForTests.perform( MockMvcRequestBuilders.post( "/api/v1/rider/login" )
+                                               .contentType( MediaType.APPLICATION_JSON )
+                                               .content( ua.tqs.delivera.JSONUtil.toJson( riderDTO) ) )
+               .andExpect( MockMvcResultMatchers.status().isNotFound() );
+    verify( riderService, times( 1 ) ).loginRider( Mockito.any() );
+  }
+
+  @Test
+  void whenGetAllRiders_thenReturnJsonArray() throws Exception {
+
+    Rider rider2 = new Rider("mf@gmail.com", "Manuel Ferreira", "migferr", true, location, 10, 29);
+    List<Rider> allRiders = Arrays.asList(rider, rider2);
+    
+    when( riderService.getAllRiders() ).thenReturn( allRiders );
+    
+    mvnForTests.perform( MockMvcRequestBuilders.get( "/api/v1/riders" ) )
+              .andExpect( MockMvcResultMatchers.status().isOk())
+              .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(allRiders.size())))
+              .andExpect(MockMvcResultMatchers.jsonPath("$[0].email", is(rider.getEmail())))
+              .andExpect(MockMvcResultMatchers.jsonPath("$[1].email", is(rider2.getEmail())));
+    verify( riderService, times( 1 ) ).getAllRiders();
   }
 
   @Test

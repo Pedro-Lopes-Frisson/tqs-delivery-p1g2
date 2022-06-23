@@ -27,7 +27,7 @@ public class OrdersController {
   @PostMapping()
   public ResponseEntity<Order> createOrder( @RequestBody OrderDTO orderDTO ) {
     // verificar se store existe
-    Order order = orderService.createOrder( orderDTO );
+    Order order = orderService.assignOrder( orderDTO );
     if ( order == null ) {
       return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
     }
