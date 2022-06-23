@@ -29,6 +29,7 @@ jobs:
       - name: Start frostini pwa react app
         run: docker-compose run -p 3000:80 -d frostini-web # run frostini-web and map port 80 to host's port 3000
 
+
       - name: Curl in localhost3000 to assert that seb service is running
         run: |
 <<<<<<< HEAD
