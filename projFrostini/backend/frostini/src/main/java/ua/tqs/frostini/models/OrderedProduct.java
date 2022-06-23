@@ -34,7 +34,6 @@ public class OrderedProduct {
   Order order;
   
   
-  @JsonIgnore
   @MapsId("product_id")
   @ManyToOne
   @JoinColumn(name = "product_id")
