@@ -73,7 +73,7 @@ services:
       context: projDelivera/backend/delivera  # Use an image built from the specified dockerfile in the `polling-app-server` directory.
       dockerfile: Dockerfile
     ports:
-      - "9002:9002"
+      - "8080:8080"
     deploy:
       restart_policy:
         condition: on-failure
