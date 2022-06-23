@@ -91,4 +91,27 @@ public class UserSteps {
     public void iLoggedIn(String menu) {
         menuPage.isPageOpened(menu);
     }
+
+    // ORDER
+
+    @When("I navigate to the Menu page")
+    public void i_navigate_to_the_menu_page() {
+        // TODO
+    }
+    @Then("I add a product to the order")
+    public void i_add_a_product_to_the_order() {
+        // TODO
+    }
+    @Then("I click {string}")
+    public void i_click(String string) {
+        // TODO
+    }
+    @Then("I go to {string}")
+    public void i_go_to(String string) {
+        // TODO
+    }
+    @Then("I insert the credit car information")
+    public void i_insert_the_credit_car_information() {
+        // TODO
+    }
 }
