@@ -7,13 +7,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import ua.tqs.frostini.datamodels.OrderDTO;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import ua.tqs.frostini.datamodels.OrderedProductDTO;
-import ua.tqs.frostini.exceptions.FailedToPlaceOrderException;
-import ua.tqs.frostini.exceptions.IncompleteOrderPlacement;
+import ua.tqs.frostini.datamodels.ReviewDTO;
+import ua.tqs.frostini.exceptions.*;
 import ua.tqs.frostini.models.*;
 import ua.tqs.frostini.repositories.*;
 
@@ -75,9 +76,10 @@ class OrderServiceTest {
     
     order = createOrder( 1, Arrays.asList( p1, p2 ) );
     order1 = createOrder( 2, Arrays.asList( p3, p4 ) );
+    order.setExternalId( 1L );
     userOrders = new ArrayList<>();
-    userOrders.add(order);
-    userOrders.add(order1);
+    userOrders.add( order );
+    userOrders.add( order1 );
     
     userOrders.get( 0 ).getOrderedProductList().stream().map( OrderedProduct::getProduct ).map( Product::getName )
               .forEach( System.out::println );
@@ -102,7 +104,7 @@ class OrderServiceTest {
     when( productRepository.findById( p1.getId() ) ).thenReturn( Optional.of( p1 ) );
     when( productRepository.findById( p2.getId() ) ).thenReturn( Optional.of( p2 ) );
     
-    when( orderRepository.save( any() ) ).thenReturn(order);
+    when( orderRepository.save( any() ) ).thenReturn( order );
     when( deliveryService.newOrder( any() ) ).thenReturn( orderDelivera );
     
     
@@ -238,6 +240,38 @@ class OrderServiceTest {
     assertNull( orderUpdated );
     
     verify( orderRepository, times( 1 ) ).findById( any() );
+  }
+  
+  @Test
+  void testReviewOrderReturns200IfDeliverySystemReturns200()
+    throws FailedToReviewOrder, IncompleteOrderReviewException, ResourceNotFoundException {
+    when( deliveryService.reviewOrder( anyLong(), any() ) ).thenReturn( 200 );
+    when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.of( userOrders.get( 0 ) ) );
+    int status = orderService.reviewOrder( 1, new ReviewDTO( 2D ) );
+    assertThat( status, equalTo( 200 ) );
+    
+    verify( deliveryService, times( 1 ) ).reviewOrder( anyLong(), any() );
+    verify( orderRepository, times( 1 ) ).findById( any() );
+  }
+  
+  @Test
+  void testReviewOrderServerFailsThrowException()
+    throws FailedToReviewOrder, IncompleteOrderReviewException, ResourceNotFoundException {
+    when( deliveryService.reviewOrder( anyLong(), any() ) ).thenThrow( FailedToReviewOrder.class );
+    when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.of( userOrders.get( 0 ) ) );
+    
+    assertThrows( IncompleteOrderReviewException.class, () -> orderService.reviewOrder( 1, new ReviewDTO( 1D ) ) );
+    verify( deliveryService, times( 1 ) ).reviewOrder( anyLong(), any() );
+    verify( orderRepository, times( 1 ) ).findById( any() );
+  }
+  
+  @Test
+  void testReviewOrderDoesNotExistThrow()
+    throws FailedToReviewOrder, IncompleteOrderReviewException, ResourceNotFoundException {
+    when( orderRepository.findById( anyLong() ) ).thenReturn( Optional.empty() );
+    assertThrows( ResourceNotFoundException.class, () -> orderService.reviewOrder( 1L, new ReviewDTO(1D) ) );
+    verify( orderRepository, times( 1 ) ).findById( any() );
+    verify( deliveryService, times( 0 ) ).reviewOrder( anyLong(), any() );
   }
   
   /* helpers */

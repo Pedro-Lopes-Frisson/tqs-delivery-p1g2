@@ -1,9 +1,7 @@
 package ua.tqs.frostini.service;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -22,7 +20,7 @@ import java.util.Objects;
 @Component
 @Log4j2
 public class DeliverySystemService {
-  private RestTemplate restTemplate =  new RestTemplateBuilder().errorHandler( new RestTemplateErrorHandler() ).build();;
+  private final RestTemplate restTemplate = new RestTemplateBuilder().errorHandler( new RestTemplateErrorHandler() ).build();
   
   
   private static StringBuilder host = new StringBuilder( "http://deliveraSpring:8080/api/v1" ); // api base URL
@@ -52,11 +50,12 @@ public class DeliverySystemService {
     
   }
   
-  public HttpStatus reviewOrder( ReviewDTO review ) throws FailedToReviewOrder {
+  public int reviewOrder( long externalId, ReviewDTO review ) throws FailedToReviewOrder {
     // review order Delivery process
+    log.info( "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa" );
     
     String url = host.append( "/order/" )
-                     .append( review.getRiderId() )
+                     .append( externalId )
                      .append( "/review" ).toString();
     
     ResponseEntity<HttpStatus> response = restTemplate.exchange(
@@ -65,10 +64,12 @@ public class DeliverySystemService {
     
     log.info( "Delivery System Returned: " + response.getStatusCode() );
     if ( response.getStatusCode().value() != 200 ) {
+      log.info( "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" );
       throw new FailedToReviewOrder( "Impossible to review order" );
     }
     
-    return response.getStatusCode();
+    
+    return 200;
   }
   
 }
