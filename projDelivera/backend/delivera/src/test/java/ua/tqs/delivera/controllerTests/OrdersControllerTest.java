@@ -61,25 +61,25 @@ class OrdersControllerTest {
 
     @Test
     void whenPutOrderStatusForValidId_ThenReturnStatusUpdate() throws Exception{
-        when(orderService.updateOrderStatus(anyLong())).thenReturn(true);
+        when(orderService.updateOrderState(anyLong())).thenReturn(true);
 
         mvnForTests.perform(
             MockMvcRequestBuilders.put( "/api/v1/order/" + order.getId() ) )
                .andExpect( MockMvcResultMatchers.status().isOk()
         );
-        verify( orderService, times( 1 ) ).updateOrderStatus( anyLong() );
+        verify( orderService, times( 1 ) ).updateOrderState( anyLong() );
     }
 
     @Test
     void whenPutOrderStatusForInvalidId_ThenReturnBadRequest() throws Exception{
-        when(orderService.updateOrderStatus(anyLong())).thenThrow(
+        when(orderService.updateOrderState(anyLong())).thenThrow(
             new NonExistentResource( "Order not existent" ) );
 
         mvnForTests.perform(
             MockMvcRequestBuilders.put( "/api/v1/order/" + -1L ) )
                .andExpect( MockMvcResultMatchers.status().isBadRequest()
         );
-        verify( orderService, times( 1 ) ).updateOrderStatus( anyLong() );
+        verify( orderService, times( 1 ) ).updateOrderState( anyLong() );
         
     }
 

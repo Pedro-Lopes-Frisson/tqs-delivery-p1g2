@@ -2,6 +2,7 @@ package ua.tqs.delivera.serviceTests;
 
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -33,6 +34,10 @@ public class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
+    private static final String ORDERED = "ordered";
+    private static final String IN_TRANSIT = "in transit";
+    private static final String DELIVERED = "delivered";
+
     private Order order;
     private OrderDTO orderDto;
     private Store store;
@@ -59,26 +64,33 @@ public class OrderServiceTest {
     }
 
     @Test
-    void whenUpdateOrderStatusWithExistentId_ThenReturnTrue() throws NonExistentResource{
+    void whenUpdateOrderStateWithExistentId_ThenReturnTrue() throws NonExistentResource{
         Mockito.when(orderRepo.findById(anyLong())).thenReturn(Optional.of(order));
 
-        // assertThrows(expectedThrowable, runnable)
-        boolean statusUpdated = orderService.updateOrderStatus(order.getId());
+        boolean statusUpdated = orderService.updateOrderState(order.getId());
         assertTrue( statusUpdated);
         verifyFindByIdIsCalledOnce();
     }
 
     @Test
-    void whenUpdateOrderStatusWithInvalidIdOrInexistenId_ThenReturnTrue() throws NonExistentResource{
+    void whenUpdateOrderStateWithInvalidIdOrInexistenId_ThenReturnTrue() throws NonExistentResource{
         Mockito.when(orderRepo.findById(anyLong())).thenReturn(Optional.empty());
 
-        // assertThrows(expectedThrowable, runnable)
-
         assertThrows(NonExistentResource.class, () ->
-            orderService.updateOrderStatus(-1L)
+            orderService.updateOrderState(-1L)
         );
-        
+
         verifyFindByIdIsCalledOnce();
+    }
+
+    @Test
+    void testChangeState() throws Exception{
+        assertEquals(ORDERED, orderService.changeState(null));
+        assertEquals(IN_TRANSIT, orderService.changeState(ORDERED));
+        assertEquals(DELIVERED, orderService.changeState(IN_TRANSIT));
+        assertEquals(DELIVERED, orderService.changeState(DELIVERED));
+        assertEquals(ORDERED, orderService.changeState(null));
+        assertThrows(Exception.class, ()-> orderService.changeState("anyString"));
     }
 
     private void verifyFindByIdIsCalledOnce() {

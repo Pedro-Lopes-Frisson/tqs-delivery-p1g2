@@ -39,7 +39,7 @@ public class OrdersController {
     @PutMapping("/{id}")
     public ResponseEntity updateOrderStatus(@PathVariable Long id){
         try{
-            orderService.updateOrderStatus(id);
+            orderService.updateOrderState(id);
         }catch(NonExistentResource e){
             log.error( "Error: Order not Found" );
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
