@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ua.tqs.delivera.exceptions.NonExistentResource;
+import ua.tqs.delivera.datamodels.OrderDTO;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.repositories.OrderRepository;
 
@@ -18,6 +19,10 @@ public class OrderService {
 
     //throw new NonExistentResource("Order not existent");
     return false;
+  }
+
+  public Order createOrder(OrderDTO order) {
+    return new Order();
   }
   
 }

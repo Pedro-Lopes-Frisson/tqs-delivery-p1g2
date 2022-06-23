@@ -13,22 +13,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.log4j.Log4j2;
 import ua.tqs.delivera.exceptions.NonExistentResource;
+import ua.tqs.delivera.datamodels.OrderDTO;
 import ua.tqs.delivera.models.Order;
 import ua.tqs.delivera.services.OrderService;
 
 @RestController
-@RequestMapping("/api/v1/orders")
+@RequestMapping("/api/v1/order")
 @CrossOrigin
 @Log4j2
 public class OrdersController {
-    private static final HttpStatus ResponseEntity = null;
+
     @Autowired
     private OrderService orderService;
 
-    @PostMapping
-    public ResponseEntity<Order> createOrder( @RequestBody Order orderDTO){
+    @PostMapping()
+    public ResponseEntity<Order> createOrder( @RequestBody OrderDTO orderDTO){
         // verificar se store existe
-        return null;
+        Order order = orderService.createOrder(orderDTO);
+        if(order == null) {
+            return ResponseEntity.status( HttpStatus.BAD_REQUEST ).body( null );
+        }
+        return ResponseEntity.status( HttpStatus.CREATED ).body( order );
     }
 
     @PutMapping("/{id}")
