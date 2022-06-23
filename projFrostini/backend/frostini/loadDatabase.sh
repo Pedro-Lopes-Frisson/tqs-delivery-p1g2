@@ -2,7 +2,7 @@
 #             USERS
 ##################################
 curl -X 'POST' \
-  'http://172.20.202.10:8083/api/v1/user' \
+  'http://localhost:8083/api/v1/user' \
   -H 'Accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -11,7 +11,7 @@ curl -X 'POST' \
   "email": "pdfl@ua.pt"
 }'
 curl -X 'POST' \
-  'http://172.20.202.10:8083/api/v1/user' \
+  'http://localhost:8083/api/v1/user' \
   -H 'Accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -20,7 +20,7 @@ curl -X 'POST' \
   "email": "raquel@ua.pt"
 }'
 curl -X 'POST' \
-  'http://172.20.202.10:8083/api/v1/user' \
+  'http://localhost:8083/api/v1/user' \
   -H 'Accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -29,7 +29,7 @@ curl -X 'POST' \
   "email": "sophie@ua.pt"
 }'
 curl -X 'POST' \
-  'http://172.20.202.10:8083/api/v1/user' \
+  'http://localhost:8083/api/v1/user' \
   -H 'Accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -44,7 +44,7 @@ curl -X 'POST' \
 
 
 curl -X 'POST' \
-  'http://172.20.202.10:8083/api/v1/addresses' \
+  'http://localhost:8083/api/v1/addresses' \
   -H 'Accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -53,7 +53,7 @@ curl -X 'POST' \
   "longitude": 10
 }'
 curl -X 'POST' \
-  'http://172.20.202.10:8083/api/v1/addresses' \
+  'http://localhost:8083/api/v1/addresses' \
   -H 'Accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -62,7 +62,7 @@ curl -X 'POST' \
   "longitude": 10
 }'
 curl -X 'POST' \
-  'http://172.20.202.10:8083/api/v1/addresses' \
+  'http://localhost:8083/api/v1/addresses' \
   -H 'Accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -71,7 +71,7 @@ curl -X 'POST' \
   "longitude": 10
 }'
 curl -X 'POST' \
-  'http://172.20.202.10:8083/api/v1/addresses' \
+  'http://localhost:8083/api/v1/addresses' \
   -H 'Accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -86,7 +86,7 @@ curl -X 'POST' \
 #################################
 
 #curl -X 'POST' \
-#  'http://172.20.202.10:8083/api/v1/order' \
+#  'http://localhost:8083/api/v1/order' \
 #  -H 'Accept: */*' \
 #  -H 'Content-Type: application/json' \
 #  -d '{
@@ -114,27 +114,27 @@ curl -X 'POST' \
 #################################
 #           Product
 #################################
-curl -X 'POST' 'http://172.20.202.10:8083/api/v1/products' \
+curl -X 'POST' 'http://localhost:8083/api/v1/products' \
   -H 'Accept: */*' -H 'Content-Type: application/json' \
   -d '{
   "price": 4.5,
   "stockQuantity": 1000,
   "name": "almond brittle fudge",
   "description": "coconut milk, cashew milk, vanilla, sea salt, almonds, cacao nibs,chia seeds, dairy-free chocolate chips, raw cane sugar",
-  "photoUrl": "https://cdn.shopify.com/s/files/1/0375/0867/7769/products/almondbrittlefudge02_c6058f23-8c91-41b5-b1a7-8b93705b5a67_1024x1024@2x.jpg?v=1631857159"
+  "photoUrl": "https://cdn.shopify.com/s/files/1/0375/0867/7769/products/AlmondBrittleFudge02_c6058f23-8c91-41b5-b1a7-8b93705b5a67_1024x1024@2x.jpg?v=1631857159"
 }'
 
-curl -X 'POST' 'http://172.20.202.10:8083/api/v1/products' \
+curl -X 'POST' 'http://localhost:8083/api/v1/products' \
   -H 'Accept: */*' -H 'Content-Type: application/json' \
   -d '{
   "price": 4,
   "stockQuantity": 1000,
   "name": "chocolate brittle fudge",
   "description": "coconut milk, cashew milk, vanilla, sea salt, almonds, cacao nibs,chia seeds, dairy-free chocolate chips, raw cane sugar",
-  "photoUrl": "https://cdn.shopify.com/s/files/1/0375/0867/7769/products/septembercontent_3_1024x1024@2x.png?v=1631857159"
+  "photoUrl": "https://cdn.shopify.com/s/files/1/0375/0867/7769/products/SEPTEMBERCONTENT_3_1024x1024@2x.png?v=1631857159"
 }'
 
-curl -X 'POST' 'http://172.20.202.10:8083/api/v1/products' \
+curl -X 'POST' 'http://localhost:8083/api/v1/products' \
   -H 'Accept: */*' -H 'Content-Type: application/json' \
   -d '{
   "price": 5,
