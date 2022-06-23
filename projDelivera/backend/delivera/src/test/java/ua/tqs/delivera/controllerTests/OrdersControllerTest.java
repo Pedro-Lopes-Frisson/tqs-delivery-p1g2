@@ -1,12 +1,14 @@
 package ua.tqs.delivera.controllerTests;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.hamcrest.Matchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import ua.tqs.delivera.controllers.OrdersController;
+import ua.tqs.delivera.exceptions.NonExistentResource;
 import ua.tqs.delivera.datamodels.OrderDTO;
 import ua.tqs.delivera.models.Location;
 import ua.tqs.delivera.models.Order;
@@ -24,7 +27,7 @@ import ua.tqs.delivera.models.Store;
 import ua.tqs.delivera.services.OrderService;
 
 @WebMvcTest(OrdersController.class)
-public class OrdersControllerTest {
+class OrdersControllerTest {
     @Autowired
     private MockMvc mvnForTests;
 
@@ -53,6 +56,30 @@ public class OrdersControllerTest {
         order.setId( 1l );
         order.setOrderMadeTimestamp(orderMadeTimestamp);
         order.setStore(store);
+    }
+
+    @Test
+    void whenPutOrderStatusForValidId_ThenReturnStatusUpdate() throws Exception{
+        when(orderService.updateOrderState(anyLong())).thenReturn(true);
+
+        mvnForTests.perform(
+            MockMvcRequestBuilders.put( "/api/v1/order/" + order.getId() ) )
+               .andExpect( MockMvcResultMatchers.status().isOk()
+        );
+        verify( orderService, times( 1 ) ).updateOrderState( anyLong() );
+    }
+
+    @Test
+    void whenPutOrderStatusForInvalidId_ThenReturnBadRequest() throws Exception{
+        when(orderService.updateOrderState(anyLong())).thenThrow(
+            new NonExistentResource( "Order not existent" ) );
+
+        mvnForTests.perform(
+            MockMvcRequestBuilders.put( "/api/v1/order/" + -1L ) )
+               .andExpect( MockMvcResultMatchers.status().isBadRequest()
+        );
+        verify( orderService, times( 1 ) ).updateOrderState( anyLong() );
+        
     }
 
     @Test
