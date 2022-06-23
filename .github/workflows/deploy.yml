@@ -1,0 +1,25 @@
+name: Deploy to VM
+
+on:
+  workflow_run:
+    workflows: ["Push to DockerHub"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v2
+    - name: docker login
+      env:
+        DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo $DOCKER_PASSWORD | sudo docker login ghcr.io -u sophjane --password-stdin
+    - name: Run deployment
+      run: |
+        sudo docker compose down
+        sudo docker compose pull
+        sudo docker compose up -d --build
